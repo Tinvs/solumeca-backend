@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servicios | SOLUMECA S.A.S.</title>
+  <meta name="description" content="Mantenimiento de línea amarilla, obras civiles y obras metalmecánicas. Conozca los servicios de ingeniería de SOLUMECA S.A.S.">
+  <meta name="author" content="SOLUMECA S.A.S.">
+  <link rel="icon" type="image/png" href="assets/images/icono.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--white">
+        <img src="assets/images/logo-transparent.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--color">
+      </a>
+
+      <nav class="navbar__nav" id="navMenu">
+        <a href="index.html" class="navbar__link">Inicio</a>
+        <a href="nosotros.html" class="navbar__link">Nosotros</a>
+        <a href="servicios.html" class="navbar__link">Servicios</a>
+        <a href="proyectos.html" class="navbar__link">Proyectos</a>
+        <a href="contacto.html" class="navbar__link navbar__link--cta">Contáctenos</a>
+        <a href="login.html" class="navbar__link">Iniciar sesión</a>
+      </nav>
+
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ PAGE HERO ============ -->
+    <section class="page-hero">
+      <div class="page-hero__media">
+        <img src="assets/images/maquinaria-collage.jpg" alt="Maquinaria amarilla que SOLUMECA mantiene" class="page-hero__img">
+        <div class="page-hero__overlay"></div>
+      </div>
+      <div class="page-hero__content">
+        <p class="page-hero__crumb"><a href="index.html">Inicio</a> / Servicios</p>
+        <h1 class="page-hero__title">Tres frentes de trabajo,<br>un mismo estándar técnico.</h1>
+      </div>
+    </section>
+
+    <!-- ============ SERVICIOS ============ -->
+    <section class="section" id="servicios">
+      <div class="container">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>NUESTROS SERVICIOS</p>
+        <h2 class="section__title reveal">Haga clic en cada área<br>para ver el detalle completo.</h2>
+
+        <div class="services__grid">
+          <article class="service-card service-card--tilt reveal" data-modal="modal-mecanica">
+            <div class="service-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="9" stroke="currentColor" stroke-width="2.4"/><path d="M24 3v6M24 39v6M45 24h-6M9 24H3M38.6 9.4l-4.2 4.2M13.6 34.4l-4.2 4.2M38.6 38.6l-4.2-4.2M13.6 13.6L9.4 9.4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Área Mecánica</h3>
+            <p class="service-card__desc">Mantenimiento preventivo y correctivo de montacargas y maquinaria amarilla en todos sus sistemas.</p>
+            <button class="service-card__more" type="button">Ver detalle <span aria-hidden="true">→</span></button>
+          </article>
+
+          <article class="service-card service-card--tilt reveal" data-modal="modal-civil">
+            <div class="service-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M6 40h36M9 40V22l15-12 15 12v18" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 40V27h10v13" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Obras Civiles</h3>
+            <p class="service-card__desc">Cimentación, reposiciones en concreto, demoliciones, urbanismo y malla vial.</p>
+            <button class="service-card__more" type="button">Ver detalle <span aria-hidden="true">→</span></button>
+          </article>
+
+          <article class="service-card service-card--tilt reveal" data-modal="modal-metalmecanica">
+            <div class="service-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M6 30l9-9 6 6 15-15" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 12h9v9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 38h36" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Obras Metalmecánicas</h3>
+            <p class="service-card__desc">Diseño, interventoría, construcción y mantenimiento de infraestructura industrial.</p>
+            <button class="service-card__more" type="button">Ver detalle <span aria-hidden="true">→</span></button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BREAK CINEMÁTICO ============ -->
+    <section class="break">
+      <div class="break__media">
+        <img src="assets/images/proyecto-riverport.jpg" alt="Excavadora de SOLUMECA en operación portuaria" class="break__img" data-parallax-img="0.15">
+      </div>
+      <div class="break__overlay"></div>
+      <div class="break__content">
+        <p class="plate-tag plate-tag--light"><span class="plate-tag__bolt"></span>EN TERRENO</p>
+        <h2 class="break__title reveal">Intervenciones sobre equipos<br>en operación real.</h2>
+        <p class="break__subtitle reveal">Diagnóstico, reparación y mantenimiento donde su maquinaria trabaja — en obra, en puerto o en planta.</p>
+      </div>
+    </section>
+
+    <!-- ============ MARCAS ============ -->
+    <section class="section section--brands">
+      <div class="container">
+        <p class="plate-tag plate-tag--light"><span class="plate-tag__bolt"></span>MARCAS QUE COMERCIALIZAMOS Y MANTENEMOS</p>
+        <div class="brands__track">
+          <div class="brands__list" id="brandsList">
+            <span>YALE</span><span>TOYOTA</span><span>RAYMOND</span><span>BOBCAT</span><span>NISSAN</span>
+            <span>CLARK</span><span>KOMATSU</span><span>LINDE</span><span>KALMAR</span><span>GENIE</span><span>DOOSAN</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band">
+      <div class="cta-band__media">
+        <img src="assets/images/obra-civil.jpg" alt="">
+      </div>
+      <div class="cta-band__overlay"></div>
+      <div class="container cta-band__content">
+        <p class="plate-tag plate-tag--light reveal"><span class="plate-tag__bolt"></span>¿NECESITA UNO DE ESTOS SERVICIOS?</p>
+        <h2 class="cta-band__title reveal">Solicite una visita técnica sin costo.</h2>
+        <a href="contacto.html" class="btn btn--primary reveal">Solicitar cotización</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S." class="footer__logo">
+        <p>Soluciones mecánicas, obras civiles y metalmecánicas en Barranquilla, Colombia.</p>
+      </div>
+
+      <nav class="footer__links" aria-label="Enlaces rápidos">
+        <span class="footer__heading">Enlaces</span>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="servicios.html">Servicios</a>
+        <a href="proyectos.html">Proyectos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+
+      <div class="footer__contact">
+        <span class="footer__heading">Contacto</span>
+        <p>Calle 47c # 27 17<br>Barranquilla, Atlántico</p>
+        <p><a href="mailto:solumeca.2@gmail.com">solumeca.2@gmail.com</a></p>
+        <p><a href="tel:+573002464311">300 246 4311</a></p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; <span id="year"></span> SOLUMECA S.A.S. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Volver al inicio">↑</button>
+
+  <!-- ============ MODALES DE SERVICIOS ============ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal-mecanica" role="dialog" aria-modal="true" aria-labelledby="modal-mecanica-title">
+      <button class="modal__close" data-close aria-label="Cerrar">×</button>
+      <span class="plate-tag"><span class="plate-tag__bolt"></span>ÁREA MECÁNICA</span>
+      <h3 id="modal-mecanica-title">Mantenimiento de línea amarilla y montacargas</h3>
+      <ul class="modal__list">
+        <li>Mantenimiento preventivo y correctivo de montacargas y maquinaria amarilla</li>
+        <li>Sistemas hidráulicos, eléctricos y de aires acondicionados</li>
+        <li>Transmisión de potencia, frenos e inyección</li>
+        <li>Revisión y reparación de motores diésel, gasolina y gas, cajas mecánicas</li>
+        <li>Evaluación y diagnóstico de sistemas eléctricos y electrónicos</li>
+        <li>Elaboración de planes de mantenimiento e informes</li>
+        <li>Suministro y alquiler de montacargas y retroexcavadoras</li>
+      </ul>
+    </div>
+
+    <div class="modal" id="modal-civil" role="dialog" aria-modal="true" aria-labelledby="modal-civil-title">
+      <button class="modal__close" data-close aria-label="Cerrar">×</button>
+      <span class="plate-tag"><span class="plate-tag__bolt"></span>OBRAS CIVILES</span>
+      <h3 id="modal-civil-title">Infraestructura civil y urbana</h3>
+      <ul class="modal__list">
+        <li>Proyectos de ingeniería civil para redes de telecomunicaciones</li>
+        <li>Canalizaciones y construcción de registros</li>
+        <li>Reposiciones en concreto y demoliciones</li>
+        <li>Excavación y retiro de material de obras civiles</li>
+        <li>Transporte de material sobrante de obra</li>
+        <li>Construcción de acometidas y urbanismo</li>
+        <li>Malla vial</li>
+      </ul>
+    </div>
+
+    <div class="modal" id="modal-metalmecanica" role="dialog" aria-modal="true" aria-labelledby="modal-metalmecanica-title">
+      <button class="modal__close" data-close aria-label="Cerrar">×</button>
+      <span class="plate-tag"><span class="plate-tag__bolt"></span>OBRAS METALMECÁNICAS</span>
+      <h3 id="modal-metalmecanica-title">Infraestructura industrial</h3>
+      <ul class="modal__list">
+        <li>Diseño, interventoría, construcción y mantenimiento de infraestructura en industria de producción</li>
+        <li>Montajes electromecánicos</li>
+        <li>Mantenimiento preventivo y correctivo de infraestructura de soportes del área de proceso</li>
+        <li>Inspección de recubrimientos (técnicas CIS, DCVG, PCM)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+target/
+uploads/
+
+# IDE and local configuration
+.idea/
+*.iml
+.vscode/settings.json
+
+# Local operating-system files
+.DS_Store
+Thumbs.db

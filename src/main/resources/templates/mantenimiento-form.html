@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar mantenimiento | SOLUMECA</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <main class="workspace-shell">
+    <section class="workspace-panel">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA // ORDEN DE TRABAJO</p>
+      <h1 class="login-title">Registrar mantenimiento</h1>
+      <p class="login-subtitle">Documenta la intervención y deja trazabilidad del equipo.</p>
+      <form class="data-form" enctype="multipart/form-data"
+        th:action="${esEdicion} ? '/mantenimientos/' + ${mantenimiento.id} + '/editar' : (${esSolicitud ? '/mantenimientos/cliente' : '/mantenimientos'})" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <label>Máquina
+          <select name="maquinariaId" required>
+            <option value="">Selecciona una máquina</option>
+            <option th:each="maquina : ${maquinas}" th:value="${maquina.id}" th:text="${maquina.nombre + ' · ' + maquina.numeroSerie}"></option>
+          </select>
+        </label>
+        <label>Tipo
+          <select name="tipo" required>
+            <option value="Preventivo">Preventivo</option>
+            <option value="Predictivo">Predictivo</option>
+            <option value="Correctivo">Correctivo</option>
+          </select>
+        </label>
+        <label>Descripción
+          <textarea name="descripcion" rows="5" required placeholder="Describe el trabajo, falla u observación"></textarea>
+        </label>
+        <label th:if="${!esSolicitud}">Estado
+          <select name="estado">
+            <option>Pendiente</option>
+            <option>En proceso</option>
+            <option>Completado</option>
+          </select>
+        </label>
+        <label th:if="${!esSolicitud}">Técnico asignado
+          <input type="text" name="tecnicoAsignado" th:value="${mantenimiento.tecnicoAsignado}" placeholder="Usuario del técnico">
+        </label>
+        <input th:if="${esSolicitud}" type="hidden" name="estado" value="Pendiente">
+        <input th:if="${!esSolicitud}" type="hidden" name="solicitante" value="equipo-tecnico">
+        <div class="upload-grid">
+          <label class="custum-file-upload" for="evidencias">
+            <div class="icon"><span class="upload-icon">▣</span></div>
+            <div class="text"><span>Subir fotos o videos del trabajo</span></div>
+            <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple>
+          </label>
+          <label class="file-upload-card" for="informe">
+            <div class="file-upload-card__icon">↑</div>
+            <span>Subir informe PDF o Word</span>
+            <small>PDF, DOC o DOCX</small>
+            <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx">
+          </label>
+        </div>
+        <button class="btn btn--primary" type="submit" th:text="${esEdicion} ? 'Guardar cambios' : 'Guardar orden'">Guardar orden</button>
+      </form>
+      <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+    </section>
+  </main>
+</body>
+</html>

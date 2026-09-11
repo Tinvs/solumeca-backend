@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maquinaria | Panel Gerente</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <section class="login-section">
+    <div class="login-card dashboard-card" style="max-width: 760px;">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MAQUINARIA</p>
+      <h1 class="login-title">Maquinaria registrada</h1>
+      <p class="login-subtitle">Consulte, edite o registre una nueva máquina.</p>
+
+      <a href="/admin/maquinaria/nueva" class="btn btn--primary login-btn" style="display:inline-block; width:auto; margin-bottom:24px;">
+        + Registrar maquinaria
+      </a>
+
+      <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr style="text-align:left; border-bottom: 2px solid var(--steel-line);">
+            <th style="padding:10px;">Nombre</th>
+            <th style="padding:10px;">Marca</th>
+            <th style="padding:10px;">Modelo</th>
+            <th style="padding:10px;">N° Serie</th>
+            <th style="padding:10px;">Estado</th>
+            <th style="padding:10px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="m : ${maquinas}" style="border-bottom: 1px solid var(--steel-line);">
+            <td style="padding:10px;" th:text="${m.nombre}">Nombre</td>
+            <td style="padding:10px;" th:text="${m.marca}">Marca</td>
+            <td style="padding:10px;" th:text="${m.modelo}">Modelo</td>
+            <td style="padding:10px;" th:text="${m.numeroSerie}">N/S</td>
+            <td style="padding:10px;" th:text="${m.estado}">Estado</td>
+            <td style="padding:10px; white-space:nowrap;">
+              <a th:href="@{'/admin/maquinaria/' + ${m.id} + '/editar'}" style="color:var(--orange-1); font-weight:600;">Editar</a>
+              &nbsp;|&nbsp;
+              <form th:action="@{'/admin/maquinaria/' + ${m.id} + '/eliminar'}" method="POST" style="display:inline;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" style="background:none; border:none; color:#d43d1a; font-weight:600; cursor:pointer; padding:0;">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(maquinas)}">
+            <td colspan="6" style="padding:16px; text-align:center; color:var(--steel-light);">
+              Aún no hay maquinaria registrada.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="login-footer"><a href="/admin/dashboard">← Volver al panel</a></p>
+    </div>
+  </section>
+</body>
+</html>

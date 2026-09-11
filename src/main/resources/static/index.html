@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOLUMECA S.A.S. | Soluciones Mecánicas, Obras Civiles y Metalmecánicas</title>
+  <meta name="description" content="SOLUMECA S.A.S. — Más de 5 años de experiencia en mantenimiento de línea amarilla, obras civiles y metalmecánicas en Barranquilla, Colombia.">
+  <meta name="author" content="SOLUMECA S.A.S.">
+  <link rel="icon" type="image/png" href="assets/images/icono.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--white">
+        <img src="assets/images/logo-transparent.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--color">
+      </a>
+
+      <nav class="navbar__nav" id="navMenu">
+        <a href="index.html" class="navbar__link">Inicio</a>
+        <a href="nosotros.html" class="navbar__link">Nosotros</a>
+        <a href="servicios.html" class="navbar__link">Servicios</a>
+        <a href="proyectos.html" class="navbar__link">Proyectos</a>
+        <a href="contacto.html" class="navbar__link navbar__link--cta">Contáctenos</a>
+        <a href="login.html" class="navbar__link">Iniciar sesión</a>
+      </nav>
+
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero__media">
+        <video class="hero__video" autoplay muted loop playsinline poster="assets/images/hero-maquinaria.jpg">
+          <source src="assets/videos/solumeca-hero.mp4" type="video/mp4">
+        </video>
+        <img src="assets/images/hero-maquinaria.jpg" alt="Maquinaria pesada y equipos de línea amarilla de SOLUMECA" class="hero__img" data-parallax-img="0.18">
+        <div class="hero__overlay"></div>
+      </div>
+
+      <div class="hero__content">
+        <p class="plate-tag hero__eyebrow"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // BARRANQUILLA, COLOMBIA</p>
+        <h1 class="hero__title">Soluciones mecánicas<br>mantenemos tu operación<br><span class="text-accent">en movimiento.</span></h1>
+        <p class="hero__subtitle">Mantenimiento de línea amarilla, obras civiles y proyectos metalmecánicos, ejecutados por un equipo de ingeniería con más de 5 años de experiencia en el sector industrial colombiano.</p>
+        <div class="hero__actions">
+          <a href="servicios.html" class="btn btn--primary">Ver nuestros servicios</a>
+          <a href="contacto.html" class="btn btn--ghost">Solicitar cotización</a>
+        </div>
+      </div>
+
+      <div class="hero__specs" aria-label="Datos clave de la empresa">
+        <div class="spec-plate">
+          <span class="spec-plate__value" data-counter="5">0</span>
+          <span class="spec-plate__label">Años de experiencia</span>
+        </div>
+        <div class="spec-plate">
+          <span class="spec-plate__value" data-counter="3">0</span>
+          <span class="spec-plate__label">Líneas de servicio</span>
+        </div>
+        <div class="spec-plate">
+          <span class="spec-plate__value" data-counter="11">0</span>
+          <span class="spec-plate__label">Marcas de equipos atendidas</span>
+        </div>
+        <div class="spec-plate">
+          <span class="spec-plate__value" data-counter="6">0</span>
+          <span class="spec-plate__label">Clientes industriales</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band">
+      <div class="cta-band__media">
+        <img src="assets/images/proyecto-riverport.jpg" alt="">
+      </div>
+      <div class="cta-band__overlay"></div>
+      <div class="container cta-band__content">
+        <p class="plate-tag plate-tag--light reveal"><span class="plate-tag__bolt"></span>HABLEMOS</p>
+        <h2 class="cta-band__title reveal">¿Tiene un proyecto en mente?</h2>
+        <p class="cta-band__subtitle reveal">Cuéntenos qué necesita y le respondemos con una propuesta técnica ajustada a su operación.</p>
+        <a href="contacto.html" class="btn btn--primary reveal">Solicitar cotización</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S." class="footer__logo">
+        <p>Soluciones mecánicas, obras civiles y metalmecánicas en Barranquilla, Colombia.</p>
+      </div>
+
+      <nav class="footer__links" aria-label="Enlaces rápidos">
+        <span class="footer__heading">Enlaces</span>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="servicios.html">Servicios</a>
+        <a href="proyectos.html">Proyectos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+
+      <div class="footer__contact">
+        <span class="footer__heading">Contacto</span>
+        <p>Calle 47c # 27 17<br>Barranquilla, Atlántico</p>
+        <p><a href="mailto:solumeca.2@gmail.com">solumeca.2@gmail.com</a></p>
+        <p><a href="tel:+573002464311">300 246 4311</a></p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; <span id="year"></span> SOLUMECA S.A.S. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Volver al inicio">↑</button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

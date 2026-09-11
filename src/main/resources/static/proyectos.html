@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyectos | SOLUMECA S.A.S.</title>
+  <meta name="description" content="Proyectos ejecutados por SOLUMECA S.A.S.: clientes industriales, obras civiles y registro fotográfico de nuestro trabajo en campo.">
+  <meta name="author" content="SOLUMECA S.A.S.">
+  <link rel="icon" type="image/png" href="assets/images/icono.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--white">
+        <img src="assets/images/logo-transparent.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo navbar__logo--color">
+      </a>
+
+      <nav class="navbar__nav" id="navMenu">
+        <a href="index.html" class="navbar__link">Inicio</a>
+        <a href="nosotros.html" class="navbar__link">Nosotros</a>
+        <a href="servicios.html" class="navbar__link">Servicios</a>
+        <a href="proyectos.html" class="navbar__link">Proyectos</a>
+        <a href="contacto.html" class="navbar__link navbar__link--cta">Contáctenos</a>
+        <a href="login.html" class="navbar__link">Iniciar sesión</a>
+      </nav>
+
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ PAGE HERO ============ -->
+    <section class="page-hero">
+      <div class="page-hero__media">
+        <img src="assets/images/proyecto-riverport.jpg" alt="Excavadora de largo alcance de SOLUMECA en operación portuaria" class="page-hero__img">
+        <div class="page-hero__overlay"></div>
+      </div>
+      <div class="page-hero__content">
+        <p class="page-hero__crumb"><a href="index.html">Inicio</a> / Proyectos</p>
+        <h1 class="page-hero__title">Empresas que ya confían<br>en nuestro trabajo.</h1>
+      </div>
+    </section>
+
+    <!-- ============ CLIENTES ============ -->
+    <section class="section" id="proyectos">
+      <div class="container">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>PROYECTOS EJECUTADOS</p>
+        <h2 class="section__title reveal">Clientes industriales<br>en toda la región Caribe.</h2>
+
+        <div class="clients__grid reveal">
+          <div class="client-chip">PRECISAGRO</div>
+          <div class="client-chip">INDUCOL</div>
+          <div class="client-chip">RIVERPORT — Sociedad Portuaria</div>
+          <div class="client-chip">INSAPRO</div>
+          <div class="client-chip">INGECOL</div>
+          <div class="client-chip">INDUSTRIA ARTICUEROS S.A.</div>
+        </div>
+
+        <div class="projects__grid">
+          <article class="project-card project-card--tilt reveal">
+            <span class="project-card__tag">Mantenimiento — Línea amarilla</span>
+            <h3>Mantenimiento integral de flota</h3>
+            <p>Mantenimiento preventivo y correctivo de montacargas y maquinaria amarilla, diagnóstico eléctrico/electrónico, sistemas hidráulicos y suministro de alquiler de maquinaria.</p>
+          </article>
+          <article class="project-card project-card--tilt reveal">
+            <span class="project-card__tag">Obra civil — Barranquilla</span>
+            <h3>Unión Temporal Semáforos de Barranquilla</h3>
+            <p>Construcción de base para semáforos, amoblamiento urbano, canalizaciones, reposiciones en concreto, demoliciones y urbanismo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROYECTO DESTACADO ============ -->
+    <section class="break">
+      <div class="break__media">
+        <img src="assets/images/proyecto-riverport.jpg" alt="Mantenimiento de excavadora en terminal portuaria" class="break__img" data-parallax-img="0.15">
+      </div>
+      <div class="break__overlay"></div>
+      <div class="break__content">
+        <p class="plate-tag plate-tag--light"><span class="plate-tag__bolt"></span>PROYECTO DESTACADO — RIVERPORT</p>
+        <h2 class="break__title reveal">Mantenimiento de excavadora<br>de largo alcance en terminal portuaria.</h2>
+        <p class="break__subtitle reveal">Diagnóstico e intervención del sistema hidráulico directamente en la operación de dragado, sin detener el proceso portuario.</p>
+      </div>
+    </section>
+
+    <!-- ============ GALERÍA ============ -->
+    <section class="section" id="galeria">
+      <div class="container">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>REGISTRO FOTOGRÁFICO</p>
+        <h2 class="section__title reveal">Trabajo en campo.</h2>
+
+        <div class="gallery__grid">
+          <button class="gallery__item gallery__item--video reveal" data-video="assets/videos/campo-trabajo.mp4">
+            <img src="assets/images/video-poster.jpg" alt="Video de trabajo en campo durante mantenimiento" loading="lazy">
+            <span class="gallery__play" aria-hidden="true">▶</span>
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/proyecto-riverport.jpg">
+            <img src="assets/images/proyecto-riverport.jpg" alt="Excavadora de largo alcance en operación portuaria" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-01.jpg">
+            <img src="assets/images/galeria-01.jpg" alt="Mantenimiento de motor de maquinaria amarilla" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-02.jpg">
+            <img src="assets/images/galeria-02.jpg" alt="Mantenimiento de sistema de radiador" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-03.jpg">
+            <img src="assets/images/galeria-03.jpg" alt="Obra civil de urbanismo en ejecución" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-04.jpg">
+            <img src="assets/images/galeria-04.jpg" alt="Cuadrilla trabajando en vía pública" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-05.jpg">
+            <img src="assets/images/galeria-05.jpg" alt="Canalización con tubería en obra civil" loading="lazy">
+          </button>
+          <button class="gallery__item reveal" data-full="assets/images/galeria-06.jpg">
+            <img src="assets/images/galeria-06.jpg" alt="Ingenieros revisando planos de proyecto" loading="lazy">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BAND ============ -->
+    <section class="cta-band">
+      <div class="cta-band__media">
+        <img src="assets/images/hero-maquinaria.jpg" alt="">
+      </div>
+      <div class="cta-band__overlay"></div>
+      <div class="container cta-band__content">
+        <p class="plate-tag plate-tag--light reveal"><span class="plate-tag__bolt"></span>SU PROYECTO PUEDE SER EL SIGUIENTE</p>
+        <h2 class="cta-band__title reveal">Hablemos de lo que necesita.</h2>
+        <a href="contacto.html" class="btn btn--primary reveal">Contáctenos</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/images/logo-white.png" alt="SOLUMECA S.A.S." class="footer__logo">
+        <p>Soluciones mecánicas, obras civiles y metalmecánicas en Barranquilla, Colombia.</p>
+      </div>
+
+      <nav class="footer__links" aria-label="Enlaces rápidos">
+        <span class="footer__heading">Enlaces</span>
+        <a href="nosotros.html">Nosotros</a>
+        <a href="servicios.html">Servicios</a>
+        <a href="proyectos.html">Proyectos</a>
+        <a href="contacto.html">Contacto</a>
+      </nav>
+
+      <div class="footer__contact">
+        <span class="footer__heading">Contacto</span>
+        <p>Calle 47c # 27 17<br>Barranquilla, Atlántico</p>
+        <p><a href="mailto:solumeca.2@gmail.com">solumeca.2@gmail.com</a></p>
+        <p><a href="tel:+573002464311">300 246 4311</a></p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>&copy; <span id="year"></span> SOLUMECA S.A.S. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" aria-label="Volver al inicio">↑</button>
+
+  <!-- ============ LIGHTBOX GALERÍA ============ -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lightboxClose" aria-label="Cerrar imagen">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Imagen anterior">‹</button>
+    <img src="" alt="" id="lightboxImg">
+    <video id="lightboxVideo" controls playsinline></video>
+    <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Imagen siguiente">›</button>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguimiento de mantenimientos | SOLUMECA</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <main class="workspace-shell">
+    <section class="workspace-panel workspace-panel--wide">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA // SEGUIMIENTO OPERATIVO</p>
+      <div class="workspace-heading">
+        <div>
+          <h1 class="login-title" th:text="${esCliente} ? 'Estado de mis mantenimientos' : 'Mantenimientos'">Mantenimientos</h1>
+          <p class="login-subtitle">Consulta el estado y la trazabilidad de las órdenes registradas.</p>
+        </div>
+        <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Fecha</th><th>Máquina</th><th>Tipo</th><th>Solicitante</th><th>Estado</th><th>Descripción</th><th>Archivos</th><th th:if="${esOperativo}">Acciones</th></tr></thead>
+          <tbody>
+            <tr th:each="m : ${mantenimientos}">
+              <td th:text="${m.fecha}">2026-01-01</td>
+              <td th:text="${m.maquinariaId}">1</td>
+              <td th:text="${m.tipo}">Preventivo</td>
+              <td th:text="${m.solicitante}">usuario</td>
+              <td><span class="status-pill" th:text="${m.estado}">Pendiente</span></td>
+              <td th:text="${m.descripcion}">Descripción</td>
+              <td>
+                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}">Descargar informe</a>
+                <span th:if="${m.archivosEvidencia != null}" class="evidence-links">
+                  <span th:each="archivo : ${#strings.arraySplit(m.archivosEvidencia, ',')}">
+                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank">Ver evidencia</a>
+                  </span>
+                </span>
+              </td>
+              <td th:if="${esOperativo}"><a th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}">Editar</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(mantenimientos)}"><td colspan="8" class="empty-state">Aún no hay mantenimientos registrados.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+    </section>
+  </main>
+</body>
+</html>

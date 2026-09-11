@@ -1,0 +1,443 @@
+/* =============================================================
+   SOLUMECA S.A.S. — script.js
+   Funciona en todas las páginas del sitio. Cada bloque verifica
+   que sus elementos existan antes de engancharse, ya que no
+   todas las páginas tienen los mismos componentes.
+   ============================================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------------------------------------------------
+     0.0 Selector de perfil del login
+     --------------------------------------------------------- */
+  const roleCards = document.querySelectorAll('.role-card');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  if (roleCards.length && usernameInput) {
+    usernameInput.value = document.querySelector('.role-card.is-selected')?.dataset.user || usernameInput.value;
+    roleCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        roleCards.forEach((item) => {
+          const selected = item === card;
+          item.classList.toggle('is-selected', selected);
+          item.setAttribute('aria-pressed', String(selected));
+        });
+        usernameInput.value = card.dataset.user || '';
+        if (passwordInput) passwordInput.focus();
+      });
+    });
+  }
+
+  const carouselTrack = document.querySelector('[data-carousel-track]');
+  const carouselCards = carouselTrack ? Array.from(carouselTrack.children) : [];
+  const carouselPrev = document.querySelector('[data-carousel-prev]');
+  const carouselNext = document.querySelector('[data-carousel-next]');
+  let carouselIndex = 0;
+  const updateCarousel = () => {
+    if (!carouselTrack || !carouselCards.length) return;
+    const gap = 12;
+    const cardWidth = carouselCards[0].getBoundingClientRect().width + gap;
+    carouselTrack.style.transform = `translateX(-${carouselIndex * cardWidth}px)`;
+  };
+  if (carouselTrack && carouselCards.length) {
+    carouselNext?.addEventListener('click', () => {
+      const visibleCards = window.innerWidth <= 520 ? 1 : window.innerWidth <= 800 ? 2 : 4;
+      carouselIndex = (carouselIndex + 1) % Math.max(1, carouselCards.length - visibleCards + 1);
+      updateCarousel();
+    });
+    carouselPrev?.addEventListener('click', () => {
+      const visibleCards = window.innerWidth <= 520 ? 1 : window.innerWidth <= 800 ? 2 : 4;
+      const maxIndex = Math.max(1, carouselCards.length - visibleCards + 1);
+      carouselIndex = (carouselIndex - 1 + maxIndex) % maxIndex;
+      updateCarousel();
+    });
+    window.addEventListener('resize', updateCarousel);
+  }
+
+  /* ---------------------------------------------------------
+     0.1 Usuario autenticado en la navegación pública
+     --------------------------------------------------------- */
+  const sessionLink = document.querySelector('.navbar__link[href="login.html"]');
+  if (sessionLink) {
+    fetch('/api/session', { credentials: 'same-origin' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((session) => {
+        if (!session?.authenticated) return;
+        const destinations = {
+          ADMIN: '/admin/dashboard',
+          CLIENTE: '/cliente/dashboard',
+          TECNICO: '/tecnico/dashboard',
+          SUPERVISOR: '/supervisor/dashboard',
+          ENCARGADO: '/encargado/dashboard',
+        };
+        sessionLink.textContent = session.username;
+        sessionLink.href = destinations[session.role] || '/index.html';
+        sessionLink.setAttribute('aria-label', `Abrir panel de ${session.username}`);
+      })
+      .catch(() => {});
+  }
+
+  /* ---------------------------------------------------------
+     0. Barra de progreso de lectura
+     --------------------------------------------------------- */
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = `${pct}%`;
+    };
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+  }
+
+  /* ---------------------------------------------------------
+     0.1 Parallax suave en imágenes de fondo
+     --------------------------------------------------------- */
+  const parallaxEls = Array.from(document.querySelectorAll('[data-parallax-img]')).map((el) => ({
+    el,
+    speed: parseFloat(el.getAttribute('data-parallax-img')) || 0.15,
+  }));
+
+  if (parallaxEls.length && !prefersReducedMotion) {
+    const updateParallax = () => {
+      parallaxEls.forEach(({ el, speed }) => {
+        const rect = el.parentElement.getBoundingClientRect();
+        if (rect.bottom > -200 && rect.top < window.innerHeight + 200) {
+          el.style.transform = `translateY(${rect.top * -speed}px) scale(1.15)`;
+        }
+      });
+    };
+    updateParallax();
+    window.addEventListener('scroll', updateParallax, { passive: true });
+  }
+
+  /* ---------------------------------------------------------
+     0.2 Tilt 3D + spotlight de cursor en tarjetas
+     --------------------------------------------------------- */
+  const tiltCards = document.querySelectorAll('.service-card--tilt, .info-card--tilt, .project-card--tilt, .benefit--tilt, .explore-card');
+  if (tiltCards.length && !prefersReducedMotion && window.matchMedia('(hover: hover)').matches) {
+    tiltCards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const px = x / rect.width;
+        const py = y / rect.height;
+        const maxTilt = 5;
+        card.style.setProperty('--rx', `${(0.5 - py) * maxTilt}deg`);
+        card.style.setProperty('--ry', `${(px - 0.5) * maxTilt}deg`);
+        card.style.setProperty('--mx', `${x}px`);
+        card.style.setProperty('--my', `${y}px`);
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
+     1. Navbar: cambia de apariencia al hacer scroll
+     --------------------------------------------------------- */
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    const updateNavbar = () => {
+      navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+    };
+    updateNavbar();
+    window.addEventListener('scroll', updateNavbar, { passive: true });
+  }
+
+  /* ---------------------------------------------------------
+     1.1 Resalta el enlace de la página actual en el navbar
+     --------------------------------------------------------- */
+  const currentPage = (location.pathname.split('/').pop() || 'index.html').split('#')[0] || 'index.html';
+  document.querySelectorAll('.navbar__link:not(.navbar__link--cta), .footer__links a').forEach((link) => {
+    const href = (link.getAttribute('href') || '').split('#')[0];
+    if (href === currentPage || (href === '' && currentPage === 'index.html')) {
+      link.classList.add('is-current');
+    }
+  });
+
+  /* ---------------------------------------------------------
+     2. Menú hamburguesa (móvil)
+     --------------------------------------------------------- */
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('is-open');
+      navToggle.classList.toggle('is-active', isOpen);
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    navMenu.querySelectorAll('.navbar__link').forEach((link) => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('is-open');
+        navToggle.classList.remove('is-active');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
+     3. Aparición progresiva al hacer scroll (Intersection Observer)
+     --------------------------------------------------------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    );
+    revealEls.forEach((el) => revealObserver.observe(el));
+  }
+
+  /* ---------------------------------------------------------
+     4. Contador animado de cifras
+     --------------------------------------------------------- */
+  const counters = document.querySelectorAll('[data-counter]');
+  if (counters.length) {
+    const animateCounter = (el) => {
+      const target = parseInt(el.getAttribute('data-counter'), 10);
+      const duration = 1400;
+      const start = performance.now();
+      const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    const counterObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+    counters.forEach((el) => counterObserver.observe(el));
+  }
+
+  /* ---------------------------------------------------------
+     5. Modales de servicios (solo en servicios.html)
+     --------------------------------------------------------- */
+  const modalOverlay = document.getElementById('modalOverlay');
+  const serviceCards = document.querySelectorAll('.service-card');
+  let lastFocusedEl = null;
+
+  const closeModal = () => {
+    document.querySelectorAll('.modal.is-active').forEach((m) => m.classList.remove('is-active'));
+    if (modalOverlay) modalOverlay.classList.remove('is-active');
+    document.body.style.overflow = '';
+    if (lastFocusedEl) lastFocusedEl.focus();
+  };
+
+  if (modalOverlay && serviceCards.length) {
+    const openModal = (modalId) => {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      lastFocusedEl = document.activeElement;
+      document.querySelectorAll('.modal.is-active').forEach((m) => m.classList.remove('is-active'));
+      modal.classList.add('is-active');
+      modalOverlay.classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector('.modal__close').focus();
+    };
+
+    serviceCards.forEach((card) => {
+      const moreBtn = card.querySelector('.service-card__more');
+      const trigger = () => openModal(card.getAttribute('data-modal'));
+      if (moreBtn) moreBtn.addEventListener('click', trigger);
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.service-card__more')) return;
+        trigger();
+      });
+    });
+
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+
+    document.querySelectorAll('[data-close]').forEach((btn) => {
+      btn.addEventListener('click', closeModal);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     6. Lightbox de galería (solo en proyectos.html)
+     --------------------------------------------------------- */
+  const lightbox = document.getElementById('lightbox');
+  const galleryItems = Array.from(document.querySelectorAll('.gallery__item'));
+  let currentGalleryIndex = 0;
+
+  const closeLightbox = () => {
+    if (!lightbox) return;
+    const videoEl = document.getElementById('lightboxVideo');
+    if (videoEl) { videoEl.pause(); videoEl.removeAttribute('src'); videoEl.load(); }
+    lightbox.classList.remove('is-active');
+    document.body.style.overflow = '';
+  };
+
+  if (lightbox && galleryItems.length) {
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxVideo = document.getElementById('lightboxVideo');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxPrev = document.getElementById('lightboxPrev');
+    const lightboxNext = document.getElementById('lightboxNext');
+
+    const showGalleryImage = (index) => {
+      currentGalleryIndex = (index + galleryItems.length) % galleryItems.length;
+      const item = galleryItems[currentGalleryIndex];
+      const videoSrc = item.getAttribute('data-video');
+
+      if (videoSrc) {
+        lightboxImg.style.display = 'none';
+        if (lightboxVideo) {
+          lightboxVideo.style.display = 'block';
+          lightboxVideo.src = videoSrc;
+          lightboxVideo.play().catch(() => {});
+        }
+      } else {
+        if (lightboxVideo) {
+          lightboxVideo.pause();
+          lightboxVideo.removeAttribute('src');
+          lightboxVideo.style.display = 'none';
+        }
+        lightboxImg.style.display = 'block';
+        const src = item.getAttribute('data-full');
+        const alt = item.querySelector('img').getAttribute('alt');
+        lightboxImg.setAttribute('src', src);
+        lightboxImg.setAttribute('alt', alt);
+      }
+    };
+
+    galleryItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        showGalleryImage(index);
+        lightbox.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener('click', () => showGalleryImage(currentGalleryIndex - 1));
+    if (lightboxNext) lightboxNext.addEventListener('click', () => showGalleryImage(currentGalleryIndex + 1));
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('is-active')) return;
+      if (e.key === 'ArrowLeft') showGalleryImage(currentGalleryIndex - 1);
+      if (e.key === 'ArrowRight') showGalleryImage(currentGalleryIndex + 1);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     7. Cerrar modal / lightbox con tecla Escape
+     --------------------------------------------------------- */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeLightbox();
+    }
+  });
+
+  /* ---------------------------------------------------------
+     8. Botón volver arriba
+     --------------------------------------------------------- */
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    window.addEventListener(
+      'scroll',
+      () => backToTop.classList.toggle('is-visible', window.scrollY > 700),
+      { passive: true }
+    );
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  /* ---------------------------------------------------------
+     9. Validación del formulario de contacto (solo en contacto.html)
+     --------------------------------------------------------- */
+  const form = document.getElementById('contactForm');
+  const formSuccess = document.getElementById('formSuccess');
+
+  if (form) {
+    const validators = {
+      name: (v) => v.trim().length >= 3 || 'Ingrese su nombre completo.',
+      email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || 'Ingrese un correo electrónico válido.',
+      message: (v) => v.trim().length >= 10 || 'Cuéntenos un poco más sobre su proyecto (mín. 10 caracteres).',
+    };
+
+    const showFieldError = (field, message) => {
+      const row = document.getElementById(field).closest('.form-row');
+      const errorEl = document.getElementById(`err-${field}`);
+      row.classList.toggle('has-error', Boolean(message));
+      errorEl.textContent = message || '';
+    };
+
+    Object.keys(validators).forEach((field) => {
+      const input = document.getElementById(field);
+      if (!input) return;
+      input.addEventListener('blur', () => {
+        const result = validators[field](input.value);
+        showFieldError(field, result === true ? '' : result);
+      });
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let isValid = true;
+
+      Object.keys(validators).forEach((field) => {
+        const input = document.getElementById(field);
+        if (!input) return;
+        const result = validators[field](input.value);
+        if (result !== true) {
+          showFieldError(field, result);
+          isValid = false;
+        } else {
+          showFieldError(field, '');
+        }
+      });
+
+      if (!isValid) {
+        if (formSuccess) formSuccess.textContent = '';
+        return;
+      }
+
+      // Simulación de envío (no hay backend conectado en este proyecto).
+      if (formSuccess) {
+        formSuccess.textContent = '¡Mensaje enviado! Nos pondremos en contacto pronto.';
+      }
+      form.reset();
+      setTimeout(() => { if (formSuccess) formSuccess.textContent = ''; }, 6000);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     10. Año actual en el footer
+     --------------------------------------------------------- */
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+});

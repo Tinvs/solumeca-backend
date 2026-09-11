@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Técnico | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <section class="login-section">
+    <div class="login-card dashboard-card">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // PANEL TÉCNICO</p>
+      <h1 class="login-title">Bienvenido, <span th:text="${username}">tecnico</span></h1>
+      <p class="login-subtitle">Encargado de realizar los trabajos de mantenimiento.</p>
+
+      <ul class="dashboard-menu">
+        <li><a href="/maquinaria"><span class="menu-icon">01</span><span class="menu-copy"><strong>Consultar maquinaria</strong><small>Revisa equipos y estados actuales</small></span><span class="menu-arrow">&#8594;</span></a></li>
+        <li><a href="/mantenimientos/tecnico/nuevo"><span class="menu-icon">02</span><span class="menu-copy"><strong>Registrar mantenimientos</strong><small>Documenta una nueva orden de trabajo</small></span><span class="menu-arrow">&#8594;</span></a></li>
+        <li><a href="/mantenimientos/tecnico/nuevo"><span class="menu-icon">03</span><span class="menu-copy"><strong>Registrar fallas</strong><small>Reporta incidencias del equipo</small></span><span class="menu-arrow">&#8594;</span></a></li>
+        <li><a href="/mantenimientos/tecnico/nuevo"><span class="menu-icon">04</span><span class="menu-copy"><strong>Registrar reparaciones</strong><small>Deja trazabilidad del trabajo realizado</small></span><span class="menu-arrow">&#8594;</span></a></li>
+        <li><a href="/mantenimientos"><span class="menu-icon">05</span><span class="menu-copy"><strong>Actualizar trabajos realizados</strong><small>Consulta el historial operativo</small></span><span class="menu-arrow">&#8594;</span></a></li>
+      </ul>
+
+      <form th:action="@{/logout}" method="POST" class="dashboard-logout">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="btn btn--primary login-btn">Cerrar sesión</button>
+      </form>
+      <a href="/index.html" class="btn btn--primary login-btn">Volver a la página</a>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar Maquinaria | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <section class="login-section">
+    <div class="login-card dashboard-card" style="max-width: 720px;">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MAQUINARIA</p>
+      <h1 class="login-title">Maquinaria registrada</h1>
+      <p class="login-subtitle">Consulta de solo lectura.</p>
+
+      <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr style="text-align:left; border-bottom: 2px solid var(--steel-line);">
+            <th style="padding:10px;">Nombre</th>
+            <th style="padding:10px;">Marca</th>
+            <th style="padding:10px;">Modelo</th>
+            <th style="padding:10px;">N° Serie</th>
+            <th style="padding:10px;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="m : ${maquinas}" style="border-bottom: 1px solid var(--steel-line);">
+            <td style="padding:10px;" th:text="${m.nombre}">Nombre</td>
+            <td style="padding:10px;" th:text="${m.marca}">Marca</td>
+            <td style="padding:10px;" th:text="${m.modelo}">Modelo</td>
+            <td style="padding:10px;" th:text="${m.numeroSerie}">N/S</td>
+            <td style="padding:10px;" th:text="${m.estado}">Estado</td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(maquinas)}">
+            <td colspan="5" style="padding:16px; text-align:center; color:var(--steel-light);">
+              Aún no hay maquinaria registrada.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+    </div>
+  </section>
+</body>
+</html>
