@@ -1406,6 +1406,14 @@ h1, h2, h3 {
 
   .navbar__link { color: var(--steel) !important; font-size: 17px; }
 
+  .navbar__link--cta,
+  .navbar.is-scrolled .navbar__link--cta {
+    width: 100%;
+    color: var(--white) !important;
+    background: linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    box-shadow: 0 8px 18px -8px rgba(255, 93, 28, 0.65);
+  }
+
   .navbar__toggle { display: flex; }
 
   .hero__specs { grid-template-columns: 1fr 1fr; gap: 20px; }
