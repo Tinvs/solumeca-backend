@@ -30,6 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const queryParams = new URLSearchParams(window.location.search);
+  const loginSuccess = document.getElementById('loginSuccess');
+  const loginError = document.getElementById('loginError');
+  if (loginSuccess && queryParams.get('registered') === 'true') {
+    loginSuccess.hidden = false;
+    loginSuccess.classList.add('is-active');
+  }
+  if (loginError && queryParams.get('error') === 'true') {
+    loginError.classList.add('is-active');
+  }
+
   const carouselTrack = document.querySelector('[data-carousel-track]');
   const carouselCards = carouselTrack ? Array.from(carouselTrack.children) : [];
   const carouselPrev = document.querySelector('[data-carousel-prev]');
@@ -426,12 +437,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Simulación de envío (no hay backend conectado en este proyecto).
-      if (formSuccess) {
-        formSuccess.textContent = '¡Mensaje enviado! Nos pondremos en contacto pronto.';
-      }
-      form.reset();
-      setTimeout(() => { if (formSuccess) formSuccess.textContent = ''; }, 6000);
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      if (formSuccess) formSuccess.textContent = 'Enviando mensaje...';
+
+      fetch('/api/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          message: document.getElementById('message').value.trim(),
+        }),
+      })
+        .then(async (response) => {
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.message || 'No fue posible enviar el mensaje.');
+          return result;
+        })
+        .then((result) => {
+          if (formSuccess) formSuccess.textContent = result.message || '¡Mensaje enviado! Nos pondremos en contacto pronto.';
+          form.reset();
+        })
+        .catch((error) => {
+          if (formSuccess) formSuccess.textContent = error.message;
+        })
+        .finally(() => {
+          if (submitButton) submitButton.disabled = false;
+          setTimeout(() => { if (formSuccess) formSuccess.textContent = ''; }, 6000);
+        });
     });
   }
 

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear cuenta | SOLUMECA S.A.S.</title>
+  <meta name="description" content="Crea tu cuenta de cliente en SOLUMECA S.A.S. para solicitar servicios y consultar tus mantenimientos.">
+  <link rel="icon" type="image/png" href="assets/images/icono.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="navbar is-scrolled" id="navbar">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <img src="assets/images/logo-transparent.png" alt="SOLUMECA S.A.S. - Soluciones Mecánicas" class="navbar__logo">
+      </a>
+      <nav class="navbar__nav" id="navMenu">
+        <a href="index.html" class="navbar__link">Inicio</a>
+        <a href="servicios.html" class="navbar__link">Servicios</a>
+        <a href="contacto.html" class="navbar__link navbar__link--cta">Contáctenos</a>
+        <a href="login.html" class="navbar__link">Iniciar sesión</a>
+      </nav>
+      <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="login-section">
+      <div class="login-card">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // NUEVA CUENTA</p>
+        <h1 class="login-title">Crea tu cuenta</h1>
+        <p class="login-subtitle">Regístrate para solicitar servicios y consultar el avance de tus mantenimientos.</p>
+
+        <p class="login-error" id="registerError" hidden></p>
+
+        <form action="/registro" method="POST" class="login-form">
+          <div class="form-row">
+            <label for="nombre">Nombre de usuario</label>
+            <input type="text" id="nombre" name="nombre" placeholder="El nombre con el que ingresarás" minlength="3" maxlength="50" autocomplete="username" required>
+          </div>
+          <div class="form-row">
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" placeholder="tu@correo.com" autocomplete="email" required>
+          </div>
+          <div class="form-row">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
+          </div>
+          <button type="submit" class="btn btn--primary login-btn">Crear cuenta <span aria-hidden="true">&#8594;</span></button>
+        </form>
+
+        <p class="login-footer">¿Ya tienes una cuenta? <a href="/login.html">Inicia sesión</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/script.js"></script>
+  <script>
+    const messages = {
+      nombre: 'El nombre debe tener entre 3 y 50 caracteres.',
+      correo: 'Ingresa un correo electrónico válido.',
+      password: 'La contraseña debe tener al menos 8 caracteres.',
+      usuario: 'Ese nombre de usuario ya está registrado.',
+      'correo-existente': 'Ese correo ya está registrado.'
+    };
+    const error = new URLSearchParams(window.location.search).get('error');
+    const errorBox = document.getElementById('registerError');
+    if (error && messages[error]) {
+      errorBox.textContent = messages[error];
+      errorBox.hidden = false;
+      errorBox.classList.add('is-active');
+    }
+  </script>
+</body>
+</html>
