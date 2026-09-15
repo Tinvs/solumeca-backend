@@ -1618,6 +1618,54 @@ h1, h2, h3 {
   box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.12);
 }
 
+/* Envoltura para campos de contraseña con botón de ojito */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 48px !important;
+}
+
+.btn-toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #71717a;
+  border-radius: 6px;
+  transition: color var(--transition), transform var(--transition);
+  z-index: 3;
+}
+
+.btn-toggle-password:hover {
+  color: var(--orange-1);
+}
+
+.btn-toggle-password:focus-visible {
+  outline: 2px solid var(--orange-1);
+  outline-offset: 1px;
+}
+
+.btn-toggle-password svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  stroke: currentColor;
+}
+
 .login-btn { margin-top: 8px; width: 100%; }
 
 .login-error {
