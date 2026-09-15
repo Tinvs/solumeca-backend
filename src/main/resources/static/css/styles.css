@@ -1992,67 +1992,54 @@ html, body { overflow-x: hidden; }
 }
 
 /* =============================================================
-   Boton flotante WhatsApp
+   Boton flotante WhatsApp (compacto y discreto)
    ============================================================= */
 .whatsapp-float {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 60px;
-  height: 60px;
+  bottom: 22px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
   background: #25d366;
   color: #ffffff;
   border-radius: 50%;
   text-align: center;
-  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
 }
 .whatsapp-float:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 22px rgba(37, 211, 102, 0.6);
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   color: #ffffff;
 }
 .whatsapp-float svg {
-  width: 34px;
-  height: 34px;
+  width: 23px;
+  height: 23px;
   fill: currentColor;
 }
 .whatsapp-pulse {
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border-radius: 50%;
-  border: 2px solid #25d366;
-  animation: waPulse 2s infinite ease-out;
-  pointer-events: none;
-}
-@keyframes waPulse {
-  0% { transform: scale(0.95); opacity: 0.9; }
-  70% { transform: scale(1.35); opacity: 0; }
-  100% { transform: scale(1.4); opacity: 0; }
+  display: none;
 }
 .whatsapp-tooltip {
   position: absolute;
-  right: 70px;
+  right: 52px;
   background: #1c1c1e;
   color: #ffffff;
-  padding: 8px 14px;
+  padding: 5px 10px;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   pointer-events: none;
   opacity: 0;
-  transform: translateX(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateX(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .whatsapp-float:hover .whatsapp-tooltip {
   opacity: 1;
