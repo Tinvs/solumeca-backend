@@ -74,7 +74,7 @@ public class MantenimientoController {
     @GetMapping("/cliente/nueva")
     public String nuevaSolicitud(Model model) {
         Mantenimiento solicitud = new Mantenimiento();
-        solicitud.setTipo("Preventivo");
+        solicitud.setTipo("Solicitud cliente");
         solicitud.setEstado("Presolicitud");
         prepararFormulario(model, solicitud, true);
         return "mantenimiento-form";
@@ -88,6 +88,9 @@ public class MantenimientoController {
             throws IOException {
         solicitud.setSolicitante(authentication.getName());
         solicitud.setEstado("Presolicitud");
+        if (solicitud.getTipo() == null || solicitud.getTipo().isBlank()) {
+            solicitud.setTipo("Solicitud cliente");
+        }
         solicitud.setFecha(LocalDate.now());
         guardarArchivos(solicitud, evidencias, informe);
         mantenimientoRepository.save(solicitud);

@@ -1709,6 +1709,10 @@ h1, h2, h3 {
   gap: 16px;
   margin: 8px 0 18px;
 }
+.upload-grid--single,
+.upload-grid:has(> :only-child) {
+  grid-template-columns: 1fr;
+}
 
 .custum-file-upload,
 .file-upload-card {

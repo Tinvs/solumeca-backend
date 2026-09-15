@@ -23,13 +23,14 @@
                     th:selected="${mantenimiento.maquinariaId != null && mantenimiento.maquinariaId == maquina.id}"></option>
           </select>
         </label>
-        <label>Tipo
-          <select name="tipo" required>
+        <label th:if="${!esSolicitud}">Tipo
+          <select name="tipo" th:required="${!esSolicitud}">
             <option value="Preventivo">Preventivo</option>
             <option value="Predictivo">Predictivo</option>
             <option value="Correctivo">Correctivo</option>
           </select>
         </label>
+        <input th:if="${esSolicitud}" type="hidden" name="tipo" value="Solicitud cliente">
         <label>Descripción
           <textarea name="descripcion" rows="5" required placeholder="Describe el trabajo, falla u observación"></textarea>
         </label>
@@ -45,13 +46,13 @@
         </label>
         <input th:if="${esSolicitud}" type="hidden" name="estado" value="Pendiente">
         <input th:if="${!esSolicitud}" type="hidden" name="solicitante" value="equipo-tecnico">
-        <div class="upload-grid">
+        <div class="upload-grid" th:classappend="${esSolicitud} ? 'upload-grid--single' : ''">
           <label class="custum-file-upload" for="evidencias">
             <div class="icon"><span class="upload-icon">▣</span></div>
             <div class="text"><span>Subir fotos o videos del trabajo</span></div>
             <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple>
           </label>
-          <label class="file-upload-card" for="informe">
+          <label th:if="${!esSolicitud}" class="file-upload-card" for="informe">
             <div class="file-upload-card__icon">↑</div>
             <span>Subir informe PDF o Word</span>
             <small>PDF, DOC o DOCX</small>
