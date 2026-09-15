@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${esNueva} ? 'Registrar marca | SOLUMECA' : 'Modificar marca | SOLUMECA'">Marca</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <section class="login-section">
+    <div class="login-card" style="max-width: 540px;">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MARCAS</p>
+      <h1 class="login-title" th:text="${esNueva} ? 'Registrar Marca' : 'Modificar Marca'">Marca</h1>
+      <p class="login-subtitle">Configure la marca y asigne el proveedor que la suministra.</p>
+
+      <form th:action="${esNueva} ? '/admin/marcas' : '/admin/marcas/' + ${marca.id}"
+            th:object="${marca}" method="POST" class="login-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <div class="form-row">
+          <label for="nombre">Nombre de la Marca *</label>
+          <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: CATERPILLAR, KOMATSU, TOYOTA" required style="text-transform:uppercase;">
+        </div>
+
+        <div class="form-row">
+          <label for="proveedorId">Proveedor Distribuidor Asociado</label>
+          <select id="proveedorId" name="proveedorId"
+                  style="width:100%; padding:13px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+            <option value="">Seleccione un proveedor (opcional)</option>
+            <option th:each="p : ${proveedores}"
+                    th:value="${p.id}"
+                    th:text="${p.nombre + ' (' + p.ciudad + ')'}"
+                    th:selected="${marca.proveedor != null && marca.proveedor.id == p.id}">
+            </option>
+          </select>
+          <small style="color:var(--steel-light); display:block; margin-top:4px;">Si aún no existe el proveedor, puede crearlo primero en el directorio de proveedores.</small>
+        </div>
+
+        <div class="form-row">
+          <label for="paisOrigen">País de Origen</label>
+          <input type="text" id="paisOrigen" th:field="*{paisOrigen}" placeholder="Ej: Estados Unidos, Japón, Alemania">
+        </div>
+
+        <div class="form-row">
+          <label for="descripcion">Descripción / Tipo de Maquinaria</label>
+          <textarea id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Ej: Especialista en montacargas de combustión interna y eléctricos"
+                    style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary login-btn" th:text="${esNueva} ? 'Registrar marca' : 'Guardar cambios'">Guardar</button>
+      </form>
+
+      <p class="login-footer" style="margin-top:20px;"><a href="/admin/marcas">← Volver al catálogo de marcas</a></p>
+    </div>
+  </section>
+</body>
+</html>
+

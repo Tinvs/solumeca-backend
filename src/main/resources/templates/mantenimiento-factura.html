@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factura / Orden de Servicio | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .invoice-card {
+      max-width: 820px;
+      margin: 40px auto;
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--radius);
+      border: 1px solid var(--steel-line);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    }
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--steel-line);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+    }
+    .invoice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .invoice-box {
+      background: var(--concrete);
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--orange-1);
+    }
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 24px;
+    }
+    .invoice-table th, .invoice-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--steel-line);
+    }
+    .invoice-table th {
+      background: var(--concrete);
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+    .invoice-total-card {
+      background: var(--steel);
+      color: var(--white);
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    @media print {
+      body { background: white; }
+      .no-print { display: none !important; }
+      .invoice-card { box-shadow: none; border: none; padding: 0; margin: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body class="dashboard-page">
+  <div class="no-print" style="max-width:820px; margin:20px auto 0 auto; display:flex; justify-content:space-between; align-items:center;">
+    <a class="panel-return" href="javascript:history.back()">← Volver</a>
+    <button onclick="window.print()" class="btn btn--primary" style="padding:10px 20px;">🖨️ Imprimir Factura / Comprobante</button>
+  </div>
+
+  <main class="invoice-card">
+    <div class="invoice-header">
+      <div>
+        <h1 style="font-family:var(--font-display); font-size:28px; color:var(--orange-1); margin-bottom:4px;">SOLUMECA S.A.S.</h1>
+        <p style="font-size:13.5px; color:var(--steel-light); line-height:1.4;">
+          Soluciones Mecánicas, Obras Civiles y Metalmecánicas<br>
+          NIT: 901.000.123-8 | Barranquilla, Atlántico<br>
+          Calle 47c # 27 17 | Tel: 300 246 4311<br>
+          Email: solumeca.2@gmail.com
+        </p>
+      </div>
+      <div style="text-align:right;">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>ORDEN DE SERVICIO & FACTURA</p>
+        <h2 style="font-family:var(--font-mono); font-size:22px; color:var(--ink); margin-top:8px;"
+            th:text="${mantenimiento.numeroOrden != null ? mantenimiento.numeroOrden : 'ORD-2026-' + mantenimiento.id}">ORD-2026-001</h2>
+        <p style="font-size:13px; color:var(--steel-light);">Fecha emisión: <strong th:text="${mantenimiento.fechaAprobacion != null ? mantenimiento.fechaAprobacion : mantenimiento.fecha}">2026-01-01</strong></p>
+        <span class="status-pill" style="margin-top:8px; display:inline-block;" th:text="${mantenimiento.estado}">Completado</span>
+      </div>
+    </div>
+
+    <div class="invoice-grid">
+      <div class="invoice-box">
+        <h3 style="font-family:var(--font-display); font-size:16px; margin-bottom:10px; color:var(--ink);">DATOS DEL CLIENTE / SOLICITANTE</h3>
+        <p style="font-size:14px; margin-bottom:4px;"><strong>Cliente:</strong> <span th:text="${mantenimiento.solicitante}">usuario</span></p>
+        <p style="font-size:14px; margin-bottom:4px;"><strong>Tipo de Servicio:</strong> Mantenimiento <span th:text="${mantenimiento.tipo}">Preventivo</span></p>
+        <p style="font-size:14px;"><strong>Técnico Responsable:</strong> <span th:text="${mantenimiento.tecnicoAsignado != null ? mantenimiento.tecnicoAsignado : 'Por asignar'}">tecnico</span></p>
+      </div>
+
+      <div class="invoice-box" style="border-left-color: var(--safety-yellow);">
+        <h3 style="font-family:var(--font-display); font-size:16px; margin-bottom:10px; color:var(--ink);">DATOS DE LA MAQUINARIA</h3>
+        <p style="font-size:14px; margin-bottom:4px;"><strong>Código de Máquina:</strong> <span style="font-family:var(--font-mono); font-weight:bold; color:var(--orange-1);" th:text="${maquina != null ? maquina.codigo : 'N/A'}">MQ-001</span></p>
+        <p style="font-size:14px; margin-bottom:4px;"><strong>Equipo:</strong> <span th:text="${maquina != null ? maquina.nombre : 'Equipo Industrial'}">Retroexcavadora</span></p>
+        <p style="font-size:14px; margin-bottom:4px;"><strong>Marca / Modelo:</strong> <span th:text="${maquina != null ? maquina.marca + ' ' + (maquina.modelo != null ? maquina.modelo : '') : 'N/A'}">CAT 420F2</span></p>
+        <p style="font-size:14px;"><strong>N° de Serie:</strong> <span th:text="${maquina != null ? maquina.numeroSerie : 'N/A'}">CAT420F2-0091</span></p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:28px;">
+      <h3 style="font-family:var(--font-display); font-size:18px; margin-bottom:12px; border-bottom:1px solid var(--steel-line); padding-bottom:6px;">DESCRIPCIÓN DE LA INTERVENCIÓN TÉCNICA</h3>
+      
+      <div style="margin-bottom:16px;">
+        <h4 style="font-size:14px; color:var(--steel); text-transform:uppercase; margin-bottom:4px;">1. Diagnóstico y Análisis Técnico:</h4>
+        <p style="font-size:14.5px; color:var(--ink); background:var(--concrete); padding:12px; border-radius:var(--radius);"
+           th:text="${mantenimiento.analisis != null ? mantenimiento.analisis : mantenimiento.descripcion}">Diagnóstico realizado.</p>
+      </div>
+
+      <div>
+        <h4 style="font-size:14px; color:var(--steel); text-transform:uppercase; margin-bottom:4px;">2. Solución Aplicada / Procedimiento:</h4>
+        <p style="font-size:14.5px; color:var(--ink); background:var(--concrete); padding:12px; border-radius:var(--radius);"
+           th:text="${mantenimiento.solucion != null ? mantenimiento.solucion : 'Trabajo técnico ejecutado conforme a especificaciones del fabricante.'}">Solución técnica ejecutada.</p>
+      </div>
+    </div>
+
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Detalle</th>
+          <th>Tiempo Estimado</th>
+          <th style="text-align:right;">Importe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Servicio de Mantenimiento <span th:text="${mantenimiento.tipo}"></span></strong></td>
+          <td>Mano de obra especializada, pruebas de carga y revisión integral de sistemas</td>
+          <td><span th:text="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados + ' días hábiles' : '1 día'}">2 días</span></td>
+          <td style="text-align:right; font-family:var(--font-mono); font-weight:bold;"
+              th:text="${#numbers.formatDecimal((mantenimiento.valorTotal != null ? mantenimiento.valorTotal : (mantenimiento.costoEstimado != null ? mantenimiento.costoEstimado : 0.0)), 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="invoice-total-card">
+      <div>
+        <span style="text-transform:uppercase; font-size:13px; letter-spacing:1px; opacity:0.85;">Valor Total de la Factura:</span>
+        <h2 style="font-family:var(--font-mono); font-size:32px; color:var(--orange-2); margin-top:2px;"
+            th:text="${#numbers.formatDecimal((mantenimiento.valorTotal != null ? mantenimiento.valorTotal : (mantenimiento.costoEstimado != null ? mantenimiento.costoEstimado : 0.0)), 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</h2>
+      </div>
+      <div style="text-align:right; font-size:13px; opacity:0.85;">
+        <p>Estado de pago: <strong>Aprobado / Al Día</strong></p>
+        <p>Técnico responsable: <strong th:text="${mantenimiento.tecnicoAsignado}">tecnico</strong></p>
+      </div>
+    </div>
+
+    <div style="margin-top:40px; padding-top:20px; border-top:1px dashed var(--steel-line); display:flex; justify-content:space-between; font-size:12px; color:var(--steel-light);">
+      <div>
+        <p>SOLUMECA S.A.S. — Calidad, Seguridad y Compromiso Industrial</p>
+        <p>Garantía de servicio técnico y repuestos certificados.</p>
+      </div>
+      <div style="text-align:right;">
+        <p>Firma y Sello de Conformidad Técnica</p>
+        <p style="margin-top:24px;">___________________________________</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
+

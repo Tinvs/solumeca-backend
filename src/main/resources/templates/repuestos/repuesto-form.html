@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${esNuevo} ? 'Registrar repuesto | SOLUMECA' : 'Modificar repuesto | SOLUMECA'">Repuesto</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <section class="login-section">
+    <div class="login-card" style="max-width: 600px;">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // STOCK</p>
+      <h1 class="login-title" th:text="${esNuevo} ? 'Registrar Repuesto' : 'Modificar Repuesto'">Repuesto</h1>
+      <p class="login-subtitle">Ingrese los datos técnicos, stock y costo del repuesto.</p>
+
+      <form th:action="${esNuevo} ? '/repuestos' : '/repuestos/' + ${repuesto.id}"
+            th:object="${repuesto}" method="POST" class="login-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:16px;">
+          <div class="form-row">
+            <label for="codigo">Código Único *</label>
+            <input type="text" id="codigo" th:field="*{codigo}" placeholder="Ej: REP-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
+          </div>
+          <div class="form-row">
+            <label for="nombre">Nombre del Repuesto *</label>
+            <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Filtro de Aceite Hidráulico" required>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div class="form-row">
+            <label for="marca">Marca Compatible</label>
+            <select id="marca" th:field="*{marca}"
+                    style="width:100%; padding:13px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+              <option value="">Multimarca / Genérica</option>
+              <option th:each="m : ${marcas}" th:value="${m.nombre}" th:text="${m.nombre}"></option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="proveedorId">Proveedor Suministrador</label>
+            <select id="proveedorId" name="proveedorId"
+                    style="width:100%; padding:13px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+              <option value="">Seleccione proveedor (opcional)</option>
+              <option th:each="p : ${proveedores}"
+                      th:value="${p.id}"
+                      th:text="${p.nombre}"
+                      th:selected="${repuesto.proveedor != null && repuesto.proveedor.id == p.id}">
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px;">
+          <div class="form-row">
+            <label for="cantidadStock">Cantidad en Stock *</label>
+            <input type="number" id="cantidadStock" th:field="*{cantidadStock}" min="0" required>
+          </div>
+          <div class="form-row">
+            <label for="stockMinimo">Stock Mínimo (Alerta) *</label>
+            <input type="number" id="stockMinimo" th:field="*{stockMinimo}" min="1" required>
+          </div>
+          <div class="form-row">
+            <label for="precioUnitario">Precio Unitario ($ COP)</label>
+            <input type="number" step="100" id="precioUnitario" th:field="*{precioUnitario}" placeholder="Ej: 145000">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="ubicacion">Ubicación en Bodega / Taller</label>
+          <input type="text" id="ubicacion" th:field="*{ubicacion}" placeholder="Ej: Bodega A - Estante 2 - Nivel 1">
+        </div>
+
+        <div class="form-row">
+          <label for="descripcion">Descripción Técnica y Especificaciones</label>
+          <textarea id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Detalles de compatibilidad, dimensiones o referencia OEM"
+                    style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary login-btn" th:text="${esNuevo} ? 'Registrar repuesto' : 'Guardar cambios'">Guardar</button>
+      </form>
+
+      <p class="login-footer" style="margin-top:20px;"><a href="/repuestos">← Volver al inventario</a></p>
+    </div>
+  </section>
+</body>
+</html>
+

@@ -10,6 +10,9 @@ public class Maquinaria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "codigo", unique = true, nullable = false, length = 50)
+    private String codigo;
+
     @Column(nullable = false)
     private String nombre;
 
@@ -24,8 +27,22 @@ public class Maquinaria {
     @Column(nullable = false)
     private String estado; // Operativa, En mantenimiento, Fuera de servicio
 
+    public Maquinaria() {}
+
+    public Maquinaria(String codigo, String nombre, String marca, String modelo, String numeroSerie, String estado) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.numeroSerie = numeroSerie;
+        this.estado = estado;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

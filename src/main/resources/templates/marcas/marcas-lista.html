@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcas y Fabricantes | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <main class="workspace-shell">
+    <section class="workspace-panel workspace-panel--wide">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MARCAS</p>
+      
+      <div class="workspace-heading" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="login-title">Catálogo de Marcas</h1>
+          <p class="login-subtitle">Marcas atendidas multimarca y sus proveedores autorizados.</p>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <input type="text" id="filtroMarcas" placeholder="🔍 Buscar marca..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:220px; background:var(--concrete);">
+          <a href="/admin/marcas/nueva" class="btn btn--primary">+ Nueva marca</a>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:20px;">
+        <table class="data-table" id="tablaMarcas">
+          <thead>
+            <tr>
+              <th>Marca</th>
+              <th>País de Origen</th>
+              <th>Descripción</th>
+              <th>Proveedor Distribuidor</th>
+              <th>Contacto Proveedor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="m : ${marcas}">
+              <td><strong style="color:var(--orange-1); font-size:15px;" th:text="${m.nombre}">CATERPILLAR</strong></td>
+              <td th:text="${m.paisOrigen != null ? m.paisOrigen : 'No especificado'}">EE.UU.</td>
+              <td th:text="${m.descripcion}">Descripción</td>
+              <td>
+                <span th:if="${m.proveedor != null}" class="status-pill" th:text="${m.proveedor.nombre}">Proveedor</span>
+                <span th:if="${m.proveedor == null}" style="color:var(--steel-light); font-style:italic;">Sin proveedor asignado</span>
+              </td>
+              <td>
+                <span th:if="${m.proveedor != null && m.proveedor.telefono != null}">
+                  <a th:href="@{'tel:' + ${m.proveedor.telefono}}" th:text="${m.proveedor.telefono}">Tel</a>
+                </span>
+                <span th:if="${m.proveedor == null}">-</span>
+              </td>
+              <td style="white-space:nowrap;">
+                <a th:href="@{'/admin/marcas/' + ${m.id} + '/editar'}" style="color:var(--orange-1); font-weight:600; margin-right:8px;">Editar</a>
+                <form th:action="@{'/admin/marcas/' + ${m.id} + '/eliminar'}" method="POST" style="display:inline;" onsubmit="return confirm('¿Confirma eliminar esta marca?');">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button type="submit" style="background:none; border:none; color:#d43d1a; font-weight:600; cursor:pointer; padding:0;">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(marcas)}">
+              <td colspan="6" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">No hay marcas registradas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+        <a class="panel-return" href="javascript:history.back()">← Volver</a>
+        <a class="panel-return" href="/admin/dashboard">Ir al panel principal →</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const input = document.getElementById('filtroMarcas');
+    if (input) {
+      input.addEventListener('input', function() {
+        const term = this.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#tablaMarcas tbody tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(term) ? '' : 'none';
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+

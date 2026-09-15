@@ -45,15 +45,19 @@ public class SecurityConfig {
                     "/proyectos.html", "/contacto.html", "/login.html", "/registro.html", "/registro", "/api/contacto",
                     "/css/**", "/js/**", "/assets/**", "/api/session"
                 ).permitAll()
+                .requestMatchers("/repuestos/**").hasAnyRole("ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
+                .requestMatchers("/admin/proveedores/**", "/admin/marcas/**").hasAnyRole("ADMIN", "SUPERVISOR", "ENCARGADO")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/cliente/**").hasRole("CLIENTE")
                 .requestMatchers("/tecnico/**").hasRole("TECNICO")
                 .requestMatchers("/supervisor/**").hasRole("SUPERVISOR")
                 .requestMatchers("/encargado/**").hasRole("ENCARGADO")
                 .requestMatchers("/mantenimientos/archivo/**").hasAnyRole("CLIENTE", "ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
+                .requestMatchers("/mantenimientos/*/aprobar", "/mantenimientos/*/factura").hasAnyRole("CLIENTE", "ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
                 .requestMatchers("/mantenimientos/cliente/**").hasRole("CLIENTE")
                 .requestMatchers("/mantenimientos/tecnico/**").hasRole("TECNICO")
                 .requestMatchers("/mantenimientos/**").hasAnyRole("ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
+                .requestMatchers("/maquinaria/**").hasAnyRole("ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

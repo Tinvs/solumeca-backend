@@ -6,41 +6,71 @@
   <title>Consultar Maquinaria | SOLUMECA S.A.S.</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-  <section class="login-section">
-    <div class="login-card dashboard-card" style="max-width: 720px;">
+<body class="dashboard-page">
+  <main class="workspace-shell">
+    <section class="workspace-panel workspace-panel--wide">
       <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MAQUINARIA</p>
-      <h1 class="login-title">Maquinaria registrada</h1>
-      <p class="login-subtitle">Consulta de solo lectura.</p>
+      
+      <div class="workspace-heading" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="login-title">Consulta de Maquinaria</h1>
+          <p class="login-subtitle">Visualización técnica de equipos pesados y montacargas.</p>
+        </div>
+        <div>
+          <input type="text" id="filtroConsultaMaquinas" placeholder="🔍 Buscar por código, marca, serie..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:260px; background:var(--concrete);">
+        </div>
+      </div>
 
-      <table style="width:100%; border-collapse: collapse; font-size: 14px;">
-        <thead>
-          <tr style="text-align:left; border-bottom: 2px solid var(--steel-line);">
-            <th style="padding:10px;">Nombre</th>
-            <th style="padding:10px;">Marca</th>
-            <th style="padding:10px;">Modelo</th>
-            <th style="padding:10px;">N° Serie</th>
-            <th style="padding:10px;">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="m : ${maquinas}" style="border-bottom: 1px solid var(--steel-line);">
-            <td style="padding:10px;" th:text="${m.nombre}">Nombre</td>
-            <td style="padding:10px;" th:text="${m.marca}">Marca</td>
-            <td style="padding:10px;" th:text="${m.modelo}">Modelo</td>
-            <td style="padding:10px;" th:text="${m.numeroSerie}">N/S</td>
-            <td style="padding:10px;" th:text="${m.estado}">Estado</td>
-          </tr>
-          <tr th:if="${#lists.isEmpty(maquinas)}">
-            <td colspan="5" style="padding:16px; text-align:center; color:var(--steel-light);">
-              Aún no hay maquinaria registrada.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-wrap" style="margin-top:20px;">
+        <table class="data-table" id="tablaConsultaMaquinas">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>N° Serie</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="m : ${maquinas}">
+              <td><strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${m.codigo != null ? m.codigo : 'MQ-' + m.id}">MQ-001</strong></td>
+              <td><strong th:text="${m.nombre}">Nombre</strong></td>
+              <td th:text="${m.marca}">Marca</td>
+              <td th:text="${m.modelo}">Modelo</td>
+              <td><span style="font-family:var(--font-mono); font-size:13px;" th:text="${m.numeroSerie}">N/S</span></td>
+              <td>
+                <span class="status-pill"
+                      th:classappend="${m.estado == 'Operativa' ? 'status-pill--ok' : (m.estado == 'En mantenimiento' ? 'status-pill--warn' : 'status-pill--danger')}"
+                      th:text="${m.estado}">Operativa</span>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(maquinas)}">
+              <td colspan="6" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">Aún no hay maquinaria registrada.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
-    </div>
-  </section>
+      <div style="margin-top:24px;">
+        <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const input = document.getElementById('filtroConsultaMaquinas');
+    if (input) {
+      input.addEventListener('input', function() {
+        const term = this.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#tablaConsultaMaquinas tbody tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(term) ? '' : 'none';
+        });
+      });
+    }
+  </script>
 </body>
 </html>

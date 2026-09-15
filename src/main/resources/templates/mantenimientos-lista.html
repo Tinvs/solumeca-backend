@@ -3,47 +3,153 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seguimiento de mantenimientos | SOLUMECA</title>
+  <title>Seguimiento de Mantenimientos | SOLUMECA S.A.S.</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .badge-presolicitud { background: #e2e8f0; color: #475569; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+    .badge-analizada { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+    .badge-orden { background: #ffedd5; color: #c2410c; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+    .badge-completado { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; }
+    .action-btn-sm { display: inline-block; padding: 5px 10px; font-size: 12px; border-radius: 4px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; }
+    .btn-analizar { background: var(--safety-yellow); color: var(--ink); }
+    .btn-aprobar { background: #16a34a; color: white; }
+    .btn-factura { background: var(--steel); color: white; }
+    .btn-completar { background: #0284c7; color: white; }
+  </style>
 </head>
 <body class="dashboard-page">
   <main class="workspace-shell">
     <section class="workspace-panel workspace-panel--wide">
-      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA // SEGUIMIENTO OPERATIVO</p>
-      <div class="workspace-heading">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // FLUJO DE ÓRDENES Y SERVICIOS</p>
+      
+      <div class="workspace-heading" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <div>
-          <h1 class="login-title" th:text="${esCliente} ? 'Estado de mis mantenimientos' : 'Mantenimientos'">Mantenimientos</h1>
-          <p class="login-subtitle">Consulta el estado y la trazabilidad de las órdenes registradas.</p>
+          <h1 class="login-title" th:text="${esCliente} ? 'Mis Presolicitudes y Órdenes' : 'Gestión de Mantenimientos'">Mantenimientos</h1>
+          <p class="login-subtitle">Trazabilidad desde la presolicitud técnica hasta la orden de trabajo y factura.</p>
         </div>
-        <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="filtroMantenimientos" placeholder="🔍 Buscar máquina, estado, orden..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:240px; background:var(--concrete);">
+          <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
+          <a th:if="${esCliente}" class="btn btn--primary" href="/mantenimientos/cliente/nueva">+ Nueva presolicitud</a>
+        </div>
       </div>
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead><tr><th>Fecha</th><th>Máquina</th><th>Tipo</th><th>Solicitante</th><th>Estado</th><th>Descripción</th><th>Archivos</th><th th:if="${esOperativo}">Acciones</th></tr></thead>
+
+      <div class="table-wrap" style="margin-top:20px;">
+        <table class="data-table" id="tablaMantenimientos">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Máquina</th>
+              <th>Tipo</th>
+              <th>Solicitante</th>
+              <th>Estado</th>
+              <th>Detalle Técnico / Cotización</th>
+              <th>Archivos</th>
+              <th>Acciones y Factura</th>
+            </tr>
+          </thead>
           <tbody>
             <tr th:each="m : ${mantenimientos}">
               <td th:text="${m.fecha}">2026-01-01</td>
-              <td th:text="${m.maquinariaId}">1</td>
-              <td th:text="${m.tipo}">Preventivo</td>
-              <td th:text="${m.solicitante}">usuario</td>
-              <td><span class="status-pill" th:text="${m.estado}">Pendiente</span></td>
-              <td th:text="${m.descripcion}">Descripción</td>
               <td>
-                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}">Descargar informe</a>
+                <span th:if="${maquinasMap != null && maquinasMap[m.maquinariaId] != null}">
+                  <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap[m.maquinariaId].codigo + ']'}">[MQ-001]</strong>
+                  <br>
+                  <small th:text="${maquinasMap[m.maquinariaId].nombre + ' · ' + maquinasMap[m.maquinariaId].marca}">Nombre</small>
+                </span>
+                <span th:if="${maquinasMap == null || maquinasMap[m.maquinariaId] == null}" th:text="${'ID: ' + m.maquinariaId}">1</span>
+              </td>
+              <td><span class="status-pill" th:text="${m.tipo}">Preventivo</span></td>
+              <td th:text="${m.solicitante}">usuario</td>
+              <td>
+                <span th:if="${m.estado == 'Presolicitud' || m.estado == 'Pendiente'}" class="badge-presolicitud">Presolicitud</span>
+                <span th:if="${m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada'}" class="badge-analizada">Cotizada / Analizada</span>
+                <span th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso'}" class="badge-orden">
+                  En Orden <small th:if="${m.numeroOrden != null}" th:text="${'(' + m.numeroOrden + ')'}"></small>
+                </span>
+                <span th:if="${m.estado == 'Completado'}" class="badge-completado">✓ Completado</span>
+              </td>
+              <td>
+                <div style="max-width:280px; font-size:13px;">
+                  <p th:text="${m.descripcion}">Descripción del problema</p>
+                  <div th:if="${m.costoEstimado != null}" style="margin-top:6px; background:var(--concrete); padding:6px 8px; border-radius:4px; font-size:12px;">
+                    <p><strong>Costo:</strong> <span th:text="${#numbers.formatDecimal(m.costoEstimado, 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</span></p>
+                    <p th:if="${m.diasEstimados != null}"><strong>Tiempo:</strong> <span th:text="${m.diasEstimados + ' días'}">3 días</span> | <strong>Técnico:</strong> <span th:text="${m.tecnicoAsignado}">tecnico</span></p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600;">📥 Informe</a>
                 <span th:if="${m.archivosEvidencia != null}" class="evidence-links">
                   <span th:each="archivo : ${#strings.arraySplit(m.archivosEvidencia, ',')}">
-                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank">Ver evidencia</a>
+                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank" style="font-size:12px; display:block;">📷 Evidencia</a>
                   </span>
                 </span>
+                <span th:if="${m.informeArchivo == null && m.archivosEvidencia == null}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
               </td>
-              <td th:if="${esOperativo}"><a th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}">Editar</a></td>
+              <td style="white-space:nowrap;">
+                <!-- Si es presolicitud y es personal operativo: botón de analizar -->
+                <a th:if="${esOperativo && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/analizar'}"
+                   class="action-btn-sm btn-analizar" style="margin-bottom:4px; display:block; text-align:center;">
+                  🔍 Analizar y Cotizar
+                </a>
+
+                <!-- Si la presolicitud ya fue analizada: botón de aprobar a orden de trabajo -->
+                <form th:if="${m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada'}"
+                      th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST" style="display:inline;"
+                      onsubmit="return confirm('¿Confirma la aprobación de este servicio para convertirlo en Orden de Trabajo oficial?');">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button type="submit" class="action-btn-sm btn-aprobar" style="margin-bottom:4px; width:100%;">
+                    ✓ Aprobar Orden
+                  </button>
+                </form>
+
+                <!-- Si es orden de trabajo y es operativo: botón de marcar completado -->
+                <form th:if="${esOperativo && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
+                      th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST" style="display:inline;">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button type="submit" class="action-btn-sm btn-completar" style="margin-bottom:4px; width:100%;">
+                    ✓ Finalizar
+                  </button>
+                </form>
+
+                <!-- Si es orden o completado (o tiene costo): ver factura -->
+                <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'Completado' || m.costoEstimado != null}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                   class="action-btn-sm btn-factura" style="margin-bottom:4px; display:block; text-align:center;">
+                  📄 Factura / Orden
+                </a>
+
+                <!-- Editar datos generales (operativo) -->
+                <a th:if="${esOperativo}" th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}" style="color:var(--steel-light); font-size:12px; display:block; text-align:center; margin-top:2px;">
+                  Editar orden
+                </a>
+              </td>
             </tr>
-            <tr th:if="${#lists.isEmpty(mantenimientos)}"><td colspan="8" class="empty-state">Aún no hay mantenimientos registrados.</td></tr>
+            <tr th:if="${#lists.isEmpty(mantenimientos)}"><td colspan="8" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">Aún no hay mantenimientos registrados.</td></tr>
           </tbody>
         </table>
       </div>
-      <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+
+      <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+        <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+      </div>
     </section>
   </main>
+
+  <script>
+    const input = document.getElementById('filtroMantenimientos');
+    if (input) {
+      input.addEventListener('input', function() {
+        const term = this.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#tablaMantenimientos tbody tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(term) ? '' : 'none';
+        });
+      });
+    }
+  </script>
 </body>
 </html>

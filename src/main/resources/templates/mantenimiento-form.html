@@ -18,7 +18,9 @@
         <label>Máquina
           <select name="maquinariaId" required>
             <option value="">Selecciona una máquina</option>
-            <option th:each="maquina : ${maquinas}" th:value="${maquina.id}" th:text="${maquina.nombre + ' · ' + maquina.numeroSerie}"></option>
+            <option th:each="maquina : ${maquinas}" th:value="${maquina.id}"
+                    th:text="${'[' + (maquina.codigo != null ? maquina.codigo : 'MQ-' + maquina.id) + '] ' + maquina.nombre + ' · ' + maquina.marca + ' (' + maquina.numeroSerie + ')'}"
+                    th:selected="${mantenimiento.maquinariaId != null && mantenimiento.maquinariaId == maquina.id}"></option>
           </select>
         </label>
         <label>Tipo

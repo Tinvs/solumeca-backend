@@ -42,7 +42,10 @@ public class MantenimientoController {
     @GetMapping
     public String listar(Authentication authentication, Model model) {
         model.addAttribute("mantenimientos", mantenimientoRepository.findAllByOrderByFechaDesc());
+        model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
+                .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("esOperativo", esOperativo(authentication));
+        model.addAttribute("esCliente", false);
         return "mantenimientos-lista";
     }
 
@@ -72,7 +75,7 @@ public class MantenimientoController {
     public String nuevaSolicitud(Model model) {
         Mantenimiento solicitud = new Mantenimiento();
         solicitud.setTipo("Preventivo");
-        solicitud.setEstado("Pendiente");
+        solicitud.setEstado("Presolicitud");
         prepararFormulario(model, solicitud, true);
         return "mantenimiento-form";
     }
@@ -84,7 +87,7 @@ public class MantenimientoController {
                                    @RequestParam(name = "informe", required = false) MultipartFile informe)
             throws IOException {
         solicitud.setSolicitante(authentication.getName());
-        solicitud.setEstado("Pendiente");
+        solicitud.setEstado("Presolicitud");
         solicitud.setFecha(LocalDate.now());
         guardarArchivos(solicitud, evidencias, informe);
         mantenimientoRepository.save(solicitud);
@@ -95,9 +98,95 @@ public class MantenimientoController {
     public String misSolicitudes(Authentication authentication, Model model) {
         model.addAttribute("mantenimientos", mantenimientoRepository
                 .findBySolicitanteOrderByFechaDesc(authentication.getName()));
+        model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
+                .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("esCliente", true);
         model.addAttribute("esOperativo", false);
         return "mantenimientos-lista";
+    }
+
+    @GetMapping("/{id}/analizar")
+    public String formularioAnalisis(@PathVariable Long id, Authentication authentication, Model model) {
+        exigirOperativo(authentication);
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        model.addAttribute("mantenimiento", mantenimiento);
+        model.addAttribute("maquina", maquina);
+        return "mantenimiento-analizar";
+    }
+
+    @PostMapping("/{id}/analizar")
+    public String guardarAnalisis(@PathVariable Long id,
+                                  @RequestParam String analisis,
+                                  @RequestParam String solucion,
+                                  @RequestParam Double costoEstimado,
+                                  @RequestParam Integer diasEstimados,
+                                  @RequestParam String tecnicoAsignado,
+                                  Authentication authentication) {
+        exigirOperativo(authentication);
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        mantenimiento.setAnalisis(analisis);
+        mantenimiento.setSolucion(solucion);
+        mantenimiento.setCostoEstimado(costoEstimado);
+        mantenimiento.setDiasEstimados(diasEstimados);
+        mantenimiento.setTecnicoAsignado(tecnicoAsignado);
+        mantenimiento.setEstado("Presolicitud analizada");
+        mantenimientoRepository.save(mantenimiento);
+        return "redirect:/mantenimientos";
+    }
+
+    @PostMapping("/{id}/aprobar")
+    public String aprobar(@PathVariable Long id, Authentication authentication) {
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+
+        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
+        if (!esPropio && !esOperativo(authentication)) {
+            throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+        }
+
+        mantenimiento.setEstado("Orden de trabajo");
+        mantenimiento.setFechaAprobacion(LocalDate.now());
+        if (mantenimiento.getNumeroOrden() == null || mantenimiento.getNumeroOrden().isBlank()) {
+            mantenimiento.setNumeroOrden(String.format("ORD-%d-%03d", LocalDate.now().getYear(), mantenimiento.getId()));
+        }
+        if (mantenimiento.getValorTotal() == null) {
+            mantenimiento.setValorTotal(mantenimiento.getCostoEstimado() != null ? mantenimiento.getCostoEstimado() : 0.0);
+        }
+        mantenimientoRepository.save(mantenimiento);
+
+        return esPropio ? "redirect:/mantenimientos/cliente" : "redirect:/mantenimientos";
+    }
+
+    @PostMapping("/{id}/completar")
+    public String completar(@PathVariable Long id, Authentication authentication) {
+        exigirOperativo(authentication);
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        mantenimiento.setEstado("Completado");
+        if (mantenimiento.getValorTotal() == null) {
+            mantenimiento.setValorTotal(mantenimiento.getCostoEstimado() != null ? mantenimiento.getCostoEstimado() : 0.0);
+        }
+        mantenimientoRepository.save(mantenimiento);
+        return "redirect:/mantenimientos";
+    }
+
+    @GetMapping("/{id}/factura")
+    public String verFactura(@PathVariable Long id, Authentication authentication, Model model) {
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+
+        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
+        if (!esPropio && !esOperativo(authentication)) {
+            throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+        }
+
+        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        model.addAttribute("mantenimiento", mantenimiento);
+        model.addAttribute("maquina", maquina);
+        return "mantenimiento-factura";
     }
 
     @GetMapping("/{id}/editar")
@@ -124,6 +213,11 @@ public class MantenimientoController {
         actual.setDescripcion(datos.getDescripcion());
         actual.setEstado(datos.getEstado());
         actual.setTecnicoAsignado(datos.getTecnicoAsignado());
+        if (datos.getAnalisis() != null) actual.setAnalisis(datos.getAnalisis());
+        if (datos.getSolucion() != null) actual.setSolucion(datos.getSolucion());
+        if (datos.getCostoEstimado() != null) actual.setCostoEstimado(datos.getCostoEstimado());
+        if (datos.getDiasEstimados() != null) actual.setDiasEstimados(datos.getDiasEstimados());
+        if (datos.getValorTotal() != null) actual.setValorTotal(datos.getValorTotal());
         guardarArchivos(actual, evidencias, informe);
         mantenimientoRepository.save(actual);
         return "redirect:/mantenimientos";

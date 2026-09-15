@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analizar y Cotizar Presolicitud | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <section class="login-section">
+    <div class="login-card" style="max-width: 680px;">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // EVALUACIÓN TÉCNICA</p>
+      <h1 class="login-title">Analizar y Cotizar Presolicitud</h1>
+      <p class="login-subtitle">Defina el diagnóstico, solución técnica, técnico a cargo, tiempo y presupuesto.</p>
+
+      <div style="background:var(--concrete); padding:16px; border-radius:var(--radius); margin-bottom:20px; border-left:4px solid var(--orange-1);">
+        <p style="font-size:14px; margin-bottom:6px;"><strong>Máquina:</strong> <span th:if="${maquina != null}" th:text="${'[' + maquina.codigo + '] ' + maquina.nombre + ' (' + maquina.marca + ' · S/N: ' + maquina.numeroSerie + ')'}">Máquina</span></p>
+        <p style="font-size:14px; margin-bottom:6px;"><strong>Solicitante:</strong> <span th:text="${mantenimiento.solicitante}">usuario</span> | <strong>Tipo:</strong> <span th:text="${mantenimiento.tipo}">Preventivo</span></p>
+        <p style="font-size:14px;"><strong>Requerimiento inicial:</strong> <span th:text="${mantenimiento.descripcion}">Descripción</span></p>
+      </div>
+
+      <form th:action="@{'/mantenimientos/' + ${mantenimiento.id} + '/analizar'}" method="POST" class="login-form">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <div class="form-row">
+          <label for="analisis">1. Análisis Técnico / Diagnóstico Preliminar *</label>
+          <textarea id="analisis" name="analisis" rows="3" required placeholder="Indique la causa raíz, pruebas realizadas o estado encontrado en el equipo"
+                    th:text="${mantenimiento.analisis}"
+                    style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label for="solucion">2. Solución Propuesta / Procedimiento Técnico *</label>
+          <textarea id="solucion" name="solucion" rows="3" required placeholder="Detalle los repuestos a cambiar, ajustes mecánicos, calibraciones o pruebas"
+                    th:text="${mantenimiento.solucion}"
+                    style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div class="form-row">
+            <label for="costoEstimado">3. Costo Estimado ($ COP) *</label>
+            <input type="number" step="1000" id="costoEstimado" name="costoEstimado" placeholder="Ej: 1500000" th:value="${mantenimiento.costoEstimado}" required>
+          </div>
+
+          <div class="form-row">
+            <label for="diasEstimados">4. Tiempo Estimado (Días) *</label>
+            <input type="number" min="1" id="diasEstimados" name="diasEstimados" placeholder="Ej: 3" th:value="${mantenimiento.diasEstimados}" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="tecnicoAsignado">5. Técnico Responsable Asignado *</label>
+          <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" placeholder="Ej: tecnico (o nombre del profesional)" th:value="${mantenimiento.tecnicoAsignado}" required>
+        </div>
+
+        <button type="submit" class="btn btn--primary login-btn">Guardar Análisis y Emitir Cotización</button>
+      </form>
+
+      <p class="login-footer" style="margin-top:20px;"><a href="/mantenimientos">← Volver al listado de mantenimientos</a></p>
+    </div>
+  </section>
+</body>
+</html>
+

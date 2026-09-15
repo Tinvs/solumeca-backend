@@ -3,60 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${esNueva} ? 'Registrar maquinaria' : 'Modificar maquinaria'">Maquinaria</title>
+  <title th:text="${esNueva} ? 'Registrar maquinaria | SOLUMECA' : 'Modificar maquinaria | SOLUMECA'">Maquinaria</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
+<body class="dashboard-page">
   <section class="login-section">
-    <div class="login-card">
+    <div class="login-card" style="max-width: 580px;">
       <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // MAQUINARIA</p>
       <h1 class="login-title" th:text="${esNueva} ? 'Registrar maquinaria' : 'Modificar maquinaria'">Maquinaria</h1>
-      <p class="login-subtitle">Complete los datos del equipo.</p>
+      <p class="login-subtitle">Complete los datos técnicos e identificador del equipo.</p>
 
       <form th:action="${esNueva} ? '/admin/maquinaria' : '/admin/maquinaria/' + ${maquina.id}"
             th:object="${maquina}" method="POST" class="login-form">
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-        <div class="form-row">
-          <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Retroexcavadora 01" required>
+        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:16px;">
+          <div class="form-row">
+            <label for="codigo">Código Máquina *</label>
+            <input type="text" id="codigo" th:field="*{codigo}" placeholder="Ej: MQ-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
+          </div>
+          <div class="form-row">
+            <label for="nombre">Nombre del Equipo *</label>
+            <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Retroexcavadora 420F2" required>
+          </div>
         </div>
 
         <div class="form-row">
-          <label for="marca">Marca</label>
+          <label for="marca">Marca *</label>
           <select id="marca" th:field="*{marca}" required
                   style="width:100%; padding:13px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
             <option value="">Seleccione una marca</option>
-            <option value="YALE">YALE</option>
-            <option value="TOYOTA">TOYOTA</option>
-            <option value="RAYMOND">RAYMOND</option>
-            <option value="BOBCAT">BOBCAT</option>
-            <option value="NISSAN">NISSAN</option>
-            <option value="CLARK">CLARK</option>
-            <option value="KOMATSU">KOMATSU</option>
-            <option value="LINDE">LINDE</option>
-            <option value="KALMAR">KALMAR</option>
-            <option value="GENIE">GENIE</option>
-            <option value="DOOSAN">DOOSAN</option>
-            <option value="Otra">Otra marca</option>
+            <option th:each="m : ${marcasDisponibles}" th:value="${m.nombre}" th:text="${m.nombre}"></option>
+            <!-- Marcas por defecto si la base está sin inicializar -->
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="CATERPILLAR">CATERPILLAR</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="TOYOTA">TOYOTA</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="KOMATSU">KOMATSU</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="BOBCAT">BOBCAT</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="YALE">YALE</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="GENIE">GENIE</option>
+            <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="CLARK">CLARK</option>
+            <option value="Otra">Otra marca...</option>
           </select>
           <input type="text" id="marcaPersonalizada" name="marcaPersonalizada"
-                 placeholder="Escriba la marca" style="display:none; margin-top:10px;"
+                 placeholder="Escriba el nombre de la marca" style="display:none; margin-top:10px;"
                  aria-label="Otra marca">
         </div>
 
-        <div class="form-row">
-          <label for="modelo">Modelo</label>
-          <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ej: 420F2">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          <div class="form-row">
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ej: 420F2">
+          </div>
+          <div class="form-row">
+            <label for="numeroSerie">Número de serie *</label>
+            <input type="text" id="numeroSerie" th:field="*{numeroSerie}" placeholder="Ej: CAT420F2-0091" required>
+          </div>
         </div>
 
         <div class="form-row">
-          <label for="numeroSerie">Número de serie</label>
-          <input type="text" id="numeroSerie" th:field="*{numeroSerie}" placeholder="Ej: CAT420F2-0091" required>
-        </div>
-
-        <div class="form-row">
-          <label for="estado">Estado</label>
+          <label for="estado">Estado Operativo *</label>
           <select id="estado" th:field="*{estado}" required
                   style="width:100%; padding:13px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
             <option value="">Seleccione un estado</option>
@@ -66,10 +71,10 @@
           </select>
         </div>
 
-        <button type="submit" class="btn btn--primary login-btn" th:text="${esNueva} ? 'Registrar' : 'Guardar cambios'">Guardar</button>
+        <button type="submit" class="btn btn--primary login-btn" th:text="${esNueva} ? 'Registrar maquinaria' : 'Guardar cambios'">Guardar</button>
       </form>
 
-      <p class="login-footer"><a href="/admin/maquinaria">← Volver al listado</a></p>
+      <p class="login-footer" style="margin-top:20px;"><a href="/admin/maquinaria">← Volver al listado</a></p>
       <p class="login-footer"><a href="/admin/dashboard">← Volver al panel</a></p>
     </div>
   </section>

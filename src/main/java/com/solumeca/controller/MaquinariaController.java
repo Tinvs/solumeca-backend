@@ -2,6 +2,7 @@ package com.solumeca.controller;
 
 import com.solumeca.model.Maquinaria;
 import com.solumeca.repository.MaquinariaRepository;
+import com.solumeca.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ public class MaquinariaController {
     @Autowired
     private MaquinariaRepository maquinariaRepository;
 
+    @Autowired
+    private MarcaRepository marcaRepository;
+
     // Consultar: lista todas las maquinas registradas
     @GetMapping
     public String listar(Model model) {
@@ -25,6 +29,7 @@ public class MaquinariaController {
     @GetMapping("/nueva")
     public String formularioNueva(Model model) {
         model.addAttribute("maquina", new Maquinaria());
+        model.addAttribute("marcasDisponibles", marcaRepository.findAllByOrderByNombreAsc());
         model.addAttribute("esNueva", true);
         return "admin/maquinaria-form";
     }
@@ -44,6 +49,7 @@ public class MaquinariaController {
         Maquinaria maquina = maquinariaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Maquina no encontrada"));
         model.addAttribute("maquina", maquina);
+        model.addAttribute("marcasDisponibles", marcaRepository.findAllByOrderByNombreAsc());
         model.addAttribute("esNueva", false);
         return "admin/maquinaria-form";
     }

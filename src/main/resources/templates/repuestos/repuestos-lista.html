@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario de Repuestos | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .badge-stock-ok { background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 12.5px; }
+    .badge-stock-low { background: #f8d7da; color: #721c24; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 12.5px; animation: pulseAlert 2s infinite; }
+    .badge-stock-limit { background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 12.5px; }
+    @keyframes pulseAlert { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+    .stock-adjust-form { display: inline-flex; align-items: center; gap: 4px; }
+    .stock-btn { width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--steel-line); background: var(--white); font-weight: bold; cursor: pointer; }
+    .stock-btn:hover { background: var(--orange-1); color: white; border-color: var(--orange-1); }
+  </style>
+</head>
+<body class="dashboard-page">
+  <main class="workspace-shell">
+    <section class="workspace-panel workspace-panel--wide">
+      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // STOCK E INVENTARIO</p>
+      
+      <div class="workspace-heading" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="login-title">Inventario de Repuestos</h1>
+          <p class="login-subtitle">Control de existencias, stock mínimo y suministros para maquinaria.</p>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="filtroRepuestos" placeholder="🔍 Buscar código, repuesto o marca..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:240px; background:var(--concrete);">
+          <button type="button" id="btnFiltrarBajoStock" class="btn btn--ghost" style="padding:10px 14px; font-size:13px;">⚠️ Ver solo bajo stock</button>
+          <a th:if="${esAdminOEncargado}" href="/repuestos/nuevo" class="btn btn--primary">+ Nuevo repuesto</a>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-top:20px;">
+        <table class="data-table" id="tablaRepuestos">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Repuesto</th>
+              <th>Marca</th>
+              <th>Stock Actual</th>
+              <th>Stock Mínimo</th>
+              <th>Precio Unitario</th>
+              <th>Proveedor</th>
+              <th>Ubicación</th>
+              <th th:if="${esAdminOEncargado}">Ajuste Rápido</th>
+              <th th:if="${esAdminOEncargado}">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="r : ${repuestos}" th:attr="data-low-stock=${r.stockBajo}">
+              <td><strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${r.codigo}">REP-001</strong></td>
+              <td>
+                <strong th:text="${r.nombre}">Nombre</strong>
+                <small th:if="${r.descripcion != null}" style="display:block; color:var(--steel-light);" th:text="${r.descripcion}">Desc</small>
+              </td>
+              <td th:text="${r.marca != null ? r.marca : 'Multimarca'}">Marca</td>
+              <td>
+                <span th:if="${r.cantidadStock <= r.stockMinimo}" class="badge-stock-low" title="¡Stock en nivel crítico!">
+                  ⚠️ <span th:text="${r.cantidadStock}">0</span> unid.
+                </span>
+                <span th:if="${r.cantidadStock > r.stockMinimo}" class="badge-stock-ok">
+                  ✓ <span th:text="${r.cantidadStock}">10</span> unid.
+                </span>
+              </td>
+              <td><span style="font-weight:600; color:var(--steel-light);" th:text="${r.stockMinimo + ' unid.'}">5 unid.</span></td>
+              <td>
+                <strong style="font-family:var(--font-mono);" th:text="${#numbers.formatDecimal(r.precioUnitario, 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</strong>
+              </td>
+              <td>
+                <span th:if="${r.proveedor != null}" class="status-pill" th:text="${r.proveedor.nombre}">Proveedor</span>
+                <span th:if="${r.proveedor == null}" style="color:var(--steel-light);">-</span>
+              </td>
+              <td><small th:text="${r.ubicacion != null ? r.ubicacion : 'Bodega Principal'}">Bodega</small></td>
+              <td th:if="${esAdminOEncargado}" style="white-space:nowrap;">
+                <form th:action="@{'/repuestos/' + ${r.id} + '/ajustar-stock'}" method="POST" class="stock-adjust-form" style="display:inline;">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input type="hidden" name="cambio" value="-1">
+                  <button type="submit" class="stock-btn" title="Disminuir 1 unidad" th:disabled="${r.cantidadStock <= 0}">-</button>
+                </form>
+                <form th:action="@{'/repuestos/' + ${r.id} + '/ajustar-stock'}" method="POST" class="stock-adjust-form" style="display:inline;">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <input type="hidden" name="cambio" value="1">
+                  <button type="submit" class="stock-btn" title="Aumentar 1 unidad">+</button>
+                </form>
+              </td>
+              <td th:if="${esAdminOEncargado}" style="white-space:nowrap;">
+                <a th:href="@{'/repuestos/' + ${r.id} + '/editar'}" style="color:var(--orange-1); font-weight:600; margin-right:8px;">Editar</a>
+                <form th:action="@{'/repuestos/' + ${r.id} + '/eliminar'}" method="POST" style="display:inline;" onsubmit="return confirm('¿Confirma eliminar este repuesto del inventario?');">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button type="submit" style="background:none; border:none; color:#d43d1a; font-weight:600; cursor:pointer; padding:0;">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(repuestos)}">
+              <td colspan="10" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">No hay repuestos registrados en el inventario.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
+        <a class="panel-return" href="javascript:history.back()">← Volver</a>
+        <a class="panel-return" href="/admin/dashboard">Ir al panel principal →</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const inputFiltro = document.getElementById('filtroRepuestos');
+    const btnBajoStock = document.getElementById('btnFiltrarBajoStock');
+    let soloBajoStock = false;
+
+    function aplicarFiltros() {
+      const term = inputFiltro ? inputFiltro.value.toLowerCase().trim() : '';
+      const rows = document.querySelectorAll('#tablaRepuestos tbody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const isLow = row.getAttribute('data-low-stock') === 'true';
+        const matchText = text.includes(term);
+        const matchStock = !soloBajoStock || isLow;
+        row.style.display = (matchText && matchStock) ? '' : 'none';
+      });
+    }
+
+    if (inputFiltro) inputFiltro.addEventListener('input', aplicarFiltros);
+    if (btnBajoStock) {
+      btnBajoStock.addEventListener('click', function() {
+        soloBajoStock = !soloBajoStock;
+        this.classList.toggle('btn--primary', soloBajoStock);
+        this.classList.toggle('btn--ghost', !soloBajoStock);
+        this.textContent = soloBajoStock ? '✓ Mostrando bajo stock' : '⚠️ Ver solo bajo stock';
+        aplicarFiltros();
+      });
+    }
+  </script>
+</body>
+</html>
+
