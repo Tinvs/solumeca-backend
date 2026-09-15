@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registrar mantenimiento | SOLUMECA</title>
+  <title th:text="${esEdicion} ? 'Modificar mantenimiento | SOLUMECA' : 'Presolicitud | SOLUMECA'">Presolicitud | SOLUMECA</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="dashboard-page">
   <main class="workspace-shell">
     <section class="workspace-panel">
-      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA // ORDEN DE TRABAJO</p>
-      <h1 class="login-title">Registrar mantenimiento</h1>
-      <p class="login-subtitle">Documenta la intervención y deja trazabilidad del equipo.</p>
+      <p class="plate-tag"><span class="plate-tag__bolt"></span><span th:text="${esSolicitud} ? 'SOLUMECA // PRESOLICITUD TÉCNICA' : 'SOLUMECA // ORDEN DE TRABAJO'">SOLUMECA // PRESOLICITUD TÉCNICA</span></p>
+      <h1 class="login-title" th:text="${esEdicion} ? 'Modificar mantenimiento' : 'Presolicitud'">Presolicitud</h1>
+      <p class="login-subtitle" th:text="${esSolicitud} ? 'Documenta la solicitud y deja trazabilidad del equipo.' : 'Documenta la intervención y deja trazabilidad del equipo.'">Documenta la solicitud y deja trazabilidad del equipo.</p>
       <form class="data-form" enctype="multipart/form-data"
         th:action="${esEdicion} ? '/mantenimientos/' + ${mantenimiento.id} + '/editar' : (${esSolicitud ? '/mantenimientos/cliente' : '/mantenimientos'})" method="post">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -59,7 +59,7 @@
             <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx">
           </label>
         </div>
-        <button class="btn btn--primary" type="submit" th:text="${esEdicion} ? 'Guardar cambios' : 'Guardar orden'">Guardar orden</button>
+        <button class="btn btn--primary" type="submit" th:text="${esEdicion} ? 'Guardar cambios' : (${esSolicitud} ? 'Guardar presolicitud' : 'Guardar orden')">Guardar orden</button>
       </form>
       <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
     </section>
