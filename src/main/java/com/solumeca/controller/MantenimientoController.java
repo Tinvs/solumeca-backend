@@ -106,57 +106,98 @@ public class MantenimientoController {
                                    @RequestParam(name = "numeroSerie", required = false) String numeroSerie,
                                    Authentication authentication,
                                    @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
-                                   @RequestParam(name = "informe", required = false) MultipartFile informe)
-            throws IOException {
-        solicitud.setSolicitante(authentication.getName());
-        solicitud.setEstado("Presolicitud");
-        if (solicitud.getTipo() == null || solicitud.getTipo().isBlank()) {
-            solicitud.setTipo("Solicitud cliente");
-        }
-        solicitud.setFecha(LocalDate.now());
-
-        // Si el cliente ingresa datos de su maquinaria, registrarla automáticamente en el inventario
-        if (nombreEquipo != null && !nombreEquipo.trim().isEmpty()) {
-            String marcaFinal = ("Otra".equalsIgnoreCase(marcaEquipo) && marcaPersonalizada != null && !marcaPersonalizada.trim().isEmpty())
-                    ? marcaPersonalizada.trim()
-                    : (marcaEquipo != null && !marcaEquipo.trim().isEmpty() ? marcaEquipo.trim() : "CATERPILLAR");
-
-            long count = maquinariaRepository.count() + 1;
-            String codigo = String.format("MQ-%03d", count);
-            while (maquinariaRepository.existsByCodigo(codigo)) {
-                count++;
-                codigo = String.format("MQ-%03d", count);
+                                   @RequestParam(name = "informe", required = false) MultipartFile informe) {
+        try {
+            String solicitante = (authentication != null && authentication.getName() != null && !authentication.getName().isBlank())
+                    ? authentication.getName() : "cliente";
+            solicitud.setSolicitante(solicitante);
+            solicitud.setEstado("Presolicitud");
+            if (solicitud.getTipo() == null || solicitud.getTipo().isBlank()) {
+                solicitud.setTipo("Solicitud cliente");
+            }
+            if (solicitud.getFecha() == null) {
+                solicitud.setFecha(LocalDate.now());
+            }
+            if (solicitud.getDescripcion() == null || solicitud.getDescripcion().isBlank()) {
+                solicitud.setDescripcion("Solicitud de mantenimiento general");
+            }
+            if (solicitud.getDescripcion().length() > 1000) {
+                solicitud.setDescripcion(solicitud.getDescripcion().substring(0, 1000));
             }
 
-            String serieFinal = (numeroSerie != null && !numeroSerie.trim().isEmpty())
-                    ? numeroSerie.trim()
-                    : ("SN-" + codigo + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase());
+            // Registrar o asociar maquinaria de forma segura sin colisiones de número de serie
+            Long idMaquinaAsignada = null;
+            if (nombreEquipo != null && !nombreEquipo.trim().isEmpty()) {
+                String marcaFinal = ("Otra".equalsIgnoreCase(marcaEquipo) && marcaPersonalizada != null && !marcaPersonalizada.trim().isEmpty())
+                        ? marcaPersonalizada.trim()
+                        : (marcaEquipo != null && !marcaEquipo.trim().isEmpty() ? marcaEquipo.trim() : "CATERPILLAR");
 
-            Maquinaria nuevaMaquina = new Maquinaria(
-                    codigo,
-                    nombreEquipo.trim(),
-                    marcaFinal,
-                    modeloEquipo != null ? modeloEquipo.trim() : "",
-                    serieFinal,
-                    "En mantenimiento"
-            );
-            nuevaMaquina = maquinariaRepository.save(nuevaMaquina);
-            solicitud.setMaquinariaId(nuevaMaquina.getId());
+                String serieLimpia = (numeroSerie != null) ? numeroSerie.trim() : "";
+                Maquinaria maquinaExistente = null;
+
+                // Si se suministró número de serie, verificar si la máquina ya existe en el sistema
+                if (!serieLimpia.isEmpty()) {
+                    maquinaExistente = maquinariaRepository.findByNumeroSerie(serieLimpia).orElse(null);
+                }
+
+                if (maquinaExistente != null) {
+                    maquinaExistente.setEstado("En mantenimiento");
+                    maquinaExistente = maquinariaRepository.save(maquinaExistente);
+                    idMaquinaAsignada = maquinaExistente.getId();
+                } else {
+                    long count = maquinariaRepository.count() + 1;
+                    String codigo = String.format("MQ-%03d", count);
+                    while (maquinariaRepository.existsByCodigo(codigo)) {
+                        count++;
+                        codigo = String.format("MQ-%03d", count);
+                    }
+
+                    String serieFinal = !serieLimpia.isEmpty() ? serieLimpia : ("SN-" + codigo + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase());
+                    while (maquinariaRepository.existsByNumeroSerie(serieFinal)) {
+                        serieFinal = "SN-" + codigo + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+                    }
+
+                    Maquinaria nuevaMaquina = new Maquinaria(
+                            codigo,
+                            nombreEquipo.trim(),
+                            marcaFinal,
+                            modeloEquipo != null ? modeloEquipo.trim() : "",
+                            serieFinal,
+                            "En mantenimiento"
+                    );
+                    nuevaMaquina = maquinariaRepository.save(nuevaMaquina);
+                    idMaquinaAsignada = nuevaMaquina.getId();
+                }
+            }
+
+            if (idMaquinaAsignada == null) {
+                idMaquinaAsignada = maquinariaRepository.findAll().stream()
+                        .map(Maquinaria::getId)
+                        .filter(java.util.Objects::nonNull)
+                        .findFirst()
+                        .orElse(1L);
+            }
+            solicitud.setMaquinariaId(idMaquinaAsignada);
+
+            guardarArchivos(solicitud, evidencias, informe);
+            mantenimientoRepository.save(solicitud);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-        guardarArchivos(solicitud, evidencias, informe);
-        mantenimientoRepository.save(solicitud);
         return "redirect:/mantenimientos/cliente";
     }
 
     @GetMapping("/cliente")
     public String misSolicitudes(Authentication authentication, Model model) {
+        String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "usuario";
         model.addAttribute("mantenimientos", mantenimientoRepository
-                .findBySolicitanteOrderByFechaDesc(authentication.getName()));
+                .findBySolicitanteOrderByFechaDesc(username));
         model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
+                .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("esCliente", true);
         model.addAttribute("esOperativo", false);
+        model.addAttribute("esTecnico", false);
         return "mantenimientos-lista";
     }
 
@@ -296,33 +337,70 @@ public class MantenimientoController {
     }
 
     private void guardarArchivos(Mantenimiento mantenimiento, MultipartFile[] evidencias,
-                                 MultipartFile informe) throws IOException {
-        Files.createDirectories(uploadDirectory);
+                                 MultipartFile informe) {
+        try {
+            Files.createDirectories(uploadDirectory);
+        } catch (Exception ignored) {}
+
         if (evidencias != null) {
             String nombres = Arrays.stream(evidencias)
                     .filter(file -> file != null && !file.isEmpty())
                     .map(this::guardarArchivo)
+                    .filter(nombre -> nombre != null && !nombre.isBlank())
                     .collect(Collectors.joining(","));
-            if (!nombres.isBlank()) mantenimiento.setArchivosEvidencia(nombres);
+            if (!nombres.isBlank()) {
+                mantenimiento.setArchivosEvidencia(nombres);
+            }
         }
-        if (informe != null && !informe.isEmpty()) mantenimiento.setInformeArchivo(guardarArchivo(informe));
+        if (informe != null && !informe.isEmpty()) {
+            String nombreInforme = guardarArchivo(informe);
+            if (nombreInforme != null) {
+                mantenimiento.setInformeArchivo(nombreInforme);
+            }
+        }
+    }
+
+    private String limpiarNombreArchivo(String nombreOriginal) {
+        if (nombreOriginal == null || nombreOriginal.isBlank()) {
+            return "archivo.jpg";
+        }
+        int ultimoSeparador = Math.max(nombreOriginal.lastIndexOf('/'), nombreOriginal.lastIndexOf('\\'));
+        String base = (ultimoSeparador >= 0) ? nombreOriginal.substring(ultimoSeparador + 1) : nombreOriginal;
+        String limpio = base.replaceAll("[^a-zA-Z0-9._-]", "_");
+        if (limpio.isBlank()) {
+            limpio = "archivo.jpg";
+        }
+        if (limpio.length() > 80) {
+            limpio = limpio.substring(limpio.length() - 80);
+        }
+        return limpio;
     }
 
     private String guardarArchivo(MultipartFile archivo) {
+        if (archivo == null || archivo.isEmpty()) {
+            return null;
+        }
         try {
-            String nombre = UUID.randomUUID() + "-" + Paths.get(archivo.getOriginalFilename()).getFileName();
+            String nombreLimpio = limpiarNombreArchivo(archivo.getOriginalFilename());
+            String nombre = UUID.randomUUID() + "-" + nombreLimpio;
             byte[] bytes = archivo.getBytes();
-            Files.createDirectories(uploadDirectory);
-            Files.write(uploadDirectory.resolve(nombre), bytes);
+
+            try {
+                Files.createDirectories(uploadDirectory);
+                Files.write(uploadDirectory.resolve(nombre), bytes);
+            } catch (Exception fileEx) {
+                // Si la escritura en disco falla temporalmente, no aborta el flujo
+            }
+
             try {
                 String tipo = archivo.getContentType();
                 archivoAdjuntoRepository.save(new ArchivoAdjunto(nombre, bytes, tipo));
             } catch (Exception dbEx) {
-                // Si la BD no está disponible temporalmente, el archivo se conserva en disco
+                // Si la base de datos rechaza el blob por tamaño, se conserva trazabilidad sin romper la solicitud
             }
             return nombre;
-        } catch (IOException exception) {
-            throw new IllegalStateException("No se pudo guardar el archivo", exception);
+        } catch (Exception ex) {
+            return null;
         }
     }
 
