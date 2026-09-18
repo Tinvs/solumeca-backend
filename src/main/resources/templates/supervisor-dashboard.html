@@ -7,29 +7,114 @@
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="dashboard-page">
-  <section class="login-section">
-    <div class="login-card dashboard-card" style="max-width: 720px;">
-      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // PANEL SUPERVISOR</p>
-      <h1 class="login-title">Bienvenido, <span th:text="${username}">supervisor</span></h1>
-      <p class="login-subtitle">Encargado de realizar seguimiento a los procesos de mantenimiento.</p>
 
-      <ul class="dashboard-menu">
-        <li><a href="/maquinaria"><span class="menu-icon">01</span><span class="menu-copy"><strong>Consultar máquinas</strong><small>Visualiza el inventario operativo</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/mantenimientos"><span class="menu-icon">02</span><span class="menu-copy"><strong>Consultar historial</strong><small>Revisa la trazabilidad de cada orden</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/mantenimientos"><span class="menu-icon">03</span><span class="menu-copy"><strong>Revisar mantenimientos</strong><small>Da seguimiento a trabajos y cotizaciones pendientes</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/mantenimientos"><span class="menu-icon">04</span><span class="menu-copy"><strong>Consultar fallas</strong><small>Identifica incidencias recurrentes</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/mantenimientos"><span class="menu-icon">05</span><span class="menu-copy"><strong>Consultar reportes</strong><small>Obtén una vista general de la operación</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/maquinaria"><span class="menu-icon">06</span><span class="menu-copy"><strong>Verificar estado de máquinas</strong><small>Detecta equipos fuera de servicio</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/repuestos"><span class="menu-icon">07</span><span class="menu-copy"><strong>Stock e inventario de repuestos</strong><small>Monitoreo de suministros y alertas de bajo stock</small></span><span class="menu-arrow">&#8594;</span></a></li>
-        <li><a href="/admin/marcas"><span class="menu-icon">08</span><span class="menu-copy"><strong>Marcas y proveedores</strong><small>Catálogo de marcas multimarca y contactos</small></span><span class="menu-arrow">&#8594;</span></a></li>
-      </ul>
-
-      <form th:action="@{/logout}" method="POST" class="dashboard-logout">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <button type="submit" class="btn btn--primary login-btn">Cerrar sesión</button>
-      </form>
-      <a href="/index.html" class="btn btn--primary login-btn" style="text-align:center; display:block; margin-top:8px;">Volver a la página</a>
+  <!-- BARRA SUPERIOR: NARANJA Y NEGRO -->
+  <header class="top-welcome-bar">
+    <div class="top-welcome-left">
+      <div class="brand-accent-box">SOLUMECA</div>
+      <div class="welcome-text-group">
+        <div class="welcome-plate-tag">
+          <span class="bolt"></span>SOLUMECA S.A.S. // ÁREA DE SUPERVISIÓN
+        </div>
+        <div class="welcome-title">
+          Bienvenido, <span class="user-highlight" th:text="${username}">supervisor</span>
+          <span class="role-badge">SUPERVISOR</span>
+        </div>
+      </div>
     </div>
-  </section>
+
+    <div class="top-welcome-right">
+      <a href="/index.html" class="btn-top-web">🌐 Web Principal</a>
+      <form th:action="@{/logout}" method="POST" style="margin:0;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" class="btn-logout-top">Cerrar sesión</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL: PANEL DE OPCIONES (IZQ) + BANNER (DER) -->
+  <main class="dashboard-layout">
+    
+    <!-- COLUMNA IZQUIERDA: PANEL DE OPCIONES -->
+    <section class="options-panel-card">
+      <div>
+        <div class="panel-header-tag">
+          <span class="plate-tag__bolt"></span>SISTEMA OPERATIVO INTEGRADO // SOLUMECA
+        </div>
+        <h1 class="panel-title">PANEL DE OPCIONES</h1>
+        <p class="panel-subtitle">Encargado de realizar seguimiento integral a los procesos de mantenimiento, trazabilidad y estado de máquinas.</p>
+
+        <ul class="dashboard-menu">
+          <li><a href="/maquinaria"><span class="menu-icon">01</span><span class="menu-copy"><strong>Consultar máquinas</strong><small>Visualiza el inventario operativo completo</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos"><span class="menu-icon">02</span><span class="menu-copy"><strong>Consultar historial</strong><small>Revisa la trazabilidad de cada orden y servicio</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos"><span class="menu-icon">03</span><span class="menu-copy"><strong>Revisar mantenimientos</strong><small>Da seguimiento a diagnósticos de taller y cotizaciones</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos"><span class="menu-icon">04</span><span class="menu-copy"><strong>Consultar fallas</strong><small>Identifica incidencias mecánicas recurrentes</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos"><span class="menu-icon">05</span><span class="menu-copy"><strong>Consultar reportes</strong><small>Obtén una vista general del rendimiento operativo</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/maquinaria"><span class="menu-icon">06</span><span class="menu-copy"><strong>Verificar estado de máquinas</strong><small>Detecta equipos fuera de servicio o en mantenimiento</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/repuestos"><span class="menu-icon">07</span><span class="menu-copy"><strong>Stock e inventario de repuestos</strong><small>Monitoreo de suministros y alertas de bajo stock</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/marcas"><span class="menu-icon">08</span><span class="menu-copy"><strong>Marcas y proveedores</strong><small>Catálogo de marcas multimarca y contactos</small></span><span class="menu-arrow">&#8594;</span></a></li>
+        </ul>
+      </div>
+
+      <div style="margin-top:20px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.12); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:#cbd5e1;">SOLUMECA S.A.S. // Auditoría y Control de Calidad</span>
+        <a href="/mantenimientos" style="color:var(--orange-2); font-size:13px; font-weight:600; text-decoration:none;">Mantenimientos →</a>
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: BANNER INSTITUCIONAL -->
+    <aside class="side-banner-card">
+      <div class="banner-image-container">
+        <img src="/assets/images/proyecto-riverport.jpg" alt="SOLUMECA Supervisión">
+        <div class="banner-image-overlay"></div>
+        <div class="banner-image-tag">SOLUMECA S.A.S. // SUPERVISIÓN OPERATIVA</div>
+      </div>
+
+      <div class="banner-body">
+        <div>
+          <h3 class="banner-title">SOLUMECA <span>S.A.S.</span></h3>
+          <p class="banner-tagline">Soluciones Mecánicas, Obras Civiles y Metalmecánicas. Supervisión rigurosa de calidad y tiempos de respuesta.</p>
+
+          <div class="banner-features">
+            <div class="banner-feat-item">
+              <span class="banner-feat-icon">📊</span>
+              <div class="banner-feat-text">
+                <strong>Supervisión de Flujo</strong>
+                <small>Control continuo de presolicitudes, diagnóstico y facturación.</small>
+              </div>
+            </div>
+            <div class="banner-feat-item">
+              <span class="banner-feat-icon">⚙️</span>
+              <div class="banner-feat-text">
+                <strong>Disponibilidad de Flota</strong>
+                <small>Monitoreo en tiempo real del estado de operatividad de maquinaria.</small>
+              </div>
+            </div>
+            <div class="banner-feat-item">
+              <span class="banner-feat-icon">📦</span>
+              <div class="banner-feat-text">
+                <strong>Stock Crítico de Repuestos</strong>
+                <small>Alertas automáticas de existencias mínimas para evitar retrasos.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <a href="https://wa.me/573002464311?text=Hola%20SOLUMECA,%20requiero%20asistencia" target="_blank" class="banner-btn-wa">
+            💬 Contactar Soporte / WhatsApp
+          </a>
+
+          <div class="banner-footer-info">
+            <strong>SOLUMECA S.A.S.</strong> — NIT: 901.000.123-8<br>
+            Calle 47c # 27 17 | Barranquilla, Atlántico<br>
+            Teléfono: +57 300 246 4311 | solumeca.2@gmail.com
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
 </body>
 </html>

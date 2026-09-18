@@ -62,6 +62,7 @@ public class MantenimientoController {
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("esOperativo", esOperativo(authentication));
         model.addAttribute("esTecnico", esTecnico(authentication));
+        model.addAttribute("esAdmin", esAdmin(authentication));
         model.addAttribute("esCliente", false);
         return "mantenimientos-lista";
     }
@@ -198,11 +199,17 @@ public class MantenimientoController {
         model.addAttribute("esCliente", true);
         model.addAttribute("esOperativo", false);
         model.addAttribute("esTecnico", false);
+        model.addAttribute("esAdmin", false);
         return "mantenimientos-lista";
     }
 
-    @GetMapping("/{id}/analizar")
-    public String formularioAnalisis(@PathVariable Long id, Authentication authentication, Model model) {
+    // =========================================================================
+    // 1. DIAGNÓSTICO TÉCNICO (EXCLUSIVO DEL TÉCNICO)
+    // El técnico revisa la máquina, registra la causa raíz, solución propuesta,
+    // tiempo estimado y fotos de inspección. NO establece precios ni factura.
+    // =========================================================================
+    @GetMapping("/{id}/diagnosticar")
+    public String formularioDiagnostico(@PathVariable Long id, Authentication authentication, Model model) {
         exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
@@ -210,33 +217,88 @@ public class MantenimientoController {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
         model.addAttribute("username", authentication != null ? authentication.getName() : "tecnico");
-        return "mantenimiento-analizar";
+        return "mantenimiento-diagnosticar";
     }
 
-    @PostMapping("/{id}/analizar")
-    public String guardarAnalisis(@PathVariable Long id,
-                                  @RequestParam String analisis,
-                                  @RequestParam String solucion,
-                                  @RequestParam Double costoEstimado,
-                                  @RequestParam Integer diasEstimados,
-                                  @RequestParam String tecnicoAsignado,
-                                  @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
-                                  @RequestParam(name = "informe", required = false) MultipartFile informe,
-                                  Authentication authentication) throws IOException {
+    @PostMapping("/{id}/diagnosticar")
+    public String guardarDiagnostico(@PathVariable Long id,
+                                     @RequestParam String analisis,
+                                     @RequestParam String solucion,
+                                     @RequestParam Integer diasEstimados,
+                                     @RequestParam(required = false) String tecnicoAsignado,
+                                     @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
+                                     @RequestParam(name = "informe", required = false) MultipartFile informe,
+                                     Authentication authentication) throws IOException {
         exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
         mantenimiento.setAnalisis(analisis);
         mantenimiento.setSolucion(solucion);
-        mantenimiento.setCostoEstimado(costoEstimado);
         mantenimiento.setDiasEstimados(diasEstimados);
-        mantenimiento.setTecnicoAsignado(tecnicoAsignado);
-        mantenimiento.setEstado("Presolicitud analizada");
+        String tecnico = (tecnicoAsignado != null && !tecnicoAsignado.isBlank())
+                ? tecnicoAsignado
+                : (authentication != null ? authentication.getName() : "tecnico");
+        mantenimiento.setTecnicoAsignado(tecnico);
+        mantenimiento.setEstado("Diagnosticado");
         guardarArchivos(mantenimiento, evidencias, informe);
         mantenimientoRepository.save(mantenimiento);
         return "redirect:/mantenimientos";
     }
 
+    // =========================================================================
+    // 2. COTIZACIÓN Y FACTURACIÓN (EXCLUSIVO DEL GERENTE)
+    // El gerente examina el diagnóstico del técnico, define el costo comercial
+    // y emite la cotización / factura oficial para aprobación del cliente.
+    // =========================================================================
+    @GetMapping("/{id}/cotizar")
+    public String formularioCotizar(@PathVariable Long id, Authentication authentication, Model model) {
+        exigirAdmin(authentication);
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        model.addAttribute("mantenimiento", mantenimiento);
+        model.addAttribute("maquina", maquina);
+        model.addAttribute("username", authentication != null ? authentication.getName() : "admin");
+        return "mantenimiento-cotizar";
+    }
+
+    @PostMapping("/{id}/cotizar")
+    public String guardarCotizacion(@PathVariable Long id,
+                                    @RequestParam Double costoEstimado,
+                                    @RequestParam(required = false) Integer diasEstimados,
+                                    Authentication authentication) {
+        exigirAdmin(authentication);
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        mantenimiento.setCostoEstimado(costoEstimado);
+        mantenimiento.setValorTotal(costoEstimado);
+        if (diasEstimados != null && diasEstimados > 0) {
+            mantenimiento.setDiasEstimados(diasEstimados);
+        }
+        if (mantenimiento.getNumeroOrden() == null || mantenimiento.getNumeroOrden().isBlank()) {
+            mantenimiento.setNumeroOrden(String.format("ORD-%d-%03d", LocalDate.now().getYear(), mantenimiento.getId()));
+        }
+        mantenimiento.setEstado("Cotizada");
+        mantenimientoRepository.save(mantenimiento);
+        return "redirect:/mantenimientos";
+    }
+
+    // Ruta de compatibilidad hacia atrás
+    @GetMapping("/{id}/analizar")
+    public String formularioAnalisis(@PathVariable Long id, Authentication authentication, Model model) {
+        if (esTecnico(authentication)) {
+            return "redirect:/mantenimientos/" + id + "/diagnosticar";
+        }
+        if (esAdmin(authentication)) {
+            return "redirect:/mantenimientos/" + id + "/cotizar";
+        }
+        return "redirect:/mantenimientos";
+    }
+
+    // =========================================================================
+    // 3. APROBACIÓN DEL CLIENTE (EXCLUSIVO DEL CLIENTE SOLICITANTE)
+    // El usuario cliente revisa la cotización y aprueba formalmente el inicio.
+    // =========================================================================
     @PostMapping("/{id}/aprobar")
     public String aprobar(@PathVariable Long id, Authentication authentication) {
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
@@ -246,7 +308,6 @@ public class MantenimientoController {
         boolean esCliente = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
 
-        // El gerente no aprueba, solo el usuario cliente que creo la solicitud
         if (!esPropio || !esCliente) {
             throw new org.springframework.security.access.AccessDeniedException(
                     "Solo el usuario cliente que solicitó el mantenimiento puede aprobar la cotización.");
@@ -262,12 +323,23 @@ public class MantenimientoController {
         }
         mantenimientoRepository.save(mantenimiento);
 
+        if (mantenimiento.getMaquinariaId() != null) {
+            maquinariaRepository.findById(mantenimiento.getMaquinariaId()).ifPresent(m -> {
+                m.setEstado("En mantenimiento");
+                maquinariaRepository.save(m);
+            });
+        }
+
         return "redirect:/mantenimientos/cliente";
     }
 
+    // =========================================================================
+    // 4. COMPLETAR / FINALIZAR MANTENIMIENTO (EXCLUSIVO DEL TÉCNICO EN TALLER)
+    // El técnico finaliza el trabajo mecánico y restablece la máquina a Operativa.
+    // =========================================================================
     @PostMapping("/{id}/completar")
     public String completar(@PathVariable Long id, Authentication authentication) {
-        exigirOperativo(authentication);
+        exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
         mantenimiento.setEstado("Completado");
@@ -423,7 +495,19 @@ public class MantenimientoController {
     private void exigirTecnico(Authentication authentication) {
         if (!esTecnico(authentication)) {
             throw new org.springframework.security.access.AccessDeniedException(
-                    "Acceso restringido: El análisis y cotización técnica debe ser realizado por el técnico.");
+                    "Acceso restringido: El diagnóstico técnico debe ser realizado por el personal técnico.");
+        }
+    }
+
+    private boolean esAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private void exigirAdmin(Authentication authentication) {
+        if (!esAdmin(authentication)) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Acceso restringido: La evaluación de presupuesto y emisión de facturación/cotización es potestad del Gerente.");
         }
     }
 

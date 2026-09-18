@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba de Diseño // Panel de Opciones | SOLUMECA S.A.S.</title>
+  <style>
+    :root {
+      --orange-1: #ff5d1c;
+      --orange-2: #ff8f1c;
+      --orange-glow: rgba(255, 93, 28, 0.45);
+      --dark-0: #1a222d;
+      --dark-1: #212c3a;
+      --dark-2: #283647;
+      --dark-glass: rgba(26, 35, 47, 0.94);
+      --steel-line: rgba(255, 255, 255, 0.18);
+      --steel-light: #cbd5e1;
+      --white: #ffffff;
+      --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Fira Code', monospace;
+      --radius: 8px;
+      --transition: 0.25s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--dark-0);
+      background-image: 
+        linear-gradient(135deg, rgba(26, 34, 45, 0.88) 0%, rgba(33, 44, 58, 0.82) 100%),
+        url('/assets/images/hero-maquinaria.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       1. BARRA SUPERIOR: NARANJA Y NEGRO (BIENVENIDO + USUARIO)
+       ========================================================================== */
+    .top-welcome-bar {
+      background: linear-gradient(90deg, #090c10 0%, #121720 55%, #1a222d 100%);
+      border-bottom: 3px solid var(--orange-1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 2px 10px var(--orange-glow);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-welcome-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-accent-box {
+      background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+      color: #000;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      box-shadow: 0 0 14px rgba(255, 93, 28, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .welcome-text-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .welcome-plate-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--orange-2);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .welcome-plate-tag .bolt {
+      width: 7px;
+      height: 7px;
+      background: var(--orange-1);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--orange-1);
+    }
+
+    .welcome-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .welcome-title .user-highlight {
+      color: var(--orange-2);
+      text-shadow: 0 0 16px rgba(255, 143, 28, 0.5);
+      border-bottom: 2px dashed rgba(255, 143, 28, 0.6);
+      padding-bottom: 1px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(255, 93, 28, 0.2);
+      color: var(--orange-2);
+      border: 1px solid var(--orange-1);
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Selector interactivo de prueba para cambiar entre Gerente / Técnico / Cliente */
+    .role-switcher-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .switcher-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--steel-light);
+      margin-right: 4px;
+      padding-left: 6px;
+    }
+
+    .btn-switch {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #d1d5db;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-switch:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+    }
+
+    .btn-switch.active {
+      background: var(--orange-1);
+      color: #000;
+      border-color: var(--orange-1);
+      box-shadow: 0 0 10px rgba(255, 93, 28, 0.4);
+    }
+
+    .top-welcome-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: var(--white);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    /* ==========================================================================
+       2. CONTENEDOR PRINCIPAL: PANEL DE OPCIONES (IZQ) + BANNER (DER)
+       ========================================================================== */
+    .dashboard-layout {
+      flex: 1;
+      max-width: 1320px;
+      width: 100%;
+      margin: 28px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       3. PANEL DE OPCIONES (COLUMNA IZQUIERDA)
+       ========================================================================== */
+    .options-panel-card {
+      backdrop-filter: blur(14px);
+      background: linear-gradient(145deg, rgba(32, 42, 56, 0.94) 0%, rgba(24, 32, 43, 0.96) 100%),
+                  url('/assets/images/maquinaria-collage.jpg') center / cover;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--orange-1);
+      border-radius: var(--radius);
+      padding: 32px 30px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .panel-header-tag {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--orange-2);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    .panel-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .panel-sub-text {
+      color: var(--steel-light);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-menu {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin-bottom: 24px;
+    }
+
+    .dashboard-menu li a {
+      display: grid;
+      grid-template-columns: 32px 1fr 24px;
+      align-items: center;
+      gap: 12px;
+      min-height: 60px;
+      position: relative;
+      overflow: hidden;
+      padding: 11px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--white);
+      text-decoration: none;
+      transition: transform var(--transition), border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    }
+
+    .dashboard-menu li a::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--orange-1);
+      transform: scaleY(0);
+      transition: transform var(--transition);
+    }
+
+    .dashboard-menu li a:hover::before { transform: scaleY(1); }
+    .dashboard-menu li a:hover {
+      transform: translateX(6px);
+      border-color: var(--orange-1);
+      background: rgba(255, 93, 28, 0.18);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .menu-icon {
+      color: var(--orange-1);
+      font: 700 12px var(--font-mono);
+      letter-spacing: .5px;
+    }
+
+    .menu-copy {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .menu-copy strong {
+      color: var(--white);
+      font-size: 14.5px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .menu-copy small {
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .menu-arrow {
+      color: var(--orange-1);
+      font-size: 20px;
+      line-height: 1;
+      transition: transform var(--transition);
+    }
+
+    .dashboard-menu li a:hover .menu-arrow {
+      transform: translateX(5px);
+    }
+
+    .panel-footer-actions {
+      display: flex;
+      gap: 12px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 11px 16px;
+      font-size: 13.5px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      text-align: center;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-action-primary {
+      background: linear-gradient(110deg, var(--orange-1), var(--orange-2));
+      color: #000;
+      box-shadow: 0 4px 14px rgba(255, 93, 28, 0.35);
+      border: none;
+    }
+
+    .btn-action-primary:hover {
+      box-shadow: 0 6px 18px rgba(255, 93, 28, 0.55);
+      transform: translateY(-1px);
+    }
+
+    .btn-action-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: var(--white);
+    }
+
+    .btn-action-secondary:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* ==========================================================================
+       4. BANNER LATERAL CON IMAGEN (COLUMNA DERECHA)
+       ========================================================================== */
+    .banner-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 143, 28, 0.4);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.65), 0 0 20px rgba(255, 93, 28, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 580px;
+    }
+
+    .banner-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: brightness(0.9) contrast(1.1);
+      transition: transform 0.6s ease;
+      z-index: 0;
+    }
+
+    .banner-card:hover .banner-bg-img {
+      transform: scale(1.04);
+    }
+
+    .banner-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, 
+        rgba(26, 34, 45, 0.75) 0%, 
+        rgba(32, 42, 56, 0.45) 40%, 
+        rgba(24, 32, 43, 0.92) 80%,
+        rgba(20, 27, 36, 0.98) 100%);
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
+      padding: 26px 24px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .banner-badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--orange-1);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--orange-2);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      align-self: flex-start;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .banner-badge-top .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    .banner-middle-info {
+      background: rgba(10, 14, 18, 0.82);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 4px solid var(--orange-1);
+      padding: 20px;
+      border-radius: 6px;
+      margin: 18px 0;
+    }
+
+    .banner-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 6px;
+      line-height: 1.25;
+    }
+
+    .banner-desc {
+      font-size: 13px;
+      color: #d1d5db;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    .banner-feature-list {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--white);
+    }
+
+    .banner-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .banner-feature-item .icon {
+      color: var(--orange-1);
+      font-weight: 800;
+    }
+
+    .banner-bottom-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-banner-whatsapp {
+      background: #25d366;
+      color: #000;
+      font-weight: 800;
+      font-size: 13.5px;
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+      transition: var(--transition);
+    }
+
+    .btn-banner-whatsapp:hover {
+      background: #22bf5b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(37, 211, 102, 0.5);
+    }
+
+    .banner-footer-note {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. ENCABEZADO SUPERIOR: NARANJA Y NEGRO CON BIENVENIDA Y USUARIO
+       ========================================================================== -->
+  <header class="top-welcome-bar">
+    <div class="top-welcome-left">
+      <div class="brand-accent-box">
+        <span>SOLUMECA</span>
+      </div>
+
+      <div class="welcome-text-group">
+        <div class="welcome-plate-tag">
+          <span class="bolt"></span>
+          <span>SOLUMECA S.A.S. // PLATAFORMA DE OPERACIONES</span>
+        </div>
+        <div class="welcome-title">
+          Bienvenido, <span id="topUsername" class="user-highlight">gerente</span>
+          <span id="topRoleBadge" class="role-badge">ADMIN / GERENTE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selector interactivo de roles para la prueba -->
+    <div class="role-switcher-container">
+      <span class="switcher-label">PROBAR VISTA:</span>
+      <button class="btn-switch active" onclick="setRole('gerente')">👔 Gerente</button>
+      <button class="btn-switch" onclick="setRole('tecnico')">🔧 Técnico</button>
+      <button class="btn-switch" onclick="setRole('cliente')">👤 Cliente</button>
+    </div>
+
+    <div class="top-welcome-right">
+      <a href="#" class="btn-logout">
+        <span>Cerrar sesión</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. CUERPO: PANEL DE OPCIONES (IZQUIERDA) + BANNER CON IMAGEN (DERECHA)
+       ========================================================================== -->
+  <main class="dashboard-layout">
+
+    <!-- COLUMNA IZQUIERDA: PANEL DE OPCIONES -->
+    <section class="options-panel-card">
+      <div>
+        <p class="panel-header-tag">
+          <span style="color:var(--orange-1); font-size:14px;">●</span>
+          <span id="panelTagText">SOLUMECA S.A.S. // PANEL GERENTE</span>
+        </p>
+        <h1 class="panel-main-title" id="panelTitle">Panel de Opciones</h1>
+        <p class="panel-sub-text" id="panelSubtitle">Administre la información general del sistema, inventario y operaciones.</p>
+
+        <!-- LISTA DINÁMICA DE OPCIONES -->
+        <ul class="dashboard-menu" id="optionsMenuList">
+          <!-- Se llena dinámicamente con JavaScript según el rol seleccionado -->
+        </ul>
+      </div>
+
+      <div class="panel-footer-actions">
+        <a href="#" class="btn-action btn-action-primary">Cerrar sesión</a>
+        <a href="#" class="btn-action btn-action-secondary">Volver a la página</a>
+      </div>
+    </section>
+
+    <!-- COLUMNA DERECHA: BANNER CON IMAGEN (OCUPA TODO EL ALTO) -->
+    <aside class="banner-card">
+      <img src="/assets/images/proyecto-riverport.jpg" alt="Maquinaria Pesada Solumeca" class="banner-bg-img" id="bannerImg">
+      <div class="banner-gradient-overlay"></div>
+
+      <div class="banner-content">
+        <!-- Badge superior -->
+        <div class="banner-badge-top">
+          <span class="pulse-dot"></span>
+          <span>Taller & Operaciones 24/7</span>
+        </div>
+
+        <!-- Información central -->
+        <div class="banner-middle-info">
+          <h2 class="banner-title">SOLUMECA S.A.S.</h2>
+          <p class="banner-desc">Líderes en mantenimiento electromecánico e hidráulico para maquinaria pesada e industrial en la Costa Caribe.</p>
+
+          <ul class="banner-feature-list">
+            <li class="banner-feature-item">
+              <span class="icon">✓</span>
+              <span><strong>Multimarca:</strong> CAT, Komatsu, Toyota, Bobcat</span>
+            </li>
+            <li class="banner-feature-item">
+              <span class="icon">✓</span>
+              <span><strong>Diagnóstico Digital:</strong> Trazabilidad y cotización</span>
+            </li>
+            <li class="banner-feature-item">
+              <span class="icon">✓</span>
+              <span><strong>Stock en Bodega:</strong> Repuestos certificados</span>
+            </li>
+            <li class="banner-feature-item">
+              <span class="icon">✓</span>
+              <span><strong>Sede Principal:</strong> Barranquilla, Atlántico</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Botón inferior del banner -->
+        <div class="banner-bottom-cta">
+          <a href="https://wa.me/573002464311?text=Hola%20SOLUMECA,%20solicito%20atención%20técnica" target="_blank" class="btn-banner-whatsapp">
+            <span>💬 Atención Inmediata WhatsApp</span>
+          </a>
+          <p class="banner-footer-note">Línea Oficial: 300 246 4311 · Barranquilla</p>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ==========================================================================
+       JAVASCRIPT: DINAMISMO PARA PROBAR LOS ROLES
+       ========================================================================== -->
+  <script>
+    const menus = {
+      gerente: {
+        username: 'gerente',
+        badge: 'ADMIN / GERENTE',
+        tag: 'SOLUMECA S.A.S. // PANEL GERENTE',
+        title: 'Panel de Opciones',
+        subtitle: 'Encargado de administrar la información general del sistema.',
+        bannerImg: '/assets/images/proyecto-riverport.jpg',
+        items: [
+          { num: '01', title: 'Registrar maquinaria', desc: 'Incorpora un nuevo equipo al sistema con su código' },
+          { num: '02', title: 'Modificar maquinaria', desc: 'Actualiza los datos de los equipos' },
+          { num: '03', title: 'Consultar maquinaria', desc: 'Visualiza el inventario completo' },
+          { num: '04', title: 'Revisar operaciones', desc: 'Consulta órdenes, presolicitudes y trabajos' },
+          { num: '05', title: 'Información operativa', desc: 'Controla el seguimiento del servicio y facturas' },
+          { num: '06', title: 'Consultar reportes', desc: 'Obtén una visión general del sistema' },
+          { num: '07', title: 'Stock e inventario de repuestos', desc: 'Control de existencias y alertas de stock bajo' },
+          { num: '08', title: 'Catálogo de marcas', desc: 'Marcas multimarca y proveedores vinculados' },
+          { num: '09', title: 'Directorio de proveedores', desc: 'Empresas suministradoras, contactos y NIT' }
+        ]
+      },
+      tecnico: {
+        username: 'tecnico',
+        badge: 'ROL TÉCNICO',
+        tag: 'SOLUMECA S.A.S. // PANEL TÉCNICO',
+        title: 'Panel de Opciones',
+        subtitle: 'Encargado de realizar diagnósticos, cotizaciones y trabajos de taller.',
+        bannerImg: '/assets/images/hero-maquinaria.jpg',
+        items: [
+          { num: '01', title: 'Consultar maquinaria', desc: 'Revisa equipos y estados actuales' },
+          { num: '02', title: 'Analizar presolicitudes y cotizar', desc: 'Evalúa fallas de clientes, emite cotización y finaliza órdenes' },
+          { num: '03', title: 'Registrar orden técnica directa', desc: 'Documenta una nueva orden interna de trabajo' },
+          { num: '04', title: 'Consultar repuestos en bodega', desc: 'Revisa stock disponible para reparaciones' },
+          { num: '05', title: 'Historial y actualización de trabajos', desc: 'Consulta el historial operativo completo' }
+        ]
+      },
+      cliente: {
+        username: 'martin',
+        badge: 'CLIENTE',
+        tag: 'SOLUMECA S.A.S. // PANEL CLIENTE',
+        title: 'Panel de Opciones',
+        subtitle: 'Solicite y consulte el mantenimiento de su maquinaria.',
+        bannerImg: '/assets/images/proyecto-riverport.jpg',
+        items: [
+          { num: '01', title: 'Solicitar mantenimiento', desc: 'Registra tu maquinaria con fotos y solicita cotización' },
+          { num: '02', title: 'Ver estado del mantenimiento', desc: 'Consulta el avance y diagnóstico de tu solicitud' },
+          { num: '03', title: 'Aprobar cotizaciones y ver facturas', desc: 'Revisa cotizaciones, aprueba órdenes y descarga comprobantes' },
+          { num: '04', title: 'Atención inmediata por WhatsApp', desc: 'Comunícate en directo con soporte técnico' }
+        ]
+      }
+    };
+
+    function setRole(role) {
+      const data = menus[role];
+      if (!data) return;
+
+      // Actualizar botones de selector
+      document.querySelectorAll('.btn-switch').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Actualizar cabecera superior
+      document.getElementById('topUsername').textContent = data.username;
+      document.getElementById('topRoleBadge').textContent = data.badge;
+
+      // Actualizar textos del panel de opciones
+      document.getElementById('panelTagText').textContent = data.tag;
+      document.getElementById('panelTitle').textContent = data.title;
+      document.getElementById('panelSubtitle').textContent = data.subtitle;
+
+      // Actualizar imagen del banner
+      document.getElementById('bannerImg').src = data.bannerImg;
+
+      // Renderizar items del menú
+      const ul = document.getElementById('optionsMenuList');
+      ul.innerHTML = '';
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="#">
+            <span class="menu-icon">${item.num}</span>
+            <span class="menu-copy">
+              <strong>${item.title}</strong>
+              <small>${item.desc}</small>
+            </span>
+            <span class="menu-arrow">&#8594;</span>
+          </a>
+        `;
+        ul.appendChild(li);
+      });
+    }
+
+    // Inicializar con la vista de Gerente
+    window.addEventListener('DOMContentLoaded', () => {
+      setRole('gerente');
+    });
+  </script>
+</body>
+</html>

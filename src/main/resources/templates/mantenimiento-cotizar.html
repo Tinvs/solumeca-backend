@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cotizar y Facturar | SOLUMECA S.A.S.</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .cotizar-container {
+      max-width: 760px;
+      margin: 40px auto;
+      background: linear-gradient(145deg, rgba(34, 44, 58, 0.96) 0%, rgba(26, 34, 46, 0.98) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--orange-1);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      color: #ffffff;
+    }
+    .card-section {
+      background: rgba(18, 25, 34, 0.85);
+      padding: 18px 20px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .card-section--tech {
+      border-left: 4px solid #38bdf8;
+      background: rgba(15, 28, 42, 0.9);
+    }
+    .card-section--client {
+      border-left: 4px solid var(--orange-1);
+    }
+    .form-field {
+      margin-bottom: 20px;
+    }
+    .form-field label {
+      display: block;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .form-field input[type="text"],
+    .form-field input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(15, 21, 29, 0.9);
+      color: #ffffff;
+      font-family: var(--font-body);
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-field input:focus {
+      outline: none;
+      border-color: var(--orange-1);
+      box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.25);
+    }
+  </style>
+</head>
+<body class="dashboard-page">
+  <div class="cotizar-container">
+    <div style="margin-bottom:14px;">
+      <p class="plate-tag" style="margin-bottom:0;"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // EVALUACIÓN GERENCIAL Y FACTURACIÓN</p>
+    </div>
+    <h1 class="login-title" style="font-size:26px; margin-bottom:6px;">Emisión de Cotización y Factura</h1>
+    <p class="login-subtitle" style="color:#cbd5e1; margin-bottom:24px;">Examine el diagnóstico del técnico, fije el presupuesto comercial y genere la cotización para el cliente.</p>
+
+    <!-- Datos del Cliente y la Máquina -->
+    <div class="card-section card-section--client">
+      <h3 style="font-size:14px; color:var(--orange-2); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:10px; font-family:var(--font-mono);">
+        📋 DATOS DE LA MÁQUINA Y SOLICITUD
+      </h3>
+      <p style="font-size:14px; margin-bottom:6px; color:#f4f4f5;">
+        <strong>Máquina:</strong> 
+        <span th:if="${maquina != null}" th:text="${'[' + maquina.codigo + '] ' + maquina.nombre + ' (' + maquina.marca + ' · S/N: ' + maquina.numeroSerie + ')'}" style="color:#ffffff;">Equipo</span>
+      </p>
+      <p style="font-size:14px; margin-bottom:6px; color:#f4f4f5;">
+        <strong>Cliente / Solicitante:</strong> 
+        <span th:text="${mantenimiento.solicitante}" style="color:#ffffff;">cliente</span>
+        <span style="color:rgba(255,255,255,0.35); margin:0 8px;">|</span>
+        <strong>Tipo:</strong> <span th:text="${mantenimiento.tipo}" style="color:#ffffff;">Correctivo</span>
+      </p>
+      <p style="font-size:14px; margin-bottom:0; color:#f4f4f5;">
+        <strong>Problema reportado:</strong> 
+        <span th:text="${mantenimiento.descripcion}" style="color:#cbd5e1;">Descripción</span>
+      </p>
+    </div>
+
+    <!-- Diagnóstico Técnico del Técnico -->
+    <div class="card-section card-section--tech">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 style="font-size:14px; color:#38bdf8; text-transform:uppercase; letter-spacing:0.8px; font-family:var(--font-mono); margin:0;">
+          🔧 DIAGNÓSTICO EMITIDO POR EL TÉCNICO
+        </h3>
+        <span style="font-size:12px; background:rgba(56, 189, 248, 0.2); color:#7dd3fc; padding:3px 8px; border-radius:4px; font-weight:600;">
+          Técnico: <span th:text="${mantenimiento.tecnicoAsignado != null ? mantenimiento.tecnicoAsignado : 'Taller técnico'}">tecnico</span>
+        </span>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <strong style="color:#cbd5e1; font-size:13px; text-transform:uppercase;">1. Causa Raíz / Análisis Técnico:</strong>
+        <p style="background:rgba(0,0,0,0.35); padding:10px 12px; border-radius:4px; margin-top:4px; font-size:14px; color:#ffffff; line-height:1.4;"
+           th:text="${mantenimiento.analisis != null ? mantenimiento.analisis : 'Sin diagnóstico preliminar.'}">Diagnóstico técnico</p>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <strong style="color:#cbd5e1; font-size:13px; text-transform:uppercase;">2. Solución Propuesta / Repuestos a cambiar:</strong>
+        <p style="background:rgba(0,0,0,0.35); padding:10px 12px; border-radius:4px; margin-top:4px; font-size:14px; color:#ffffff; line-height:1.4;"
+           th:text="${mantenimiento.solucion != null ? mantenimiento.solucion : 'Sin procedimiento detallado.'}">Procedimiento propuesto</p>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:13px; color:#cbd5e1;">
+        <div>
+          <span>Tiempo estimado por el técnico: <strong style="color:#ffffff;" th:text="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados + ' días hábiles' : 'No especificado'}">2 días</strong></span>
+        </div>
+        <div th:if="${mantenimiento.archivosEvidencia != null}">
+          <span style="color:#38bdf8; font-weight:600;">📷 Evidencias de taller:</span>
+          <span th:each="archivo : ${#strings.arraySplit(mantenimiento.archivosEvidencia, ',')}">
+            <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank" style="color:#ffffff; text-decoration:underline; margin-left:6px; font-size:12px;">Ver foto</a>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario Gerencial de Cotización y Facturación -->
+    <form th:action="@{'/mantenimientos/' + ${mantenimiento.id} + '/cotizar'}" method="POST">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+      <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:16px;">
+        <div class="form-field">
+          <label for="costoEstimado" style="color:var(--orange-2); font-weight:700;">1. Presupuesto Total / Costo de Factura ($ COP) *</label>
+          <input type="number" step="1000" id="costoEstimado" name="costoEstimado" placeholder="Ej: 1500000"
+                 th:value="${mantenimiento.costoEstimado != null ? mantenimiento.costoEstimado : ''}" required
+                 style="font-size:17px; font-family:var(--font-mono); font-weight:700; color:#ffedd5;">
+          <small style="color:#94a3b8; font-size:12px; margin-top:4px; display:block;">Valor total que se le facturará al cliente tras su aprobación.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="diasEstimados">2. Tiempo de Entrega (Días) *</label>
+          <input type="number" min="1" id="diasEstimados" name="diasEstimados"
+                 th:value="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados : 2}" required>
+          <small style="color:#94a3b8; font-size:12px; margin-top:4px; display:block;">Plazo pactado para la entrega de la máquina.</small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--primary" style="width:100%; padding:14px; font-size:15px; font-weight:700; margin-top:10px;">
+        💰 Generar Cotización y Factura para Aprobación del Cliente
+      </button>
+    </form>
+
+    <div style="margin-top:24px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.15); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <a href="/mantenimientos" style="color:#cbd5e1; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#cbd5e1'">
+        ← Volver a mantenimientos
+      </a>
+      <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:#ffffff; padding:10px 18px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        Panel de Opciones
+      </a>
+    </div>
+  </div>
+</body>
+</html>
+

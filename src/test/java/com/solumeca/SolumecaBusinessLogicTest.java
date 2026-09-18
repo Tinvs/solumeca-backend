@@ -78,5 +78,53 @@ public class SolumecaBusinessLogicTest {
         m.setEstado("Completado");
         assertEquals("Completado", m.getEstado());
     }
+
+    @Test
+    void testFlujoSeparadoTecnicoDiagnosticaGerenteCotizaClienteAprueba() {
+        Mantenimiento m = new Mantenimiento();
+        m.setMaquinariaId(2L);
+        m.setSolicitante("cliente_industrial");
+        m.setTipo("Correctivo");
+        m.setDescripcion("Fuga en mangueras de presión y bomba hidráulica");
+        m.setEstado("Presolicitud");
+        m.setFecha(LocalDate.now());
+
+        assertEquals("Presolicitud", m.getEstado());
+        assertNull(m.getCostoEstimado());
+
+        // Paso 1: El técnico diagnostica físicamente (sin poner precio ni generar factura)
+        m.setAnalisis("Falla de presión por sello desgastado en cilindro hidráulico");
+        m.setSolucion("Reemplazo de kit de sellos y prueba de banco a 3000 PSI");
+        m.setDiasEstimados(3);
+        m.setTecnicoAsignado("tecnico");
+        m.setEstado("Diagnosticado");
+
+        assertEquals("Diagnosticado", m.getEstado());
+        assertNull(m.getCostoEstimado(), "El técnico no establece el costo");
+        assertEquals(3, m.getDiasEstimados());
+        assertEquals("tecnico", m.getTecnicoAsignado());
+
+        // Paso 2: El gerente revisa el diagnóstico técnico, fija el valor y genera la cotización
+        m.setCostoEstimado(1850000.0);
+        m.setValorTotal(1850000.0);
+        m.setNumeroOrden("ORD-2026-002");
+        m.setEstado("Cotizada");
+
+        assertEquals("Cotizada", m.getEstado());
+        assertEquals(1850000.0, m.getCostoEstimado());
+        assertEquals(1850000.0, m.getValorTotal());
+
+        // Paso 3: El cliente (usuario) aprueba formalmente el mantenimiento
+        m.setEstado("Orden de trabajo");
+        m.setFechaAprobacion(LocalDate.now());
+
+        assertEquals("Orden de trabajo", m.getEstado());
+        assertNotNull(m.getFechaAprobacion());
+
+        // Paso 4: El técnico ejecuta la reparación física en el taller y completa el trabajo
+        m.setEstado("Completado");
+        assertEquals("Completado", m.getEstado());
+    }
 }
+
 

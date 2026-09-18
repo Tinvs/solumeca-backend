@@ -88,10 +88,10 @@
         </p>
       </div>
       <div style="text-align:right;">
-        <p class="plate-tag"><span class="plate-tag__bolt"></span>ORDEN DE SERVICIO & FACTURA</p>
+        <p class="plate-tag"><span class="plate-tag__bolt"></span><span th:text="${mantenimiento.estado == 'Cotizada' || mantenimiento.estado == 'Presolicitud analizada'} ? 'COTIZACIÓN DE SERVICIO' : 'ORDEN DE SERVICIO & FACTURA'">ORDEN DE SERVICIO & FACTURA</span></p>
         <h2 style="font-family:var(--font-mono); font-size:22px; color:var(--ink); margin-top:8px;"
             th:text="${mantenimiento.numeroOrden != null ? mantenimiento.numeroOrden : 'ORD-2026-' + mantenimiento.id}">ORD-2026-001</h2>
-        <p style="font-size:13px; color:var(--steel-light);">Fecha emisión: <strong th:text="${mantenimiento.fechaAprobacion != null ? mantenimiento.fechaAprobacion : mantenimiento.fecha}">2026-01-01</strong></p>
+        <p style="font-size:13px; color:var(--steel-light);">Fecha: <strong th:text="${mantenimiento.fechaAprobacion != null ? mantenimiento.fechaAprobacion : mantenimiento.fecha}">2026-01-01</strong></p>
         <span class="status-pill" style="margin-top:8px; display:inline-block;" th:text="${mantenimiento.estado}">Completado</span>
       </div>
     </div>
@@ -151,12 +151,13 @@
 
     <div class="invoice-total-card">
       <div>
-        <span style="text-transform:uppercase; font-size:13px; letter-spacing:1px; opacity:0.85;">Valor Total de la Factura:</span>
+        <span style="text-transform:uppercase; font-size:13px; letter-spacing:1px; opacity:0.85;"
+              th:text="${mantenimiento.estado == 'Cotizada' || mantenimiento.estado == 'Presolicitud analizada'} ? 'Presupuesto Total de la Cotización:' : 'Valor Total de la Factura:'">Valor Total:</span>
         <h2 style="font-family:var(--font-mono); font-size:32px; color:var(--orange-2); margin-top:2px;"
             th:text="${#numbers.formatDecimal((mantenimiento.valorTotal != null ? mantenimiento.valorTotal : (mantenimiento.costoEstimado != null ? mantenimiento.costoEstimado : 0.0)), 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</h2>
       </div>
       <div style="text-align:right; font-size:13px; opacity:0.85;">
-        <p>Estado de pago: <strong>Aprobado / Al Día</strong></p>
+        <p>Estado de proceso: <strong th:text="${mantenimiento.estado == 'Cotizada' || mantenimiento.estado == 'Presolicitud analizada'} ? 'Pendiente Aprobación Cliente' : (mantenimiento.estado == 'Orden de trabajo' ? 'Aprobado / En Ejecución' : 'Completado / Al Día')">Al Día</strong></p>
         <p>Técnico responsable: <strong th:text="${mantenimiento.tecnicoAsignado}">tecnico</strong></p>
       </div>
     </div>
