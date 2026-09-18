@@ -41,6 +41,9 @@ public class MantenimientoController {
 
     @GetMapping
     public String listar(Authentication authentication, Model model) {
+        if (authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
+            return "redirect:/mantenimientos/cliente";
+        }
         model.addAttribute("mantenimientos", mantenimientoRepository.findAllByOrderByFechaDesc());
         model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));

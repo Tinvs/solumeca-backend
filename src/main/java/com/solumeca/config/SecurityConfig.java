@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .requestMatchers("/encargado/**").hasRole("ENCARGADO")
                 .requestMatchers("/mantenimientos/archivo/**").hasAnyRole("CLIENTE", "ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
                 .requestMatchers("/mantenimientos/*/aprobar", "/mantenimientos/*/factura").hasAnyRole("CLIENTE", "ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
+                .requestMatchers("/mantenimientos", "/mantenimientos/").hasAnyRole("CLIENTE", "ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
                 .requestMatchers("/mantenimientos/cliente/**").hasRole("CLIENTE")
                 .requestMatchers("/mantenimientos/tecnico/**").hasRole("TECNICO")
                 .requestMatchers("/mantenimientos/**").hasAnyRole("ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
