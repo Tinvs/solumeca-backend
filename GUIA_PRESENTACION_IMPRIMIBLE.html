@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Oficial de Presentación | SOLUMECA S.A.S.</title>
+  <style>
+    :root {
+      --primary: #ff5d1c;
+      --primary-dark: #d43d1a;
+      --ink: #11171c;
+      --steel: #475569;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--light-bg);
+      color: var(--ink);
+      line-height: 1.65;
+      padding: 30px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 50px 60px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+    header {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 24px;
+      margin-bottom: 36px;
+    }
+    .badge {
+      display: inline-block;
+      background: #ffedd5;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    h1 { font-size: 28px; color: var(--ink); margin-bottom: 8px; font-weight: 800; }
+    .subtitle { color: var(--steel); font-size: 15px; }
+    h2 {
+      font-size: 20px;
+      color: var(--primary-dark);
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h3 { font-size: 16px; color: var(--ink); margin: 20px 0 8px; }
+    p, li { font-size: 14.5px; color: #334155; margin-bottom: 10px; }
+    ul, ol { padding-left: 24px; margin-bottom: 16px; }
+    blockquote {
+      background: #fff7ed;
+      border-left: 4px solid var(--primary);
+      padding: 14px 20px;
+      margin: 14px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #7c2d12;
+      font-size: 14.5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 13.5px;
+    }
+    th {
+      background: #f1f5f9;
+      color: var(--ink);
+      text-align: left;
+      padding: 12px 14px;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:hover td { background: #f8fafc; }
+    code {
+      font-family: Consolas, Monaco, 'Courier New', Courier, monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--primary-dark);
+      font-size: 13px;
+    }
+    .callout {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      color: #1e40af;
+    }
+    .callout strong { color: #1e3a8a; }
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255,93,28,0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+    .print-btn:hover { transform: scale(1.05); }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .container { border: none; box-shadow: none; padding: 0; max-width: 100%; }
+      .print-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimir / Guardar en PDF</button>
+
+  <div class="container">
+    <header>
+      <span class="badge">Documento Oficial de Sustentación</span>
+      <h1>SOLUMECA S.A.S. — Guía de Presentación</h1>
+      <p class="subtitle"><strong>Dominio Oficial en Vivo:</strong> <a href="https://solumeca.up.railway.app/" target="_blank">https://solumeca.up.railway.app/</a> | <strong>Stack:</strong> Java 21, Spring Boot 3.3.4, MySQL, Railway Cloud</p>
+    </header>
+
+    <h2>1. Resumen Ejecutivo del Proyecto</h2>
+    <p>SOLUMECA S.A.S. es una plataforma web desarrollada para digitalizar y controlar de forma integral los servicios de mantenimiento de maquinaria pesada, montacargas y obras civiles en la Costa Caribe.</p>
+    <p><strong>El problema:</strong> Procesos manuales, solicitudes dispersas, falta de trazabilidad en las reparaciones y ausencia de alertas de inventario.</p>
+    <p><strong>La solución:</strong> Un ecosistema web en la nube que articula 4 roles: Clientes, Técnicos, Supervisores y Gerencia con flujos formales de presolicitud, orden de trabajo, facturación y control de existencias.</p>
+
+    <h2>2. Credenciales de Prueba para la Exposición</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rol</th>
+          <th>Usuario</th>
+          <th>Contraseña</th>
+          <th>Función en la Demo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Cliente / Usuario</strong></td>
+          <td><code>usuario</code></td>
+          <td><code>usuario123</code></td>
+          <td>Registra presolicitudes de servicio, consulta estados y aprueba cotizaciones.</td>
+        </tr>
+        <tr>
+          <td><strong>Supervisor</strong></td>
+          <td><code>supervisor</code></td>
+          <td><code>supervisor123</code></td>
+          <td>Diagnóstico técnico, estimación de costos en COP y días, asignación de técnicos.</td>
+        </tr>
+        <tr>
+          <td><strong>Gerente (ADMIN)</strong></td>
+          <td><code>gerente</code></td>
+          <td><code>gerente123</code></td>
+          <td>Control total: maquinaria, repuestos, marcas, proveedores y aprobación oficial.</td>
+        </tr>
+        <tr>
+          <td><strong>Técnico</strong></td>
+          <td><code>tecnico</code></td>
+          <td><code>tecnico123</code></td>
+          <td>Panel operativo puro para consultar e intervenir órdenes de trabajo asignadas.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Guión de Exposición Paso a Paso (8 a 10 Minutos)</h2>
+    
+    <h3>Paso 1: Introducción (1 minuto)</h3>
+    <p>Abrir <a href="https://solumeca.up.railway.app/" target="_blank">https://solumeca.up.railway.app/</a>.</p>
+    <blockquote>"Presentamos la plataforma web oficial de SOLUMECA S.A.S., desarrollada en Java 21 con Spring Boot 3 y MySQL, desplegada en la nube en Railway. Resuelve la trazabilidad operativa conectando a los clientes con el equipo técnico y gerencial en tiempo real."</blockquote>
+
+    <h3>Paso 2: Sitio Público, Cotizador y WhatsApp (2 minutos)</h3>
+    <ul>
+      <li>Ir a <strong>Servicios</strong> (<code>/servicios.html</code>): mostrar el <strong>Cotizador Rápido</strong>. Seleccionar un equipo y servicio; mostrar cómo calcula en tiempo real el precio en COP y días, y genera el enlace a WhatsApp.</li>
+      <li>Mostrar el <strong>Botón Flotante de WhatsApp</strong> (compacto 44x44px con tooltip directo al +57 300 246 4311).</li>
+      <li>Ir a <strong>Contáctenos</strong> (<code>/contacto.html</code>): enviar un mensaje de prueba. Destacar que se guarda en la tabla <code>mensajes_contacto</code> de MySQL y se envía por correo vía SMTP.</li>
+    </ul>
+
+    <h3>Paso 3: Login Seguro con Botón del Ojito (1 minuto)</h3>
+    <ul>
+      <li>Ir a <strong>Iniciar Sesión</strong> (<code>/login.html</code>). Escribir caracteres y pulsar el <strong>botón del ojito</strong> para mostrar cómo revela y oculta la contraseña.</li>
+      <li>Explicar que las contraseñas se almacenan cifradas con <code>BCryptPasswordEncoder</code> y que las rutas están protegidas por roles con Spring Security.</li>
+    </ul>
+
+    <h3>Paso 4: Experiencia del Cliente — Crear Presolicitud (2 minutos)</h3>
+    <ul>
+      <li>Iniciar sesión como <code>usuario</code> / <code>usuario123</code>.</li>
+      <li>Entrar a <strong>03. Crear nueva presolicitud técnica</strong>. Mostrar las <strong>etiquetas en blanco puro</strong> de alta legibilidad sobre el fondo industrial.</li>
+      <li>Seleccionar maquinaria inventariada (ej. <code>[MQ-001] Retroexcavadora 420F2</code>), describir el problema y guardar. Queda registrada en estado <code>Presolicitud</code>.</li>
+      <li>Cerrar sesión.</li>
+    </ul>
+
+    <h3>Paso 5: Supervisor / Gerente — Análisis y Facturación (2.5 minutos)</h3>
+    <ul>
+      <li>Iniciar sesión como <code>gerente</code> / <code>gerente123</code>.</li>
+      <li>Ir a <strong>Revisar operaciones</strong>: mostrar el <strong>buscador en vivo</strong> en la tabla.</li>
+      <li>Pulsar <strong>🔍 Analizar y Cotizar</strong>: registrar diagnóstico, solución, costo en COP, días y técnico. Guardar.</li>
+      <li>Pulsar <strong>✓ Aprobar Orden</strong>: el sistema genera el código oficial <code>ORD-2026-001</code>.</li>
+      <li>Pulsar <strong>📄 Factura / Orden</strong>: mostrar la <strong>Factura Corporativa</strong> formal con membrete de SOLUMECA S.A.S., NIT y botón de impresión directa a PDF.</li>
+    </ul>
+
+    <h3>Paso 6: Módulos de Repuestos, Proveedores y Marcas (1.5 minutos)</h3>
+    <ul>
+      <li>Entrar a <strong>Stock de Repuestos</strong> (<code>/repuestos</code>): mostrar las alertas de <strong>⚠️ Bajo stock</strong> y los botones rápidos de entrada y salida (<code>+</code> y <code>-</code>).</li>
+      <li>Mostrar <strong>Catálogo de Marcas</strong> y <strong>Directorio de Proveedores</strong>, explicando la relación relacional <code>@ManyToOne</code>.</li>
+    </ul>
+
+    <h2>4. Preguntas Clave de Jurados y Respuestas Expertas</h2>
+    
+    <div class="callout">
+      <strong>¿Qué arquitectura se utiliza?</strong><br>
+      Arquitectura por capas MVC (Modelo-Vista-Controlador): Entidades JPA en <code>model</code>, interfaces en <code>repository</code> (Spring Data JPA), controladores en <code>controller</code> y seguridad con filtros en <code>config</code>.
+    </div>
+
+    <div class="callout">
+      <strong>¿Cómo protegen las contraseñas?</strong><br>
+      Con <code>BCryptPasswordEncoder</code>, que genera un hash irreversible con sal (salt). Además, Spring Security valida las rutas con <code>hasRole()</code> para impedir accesos no autorizados.
+    </div>
+
+    <div class="callout">
+      <strong>¿Cómo se gestionan las fotos y archivos adjuntos?</strong><br>
+      Los binarios se almacenan físicamente en el servidor (<code>uploads/mantenimientos/</code>) con identificadores únicos <code>UUID</code> para evitar colisiones; en la base de datos MySQL solo se almacena la referencia del nombre.
+    </div>
+
+    <div class="callout">
+      <strong>¿Cómo está desplegado en la nube?</strong><br>
+      Desplegado en <strong>Railway</strong> con CI/CD automatizado desde GitHub. Cada <code>git push origin main</code> compila en Java 21, empaqueta el archivo <code>.jar</code> y publica el servicio en vivo sin caídas.
+    </div>
+
+    <h2>5. Resumen de Todo lo Implementado</h2>
+    <ol>
+      <li><strong>Botón flotante de WhatsApp:</strong> Rediseñado a formato compacto (44x44px), discreto y con tooltip.</li>
+      <li><strong>Flujo de Presolicitud a Factura:</strong> Análisis técnico, cotización en COP, aprobación a orden oficial e impresión de factura con membrete.</li>
+      <li><strong>Código único de máquina:</strong> <code>MQ-001</code> a <code>MQ-010</code> para identificación rápida de equipos.</li>
+      <li><strong>Control de Repuestos:</strong> Alertas de stock mínimo y botones de ajuste rápido de inventario <code>+</code> y <code>-</code>.</li>
+      <li><strong>Marcas y Proveedores:</strong> Relación relacional con NIT, teléfono y persona de contacto.</li>
+      <li><strong>Buscador en vivo:</strong> Filtrado interactivo en JavaScript sin recargar pantalla.</li>
+      <li><strong>Cotizador dinámico:</strong> Estimación de costos y días en <code>servicios.html</code>.</li>
+      <li><strong>Dashboards segmentados:</strong> Técnico exclusivo para taller; Gerente y Supervisor con control gerencial completo.</li>
+      <li><strong>Botón de ojito para contraseñas:</strong> Mostrar/ocultar contraseña en login y registro.</li>
+      <li><strong>Etiquetas en blanco puro y título Presolicitud:</strong> Máxima legibilidad en formularios.</li>
+      <li><strong>Contáctenos conectado:</strong> Guardado automático en MySQL (<code>mensajes_contacto</code>) y despacho por correo SMTP.</li>
+    </ol>
+  </div>
+</body>
+</html>
