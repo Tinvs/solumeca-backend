@@ -723,58 +723,103 @@ Una separacion por capas inspirada en MVC: modelos, controladores, repositorios 
 
 ---
 
-## 20. Guion corto para la exposicion
+## 20. Nuevas Funcionalidades y Despliegue en Produccion (Actualizacion 2026)
 
-1. Presentar el problema: una empresa necesita mostrar sus servicios y controlar mantenimientos.
-2. Mostrar la arquitectura: frontend, backend Java y MySQL.
-3. Explicar `SolumecaApplication` como punto de entrada.
-4. Mostrar una entidad, por ejemplo `Mantenimiento`.
-5. Mostrar un repositorio y explicar JPA.
-6. Mostrar un controlador y seguir una ruta.
-7. Explicar el login, BCrypt y roles.
-8. Mostrar el formulario de contacto y el recorrido con `fetch` y correo.
-9. Mostrar el CRUD de maquinaria.
-10. Mostrar la carga de evidencias e informes.
-11. Ejecutar una prueba desde el navegador.
-12. Cerrar explicando que Java controla la logica, seguridad, persistencia y reglas del negocio.
+### A. Despliegue Cloud en Railway
+- **URL Oficial en Produccion:** `https://solumeca.up.railway.app/`
+- **Integracion Continua (CI/CD):** Cada `git push origin main` compila automaticamente en Railway mediante Maven con Java 21, levanta el contenedor de Spring Boot y lo conecta a la base de datos MySQL en la nube.
 
-Frase de cierre:
+### B. Ciclo Completo: Presolicitud -> Analisis -> Orden de Trabajo -> Factura
+1. **Presolicitud (Cliente):**
+   - El cliente accede a su panel y crea una presolicitud en `/mantenimientos/cliente/nueva`.
+   - Interfaz simplificada: no se le exige clasificar tipo de falla ni informe tecnico; solo selecciona su maquinaria, describe la necesidad y puede adjuntar evidencias (fotos/videos).
+2. **Evaluacion Tecnica y Cotizacion (Supervisor / Gerente):**
+   - Desde `/mantenimientos/{id}/analizar` registran diagnostico tecnico, solucion propuesta, cotizacion en pesos colombianos ($ COP), tiempo estimado en dias y tecnico asignado.
+   - Pasa al estado `Presolicitud analizada`.
+3. **Aprobacion Oficial:**
+   - Al pulsar "Aprobar Orden", el sistema genera un correlativo oficial (ej. `ORD-2026-001`), fecha de aprobacion y pasa a `Orden de trabajo`.
+4. **Factura Corporativa Imprimible:**
+   - En `/mantenimientos/{id}/factura`: membrete formal de SOLUMECA S.A.S. (NIT, Barranquilla), desglose financiero, datos del equipo y boton de impresion directa / PDF.
 
-> "La pagina no es solamente una interfaz visual: el frontend captura las acciones del usuario, Java procesa y protege esas acciones, JPA las persiste y MySQL conserva la informacion para que el sistema pueda consultarla despues."
+### C. Codigo Unico de Maquinaria (`codigo`)
+- Campo unico inventariado (`MQ-001` a `MQ-010`) en la entidad `Maquinaria`, facilitando la identificacion en tablas operativas y desplegables.
+
+### D. Inventario y Control de Repuestos (`/repuestos`)
+- Codigos correlativos (`REP-001` a `REP-010`), nombre, marca, proveedor, stock, stock minimo y precio unitario.
+- **Alertas Visuales de Stock Critico:** Etiqueta pulsante cuando `cantidadStock <= stockMinimo`.
+- **Ajuste Rapido en 1 Clic:** Botones interactivos `+` y `-` para entradas y salidas instantaneas de bodega.
+
+### E. Directorio de Proveedores y Catalogo de Marcas
+- Proveedores (`/admin/proveedores`): NIT, empresa, persona de contacto, telefono, correo y ciudad.
+- Marcas (`/admin/marcas`): relacion `@ManyToOne` con el proveedor distribuidor de la marca.
+
+### F. Dinamismo y UX en el Sitio Web
+- **Buscador en Vivo en Tablas:** Filtrado instantaneo en JavaScript sin recargar la pagina en Mantenimientos, Maquinaria, Repuestos, Marcas y Proveedores.
+- **Cotizador Instantaneo Interactivo:** En `servicios.html`, calcula rangos de precio en COP y duracion en dias segun equipo y servicio, enlazando directamente a WhatsApp.
+- **Boton WhatsApp Flotante:** Compacto (44x44px), accesible en todas las vistas con tooltip y enlace directo al numero oficial (+57 300 246 4311).
+- **Ver/Ocultar Contrasena con Ojito:** En `login.html` y `registro.html`, con iconos SVG adaptables y detector universal en `script.js`.
+- **Formularios Legibles:** Etiquetas de entrada en color blanco puro (`#ffffff`, `font-weight: 700`) sobre el fondo oscuro industrial.
+
+### G. Formulario de Contacto Conectado
+- Ruta `/api/contacto` desbloqueada en CSRF.
+- Persistencia automatica de prospectos en la tabla `mensajes_contacto` de MySQL.
+- Despacho automatico de correo via SMTP a `solumeca.2@gmail.com`.
 
 ---
 
-## 21. Detalles tecnicos que conviene recordar
+## 21. Credenciales de Prueba para la Exposicion
 
-- El `pom.xml` declara Java 21, aunque una version antigua del README menciona JDK 17; para exponer el estado actual, toma como referencia el `pom.xml`.
-- `spring.jpa.show-sql=true` sirve para ver las consultas generadas durante la demostracion.
-- `server.port=${PORT:8080}` permite usar una variable de entorno `PORT` en despliegues, o el puerto 8080 localmente.
-- Los limites de archivos son 50 MB por archivo y 100 MB por solicitud.
-- El formulario Thymeleaf incluye el token CSRF para operaciones protegidas.
-- Los usuarios creados desde registro reciben el rol `CLIENTE`.
-- El `database-schema.sql` crea indices por solicitante y estado para ayudar a las busquedas de mantenimientos.
-- La base de datos usa `utf8mb4` para soportar correctamente caracteres especiales.
+| Rol | Usuario | Contrasena | Enlace directo |
+|---|---|---|---|
+| **Gerente (ADMIN)** | `gerente` | `gerente123` | `/login.html` -> `/admin/dashboard` |
+| **Supervisor** | `supervisor` | `supervisor123` | `/login.html` -> `/supervisor/dashboard` |
+| **Tecnico** | `tecnico` | `tecnico123` | `/login.html` -> `/tecnico/dashboard` |
+| **Cliente / Usuario** | `usuario` | `usuario123` | `/login.html` -> `/cliente/dashboard` |
 
 ---
 
-## 22. Resumen de una sola pagina
+## 22. Guion Paso a Paso para Demostracion en Vivo (10 Minutos)
 
-**Entrada:** `SolumecaApplication.main()` inicia Spring Boot.
+1. **Introduccion (1 minuto):**
+   - Presentar el sitio oficial en produccion: `https://solumeca.up.railway.app/`.
+   - Destacar que es una solucion Full Stack (Java 21, Spring Boot 3, MySQL, Spring Security, Thymeleaf, JavaScript y CSS moderno).
+2. **Sitio Publico y Contacto (2 minutos):**
+   - Mostrar la landing, el cotizador interactivo en `servicios.html` y el boton flotante de WhatsApp.
+   - Enviar un mensaje desde `contacto.html` y demostrar que se guarda de inmediato en la base de datos y despacha el correo.
+3. **Inicio de Sesion con Seguridad (1 minuto):**
+   - Mostrar el boton del ojito para revelar u ocultar la contrasena.
+   - Explicar el cifrado seguro con BCrypt (las contrasenas nunca se guardan en texto plano).
+4. **Flujo de Presolicitud como Cliente (2 minutos):**
+   - Iniciar sesion con `usuario` / `usuario123`.
+   - Crear una presolicitud: formulario limpio con etiquetas legibles en blanco y seleccion de maquinaria por codigo `[MQ-001]`.
+   - Mostrar como queda registrada en estado `Presolicitud`.
+5. **Evaluacion y Aprobacion como Supervisor / Gerente (2 minutos):**
+   - Iniciar sesion con `gerente` / `gerente123` o `supervisor` / `supervisor123`.
+   - Analizar la presolicitud: registrar diagnostico, presupuesto en COP, dias y tecnico.
+   - Aprobar la orden: observar la conversion oficial a `ORD-2026-XXX`.
+   - Abrir la **Factura Corporativa**, con membrete formal y boton de impresion / PDF.
+6. **Modulos Administrativos (1 minuto):**
+   - Mostrar el inventario de repuestos en `/repuestos`, el ajuste rapido con botones `+`/`-`, y la alerta de stock bajo.
+   - Mostrar el catalogo de marcas y proveedores asociados.
+   - Demostrar el buscador interactivo en vivo filtrando cualquier tabla.
+7. **Cierre Tecnico (1 minuto):**
+   - Explicar la arquitectura por capas y responder preguntas de los evaluadores.
 
-**Vista publica:** HTML + CSS + JavaScript en `static`.
+---
 
-**Vista interna:** Thymeleaf en `templates`.
+## 23. Preguntas Tipicas de Evaluadores y Como Responderlas
 
-**Peticion:** navegador -> controller.
+### 1. ¿Por que eligieron Java y Spring Boot para este proyecto?
+> *"Elegimos Java 21 y Spring Boot 3 porque es el estandar de la industria para aplicaciones empresariales robustas. Ofrece una arquitectura limpia por capas (Controller, Service, Repository, Model), gestion automatica de dependencias con Maven, seguridad robusta mediante Spring Security y persistencia de datos simplificada con JPA e Hibernate."*
 
-**Regla:** controller y seguridad validan el usuario y los datos.
+### 2. ¿Como protegen las credenciales de los usuarios?
+> *"Nunca guardamos contrasenas en texto plano. Usamos `BCryptPasswordEncoder`, que es un algoritmo criptografico de dispersion con sal (salt). Al iniciar sesion, Spring Security aplica la misma funcion hash y compara de forma segura. Ademas, las rutas estan protegidas con filtros de autorizacion basados en roles (`ROLE_ADMIN`, `ROLE_SUPERVISOR`, `ROLE_TECNICO`, `ROLE_CLIENTE`)."*
 
-**Persistencia:** repository -> JPA/Hibernate -> MySQL.
+### 3. ¿Como funciona la conexion entre el formulario HTML y la base de datos?
+> *"En el flujo Thymeleaf, el formulario envia un `POST` con token CSRF al `@Controller`. Spring mapea los datos a un objeto Java mediante anotaciones (`@ModelAttribute` o `@RequestBody`). El controlador aplica las validaciones de negocio y delega en una interfaz `@Repository` (Spring Data JPA), la cual Hibernate traduce automaticamente a sentencias SQL (`INSERT`, `UPDATE`) para persistir la informacion en MySQL."*
 
-**Usuarios:** BCrypt + Spring Security + roles.
+### 4. ¿Donde se guardan las fotos, videos e informes que suben los usuarios?
+> *"Los metadatos y nombres de archivo unicos (generados con UUID para evitar colisiones) se guardan en la tabla `mantenimientos` de MySQL, mientras que los archivos fisicos binarios se almacenan de forma segura en el sistema de almacenamiento del servidor (`uploads/mantenimientos/`), servidos mediante endpoints controlados con validacion de autorizacion."*
 
-**Contacto:** JavaScript envia JSON -> Java valida -> JavaMailSender envia correo.
-
-**Mantenimiento:** Java guarda la orden en MySQL y los archivos en `uploads`.
-
-**Resultado:** una aplicacion web donde Java es el nucleo de la logica, la seguridad y la conexion con la base de datos.
+### 5. ¿Como esta desplegado en produccion?
+> *"La aplicacion esta desplegada en Railway mediante un contenedor en la nube. Esta vinculada directamente al repositorio Git en GitHub, de modo que cada actualizacion probada localmente se compila, empaqueta en `.jar` y se publica en vivo en `https://solumeca.up.railway.app/` de manera automatizada."*
