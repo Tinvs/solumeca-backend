@@ -22,6 +22,9 @@ public class SecurityConfig {
     @Autowired
     private RoleBasedAuthenticationSuccessHandler successHandler;
 
+    @Autowired
+    private CustomAuthenticationFailureHandler failureHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -32,6 +35,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(usuarioDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
+        provider.setHideUserNotFoundExceptions(false); // Distingue usuario no registrado vs credenciales invalidas
         return provider;
     }
 
@@ -64,7 +68,7 @@ public class SecurityConfig {
                 .loginPage("/login.html")
                 .loginProcessingUrl("/login")
                 .successHandler(successHandler)
-                .failureUrl("/login.html?error=true")
+                .failureHandler(failureHandler)
                 .permitAll()
             )
             .logout(logout -> logout

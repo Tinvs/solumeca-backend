@@ -37,7 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loginSuccess.hidden = false;
     loginSuccess.classList.add('is-active');
   }
-  if (loginError && queryParams.get('error') === 'true') {
+  const errorParam = queryParams.get('error');
+  if (loginError && errorParam) {
+    if (errorParam === 'not_registered') {
+      loginError.textContent = 'Este usuario o correo no está registrado en el sistema.';
+    } else if (errorParam === 'bad_credentials') {
+      loginError.textContent = 'Contraseña incorrecta. Verifica tus credenciales e intenta de nuevo.';
+    } else {
+      loginError.textContent = 'Usuario o contraseña incorrectos.';
+    }
     loginError.classList.add('is-active');
   }
 
