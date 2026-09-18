@@ -364,6 +364,46 @@ public class MantenimientoController {
     }
 
     // =========================================================================
+    // 3.1 RECHAZO DE COTIZACIÓN (EL CLIENTE INDICA DESACUERDO Y SU MOTIVO)
+    // El motivo se registra en la orden y pasa a Gerencia para revisión.
+    // =========================================================================
+    @PostMapping("/{id}/rechazar")
+    public String rechazar(@PathVariable Long id,
+                           @RequestParam(name = "motivo", required = false) String motivo,
+                           Authentication authentication) {
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+
+        boolean esCliente = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
+        boolean esGenerico = "equipo-tecnico".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "cliente".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante());
+
+        if (!esCliente && !esPropio && !esGenerico) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Solo el usuario cliente puede indicar desacuerdo con la cotización.");
+        }
+
+        String motivoLimpio = (motivo != null && !motivo.isBlank())
+                ? motivo.trim()
+                : "El cliente indicó que no está de acuerdo con la cotización propuesta.";
+        if (motivoLimpio.length() > 1000) {
+            motivoLimpio = motivoLimpio.substring(0, 1000);
+        }
+
+        mantenimiento.setEstado("Rechazada");
+        mantenimiento.setMotivoRechazo(motivoLimpio);
+        if (authentication != null && authentication.getName() != null) {
+            mantenimiento.setSolicitante(authentication.getName());
+        }
+        mantenimientoRepository.save(mantenimiento);
+
+        return "redirect:/mantenimientos/cliente";
+    }
+
+    // =========================================================================
     // 4. COMPLETAR / FINALIZAR MANTENIMIENTO (EXCLUSIVO DEL TÉCNICO EN TALLER)
     // El técnico finaliza el trabajo mecánico y restablece la máquina a Operativa.
     // NUNCA se permite completar si Gerencia no creó el precio o el cliente no aprobó.

@@ -158,6 +158,42 @@ public class SolumecaBusinessLogicTest {
         assertEquals("Completado", m.getEstado());
         assertEquals(850000.0, m.getValorTotal(), "La factura final conserva el valor exacto cotizado y aprobado");
     }
+
+    @Test
+    void testClienteRechazaCotizacionConMotivoYGerenteRecotiza() {
+        Mantenimiento m = new Mantenimiento();
+        m.setMaquinariaId(1L);
+        m.setSolicitante("cliente_test");
+        m.setTipo("Correctivo");
+        m.setDescripcion("Falla en bomba principal");
+        m.setEstado("Cotizada");
+        m.setCostoEstimado(2500000.0);
+        m.setDiasEstimados(5);
+
+        // 1. Cliente no está de acuerdo y rechaza indicando el motivo
+        String motivo = "El presupuesto supera nuestro tope mensual. Solicitamos reparar solo sellos sin cambio de bomba completa.";
+        m.setEstado("Rechazada");
+        m.setMotivoRechazo(motivo);
+
+        assertEquals("Rechazada", m.getEstado());
+        assertNotNull(m.getMotivoRechazo());
+        assertTrue(m.getMotivoRechazo().contains("supera nuestro tope"));
+
+        // 2. Gerente revisa el motivo y recotiza ajustando el costo y tiempo
+        m.setCostoEstimado(1100000.0);
+        m.setValorTotal(1100000.0);
+        m.setDiasEstimados(2);
+        m.setEstado("Cotizada");
+
+        assertEquals("Cotizada", m.getEstado());
+        assertEquals(1100000.0, m.getCostoEstimado());
+        assertEquals(2, m.getDiasEstimados());
+
+        // 3. Cliente aprueba la nueva cotización
+        m.setEstado("Orden de trabajo");
+        m.setFechaAprobacion(LocalDate.now());
+        assertEquals("Orden de trabajo", m.getEstado());
+    }
 }
 
 

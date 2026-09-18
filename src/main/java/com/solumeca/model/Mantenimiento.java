@@ -59,6 +59,9 @@ public class Mantenimiento {
     @Column(name = "fecha_aprobacion")
     private LocalDate fechaAprobacion;
 
+    @Column(name = "motivo_rechazo", length = 1000)
+    private String motivoRechazo;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Long getMaquinariaId() { return maquinariaId; }
@@ -93,4 +96,6 @@ public class Mantenimiento {
     public void setNumeroOrden(String numeroOrden) { this.numeroOrden = numeroOrden; }
     public LocalDate getFechaAprobacion() { return fechaAprobacion; }
     public void setFechaAprobacion(LocalDate fechaAprobacion) { this.fechaAprobacion = fechaAprobacion; }
+    public String getMotivoRechazo() { return motivoRechazo; }
+    public void setMotivoRechazo(String motivoRechazo) { this.motivoRechazo = motivoRechazo; }
 }

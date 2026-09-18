@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS mantenimientos (
     valor_total DOUBLE,
     numero_orden VARCHAR(50),
     fecha_aprobacion DATE,
+    motivo_rechazo VARCHAR(1000),
     CONSTRAINT fk_mantenimiento_maquinaria
         FOREIGN KEY (maquinaria_id) REFERENCES maquinaria(id)
 );
