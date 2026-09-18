@@ -9,7 +9,12 @@
 <body class="dashboard-page">
   <section class="login-section">
     <div class="login-card" style="max-width: 680px;">
-      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // EVALUACIÓN TÉCNICA</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <p class="plate-tag" style="margin-bottom:0;"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // EVALUACIÓN TÉCNICA</p>
+        <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:6px 14px; border-radius:var(--radius); font-size:12.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          🏠 Panel de Opciones
+        </a>
+      </div>
       <h1 class="login-title">Analizar y Cotizar Presolicitud</h1>
       <p class="login-subtitle">Defina el diagnóstico, solución técnica, técnico a cargo, tiempo y presupuesto.</p>
 
@@ -31,7 +36,7 @@
         </p>
       </div>
 
-      <form th:action="@{'/mantenimientos/' + ${mantenimiento.id} + '/analizar'}" method="POST" class="login-form">
+      <form th:action="@{'/mantenimientos/' + ${mantenimiento.id} + '/analizar'}" method="POST" enctype="multipart/form-data" class="login-form">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
         <div class="form-row">
@@ -68,10 +73,24 @@
                  style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.25); background:rgba(10,14,18,0.85); color:#ffffff; font-family:var(--font-body); font-size:14.5px; box-sizing:border-box;">
         </div>
 
+        <div class="form-row">
+          <label for="evidencias" style="color:#ffffff; font-weight:600;">6. Evidencias Fotográficas de la Inspección (Exclusivo Técnico)</label>
+          <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple
+                 style="width:100%; padding:10px 14px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.25); background:rgba(10,14,18,0.85); color:#ffffff; font-family:var(--font-body); font-size:14px; box-sizing:border-box;">
+          <small style="color:rgba(255,255,255,0.6); font-size:12px; margin-top:4px; display:block;">Adjunte fotos del estado actual, piezas mecánicas o daños evaluados.</small>
+        </div>
+
         <button type="submit" class="btn btn--primary login-btn">Guardar Análisis y Emitir Cotización</button>
       </form>
 
-      <p class="login-footer" style="margin-top:20px;"><a href="/mantenimientos">← Volver al listado de mantenimientos</a></p>
+      <div style="margin-top:24px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.15); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <a href="/mantenimientos" style="color:rgba(255,255,255,0.8); font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">
+          ← Volver a mantenimientos
+        </a>
+        <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 18px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='var(--orange-1)'; this.style.borderColor='var(--orange-1)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(255,255,255,0.25)'">
+          🏠 Volver al Panel de Opciones
+        </a>
+      </div>
     </div>
   </section>
 </body>

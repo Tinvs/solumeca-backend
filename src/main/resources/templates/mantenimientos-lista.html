@@ -29,6 +29,7 @@
         </div>
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
           <input type="text" id="filtroMantenimientos" placeholder="🔍 Buscar máquina, estado, orden..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:240px; background:var(--concrete);">
+          <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 16px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">🏠 Panel de Opciones</a>
           <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
           <a th:if="${esCliente}" class="btn btn--primary" href="/mantenimientos/cliente/nueva">+ Nueva presolicitud</a>
         </div>
@@ -95,15 +96,21 @@
                   🔍 Analizar y Cotizar
                 </a>
 
-                <!-- Si la presolicitud ya fue analizada: botón de aprobar a orden de trabajo -->
-                <form th:if="${m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada'}"
+                <!-- Si la presolicitud ya fue analizada: botón de aprobar a orden de trabajo (EXCLUSIVO DEL CLIENTE) -->
+                <form th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
                       th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST" style="display:inline;"
-                      onsubmit="return confirm('¿Confirma la aprobación de este servicio para convertirlo en Orden de Trabajo oficial?');">
+                      onsubmit="return confirm('¿Confirma la aprobación de este presupuesto para generar la Orden de Trabajo oficial?');">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <button type="submit" class="action-btn-sm btn-aprobar" style="margin-bottom:4px; width:100%;">
-                    ✓ Aprobar Orden
+                    ✓ Aprobar Cotización
                   </button>
                 </form>
+
+                <!-- Si es personal operativo (gerente, etc.) y está analizada: indicar que está en espera de aprobación del cliente -->
+                <span th:if="${esOperativo && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
+                      style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,143,28,0.15); color:var(--orange-2); border:1px solid rgba(255,143,28,0.3); border-radius:4px; margin-bottom:4px;">
+                  ⏳ Esperando aprobación cliente
+                </span>
 
                 <!-- Si es orden de trabajo y es operativo: botón de marcar completado -->
                 <form th:if="${esOperativo && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
@@ -133,7 +140,9 @@
       </div>
 
       <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
-        <a class="panel-return" href="javascript:history.back()">← Volver al panel</a>
+        <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 20px; border-radius:var(--radius); font-size:14px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+          🏠 Volver al Panel de Opciones
+        </a>
       </div>
     </section>
   </main>

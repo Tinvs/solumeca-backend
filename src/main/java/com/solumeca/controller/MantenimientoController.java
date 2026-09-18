@@ -126,7 +126,9 @@ public class MantenimientoController {
                                   @RequestParam Double costoEstimado,
                                   @RequestParam Integer diasEstimados,
                                   @RequestParam String tecnicoAsignado,
-                                  Authentication authentication) {
+                                  @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
+                                  @RequestParam(name = "informe", required = false) MultipartFile informe,
+                                  Authentication authentication) throws IOException {
         exigirOperativo(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
@@ -136,6 +138,7 @@ public class MantenimientoController {
         mantenimiento.setDiasEstimados(diasEstimados);
         mantenimiento.setTecnicoAsignado(tecnicoAsignado);
         mantenimiento.setEstado("Presolicitud analizada");
+        guardarArchivos(mantenimiento, evidencias, informe);
         mantenimientoRepository.save(mantenimiento);
         return "redirect:/mantenimientos";
     }
@@ -146,8 +149,13 @@ public class MantenimientoController {
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
 
         boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
-        if (!esPropio && !esOperativo(authentication)) {
-            throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+        boolean esCliente = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+
+        // El gerente no aprueba, solo el usuario cliente que creo la solicitud
+        if (!esPropio || !esCliente) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Solo el usuario cliente que solicitó el mantenimiento puede aprobar la cotización.");
         }
 
         mantenimiento.setEstado("Orden de trabajo");
@@ -160,7 +168,7 @@ public class MantenimientoController {
         }
         mantenimientoRepository.save(mantenimiento);
 
-        return esPropio ? "redirect:/mantenimientos/cliente" : "redirect:/mantenimientos";
+        return "redirect:/mantenimientos/cliente";
     }
 
     @PostMapping("/{id}/completar")
