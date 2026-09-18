@@ -39,10 +39,10 @@
           <tbody>
             <tr th:each="p : ${proveedores}">
               <td><strong th:text="${p.nombre}">Nombre</strong></td>
-              <td><span class="status-pill" th:text="${p.nit}">900.123.456-1</span></td>
+              <td style="white-space:nowrap;"><span class="status-pill" th:text="${p.nit}" style="white-space:nowrap;">901.284.716-1</span></td>
               <td th:text="${p.contacto}">Contacto</td>
-              <td>
-                <a th:if="${p.telefono != null}" th:href="@{'tel:' + ${p.telefono}}" th:text="${p.telefono}" style="color:var(--orange-1); font-weight:500;">Teléfono</a>
+              <td style="white-space:nowrap;">
+                <a th:if="${p.telefono != null}" th:href="@{'tel:' + ${p.telefono}}" th:text="${p.telefono}" style="color:var(--orange-1); font-weight:500; white-space:nowrap;">Teléfono</a>
               </td>
               <td>
                 <a th:if="${p.email != null}" th:href="@{'mailto:' + ${p.email}}" th:text="${p.email}">email</a>
@@ -65,7 +65,7 @@
       </div>
 
       <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
-        <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 20px; border-radius:var(--radius); font-size:14px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">🏠 Volver al Panel de Opciones</a>
+        <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 20px; border-radius:var(--radius); font-size:14px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">← Volver al Panel de Opciones</a>
       </div>
     </section>
   </main>

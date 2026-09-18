@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
     Optional<Proveedor> findByNit(String nit);
+    Optional<Proveedor> findByNombreIgnoreCase(String nombre);
     boolean existsByNit(String nit);
 }
 

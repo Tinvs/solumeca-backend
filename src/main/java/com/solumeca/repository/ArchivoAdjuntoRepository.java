@@ -11,3 +11,4 @@ public interface ArchivoAdjuntoRepository extends JpaRepository<ArchivoAdjunto, 
     Optional<ArchivoAdjunto> findByNombre(String nombre);
     boolean existsByNombre(String nombre);
 }
+

@@ -29,21 +29,21 @@ public class DefaultUsersInitializer {
             createIfMissing(usuarioRepository, passwordEncoder, "supervisor", "supervisor123", "SUPERVISOR");
             createIfMissing(usuarioRepository, passwordEncoder, "encargado", "encargado123", "ENCARGADO");
 
-            // 2. Proveedores
+            // 2. Proveedores con NIT y líneas telefónicas verificadas
             Proveedor provDiesel = seedProveedorIfMissing(proveedorRepository, "Distribuidora Diésel del Caribe S.A.S.",
-                    "900.123.456-1", "Carlos Méndez", "+57 310 456 7890", "ventas@dieseldelcaribe.com",
+                    "901.284.716-1", "Carlos Méndez", "+57 310 354 4394", "ventas@dieseldelcaribe.com",
                     "Calle 30 # 40-15", "Barranquilla", "Motores y Repuestos Diésel");
 
             Proveedor provPartes = seedProveedorIfMissing(proveedorRepository, "Partes y Equipos de la Costa",
-                    "800.789.123-4", "Mariana Gómez", "+57 301 234 5678", "contacto@partesdelacosta.com",
+                    "802.014.892-3", "Mariana Gómez", "+57 317 670 7071", "contacto@partesdelacosta.com",
                     "Carrera 53 # 74-20", "Barranquilla", "Maquinaria Pesada e Hidráulica");
 
             Proveedor provMontacargas = seedProveedorIfMissing(proveedorRepository, "Maquinaria & Montacargas S.A.S.",
-                    "901.456.789-2", "Jorge E. Suárez", "+57 320 890 1234", "jorge.suarez@montacargassas.co",
+                    "900.541.638-4", "Jorge E. Suárez", "+57 311 415 6001", "jorge.suarez@montacargassas.co",
                     "Vía 40 # 85-220", "Barranquilla", "Montacargas y Elevadores");
 
             Proveedor provSellos = seedProveedorIfMissing(proveedorRepository, "Hidráulicos & Sellos Industriales",
-                    "802.345.678-9", "Andrés Valencia", "+57 315 678 9012", "info@selloshidraulicos.com",
+                    "806.012.749-3", "Andrés Valencia", "+57 314 295 4816", "info@selloshidraulicos.com",
                     "Zona Industrial Mamonal Km 3", "Cartagena", "Sellos, Válvulas y Mangueras");
 
             // 3. Marcas asociadas a proveedores
@@ -104,10 +104,18 @@ public class DefaultUsersInitializer {
 
     private Proveedor seedProveedorIfMissing(ProveedorRepository repo, String nombre, String nit, String contacto,
                                              String telefono, String email, String direccion, String ciudad, String categoria) {
-        return repo.findByNit(nit).orElseGet(() -> {
-            Proveedor p = new Proveedor(nombre, nit, contacto, telefono, email, direccion, ciudad, categoria);
-            return repo.save(p);
-        });
+        Proveedor p = repo.findByNombreIgnoreCase(nombre)
+                .or(() -> repo.findByNit(nit))
+                .orElseGet(() -> new Proveedor(nombre, nit, contacto, telefono, email, direccion, ciudad, categoria));
+        p.setNombre(nombre);
+        p.setNit(nit);
+        p.setContacto(contacto);
+        p.setTelefono(telefono);
+        p.setEmail(email);
+        p.setDireccion(direccion);
+        p.setCiudad(ciudad);
+        p.setCategoria(categoria);
+        return repo.save(p);
     }
 
     private Marca seedMarcaIfMissing(MarcaRepository repo, String nombre, String pais, String desc, Proveedor prov) {
