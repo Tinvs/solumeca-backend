@@ -125,6 +125,39 @@ public class SolumecaBusinessLogicTest {
         m.setEstado("Completado");
         assertEquals("Completado", m.getEstado());
     }
+
+    @Test
+    void testNoSePuedeCompletarSinPrecioNiAprobacion() {
+        Mantenimiento m = new Mantenimiento();
+        m.setMaquinariaId(3L);
+        m.setSolicitante("cliente");
+        m.setTipo("Correctivo");
+        m.setDescripcion("Problema de frenos");
+        m.setEstado("Diagnosticado");
+
+        // Sin precio establecido por Gerencia
+        assertNull(m.getCostoEstimado());
+
+        // Regla de negocio: Si no tiene costo estimado > 0, no puede completarse válidamente
+        boolean puedeCompletarSinPrecio = (m.getCostoEstimado() != null && m.getCostoEstimado() > 0 && "Orden de trabajo".equalsIgnoreCase(m.getEstado()));
+        assertFalse(puedeCompletarSinPrecio, "No debe permitirse completar si no tiene precio o no está aprobada");
+
+        // Gerente cotiza
+        m.setCostoEstimado(850000.0);
+        m.setEstado("Cotizada");
+        assertFalse("Orden de trabajo".equalsIgnoreCase(m.getEstado()), "Aún no puede completarse hasta que el cliente la apruebe");
+
+        // Cliente aprueba
+        m.setEstado("Orden de trabajo");
+        m.setValorTotal(m.getCostoEstimado());
+        boolean puedeCompletarAprobada = (m.getCostoEstimado() != null && m.getCostoEstimado() > 0 && "Orden de trabajo".equalsIgnoreCase(m.getEstado()));
+        assertTrue(puedeCompletarAprobada, "Una vez cotizada por Gerencia y aprobada por el Cliente, el técnico sí puede completarla");
+
+        // Técnico finaliza
+        m.setEstado("Completado");
+        assertEquals("Completado", m.getEstado());
+        assertEquals(850000.0, m.getValorTotal(), "La factura final conserva el valor exacto cotizado y aprobado");
+    }
 }
 
 

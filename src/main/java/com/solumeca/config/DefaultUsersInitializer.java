@@ -84,7 +84,39 @@ public class DefaultUsersInitializer {
 
             // 6. Mantenimientos de prueba en diversos estados
             seedMantenimientosIfEmpty(mantenimientoRepository, maquinariaRepository);
+            repararMantenimientosSinPrecio(mantenimientoRepository);
         };
+    }
+
+    private void repararMantenimientosSinPrecio(MantenimientoRepository repo) {
+        List<Mantenimiento> mantenimientos = repo.findAll();
+        for (Mantenimiento m : mantenimientos) {
+            boolean modificado = false;
+            // Si no tiene costo y quedó en Completado o En proceso, devolver a Diagnosticado para que Gerencia cotice
+            if (m.getCostoEstimado() == null || m.getCostoEstimado() <= 0) {
+                if ("Completado".equalsIgnoreCase(m.getEstado()) || "Orden de trabajo".equalsIgnoreCase(m.getEstado()) || "En proceso".equalsIgnoreCase(m.getEstado())) {
+                    m.setEstado("Diagnosticado");
+                    if (m.getAnalisis() == null || m.getAnalisis().isBlank()) {
+                        m.setAnalisis("Inspección técnica de taller finalizada. Pendiente de valoración económica por Gerencia.");
+                    }
+                    if (m.getSolucion() == null || m.getSolucion().isBlank()) {
+                        m.setSolucion("Mantenimiento mecánico y pruebas de funcionamiento.");
+                    }
+                    if (m.getDiasEstimados() == null || m.getDiasEstimados() <= 0) {
+                        m.setDiasEstimados(2);
+                    }
+                    modificado = true;
+                }
+            }
+            // Normalizar solicitante para que el usuario cliente pueda visualizar y aprobar
+            if ("equipo-tecnico".equalsIgnoreCase(m.getSolicitante()) || m.getSolicitante() == null || m.getSolicitante().isBlank()) {
+                m.setSolicitante("usuario");
+                modificado = true;
+            }
+            if (modificado) {
+                repo.save(m);
+            }
+        }
     }
 
     private void createIfMissing(UsuarioRepository usuarioRepository,

@@ -98,7 +98,7 @@
                    class="action-btn-sm btn-analizar" style="margin-bottom:4px; display:block; text-align:center;">
                   🔍 Diagnóstico Técnico
                 </a>
-                <span th:if="${!esTecnico && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                <span th:if="${!esTecnico && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,255,255,0.08); color:var(--steel-light); border:1px solid rgba(255,255,255,0.15); border-radius:4px; margin-bottom:4px;">
                   ⏳ Pendiente diagnóstico
                 </span>
@@ -107,11 +107,16 @@
                   ⏳ En revisión de taller
                 </span>
 
-                <!-- 2. Si fue diagnosticada y es gerente: botón de cotizar y facturar -->
-                <a th:if="${esAdmin && m.estado == 'Diagnosticado'}"
+                <!-- 2. Si es Gerente: botón para fijar precio y crear cotización/factura si no tiene precio o está diagnosticada -->
+                <a th:if="${esAdmin && (m.estado == 'Diagnosticado' || m.costoEstimado == null || m.costoEstimado <= 0)}"
                    th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
                    class="action-btn-sm btn-cotizar" style="margin-bottom:4px; display:block; text-align:center;">
                   💰 Cotizar / Facturar
+                </a>
+                <a th:if="${esAdmin && m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Cotizada'}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
+                   class="action-btn-sm" style="background:#475569; color:#ffffff; margin-bottom:4px; display:block; text-align:center;">
+                  ✏️ Ajustar Cotización
                 </a>
                 <span th:if="${!esAdmin && !esCliente && m.estado == 'Diagnosticado'}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:4px; margin-bottom:4px;">
@@ -122,27 +127,31 @@
                   ⏳ Calculando presupuesto
                 </span>
 
-                <!-- 3. Si ya fue cotizada: botón de aprobar a orden de trabajo (EXCLUSIVO DEL CLIENTE) -->
-                <form th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
+                <!-- 3. Si ya fue cotizada con precio: botón de aprobar a orden de trabajo (EXCLUSIVO DEL CLIENTE) -->
+                <form th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
                       th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST" style="display:inline;">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <button type="submit" class="action-btn-sm btn-aprobar" style="margin-bottom:4px; width:100%;">
                     ✓ Aprobar Mantenimiento
                   </button>
                 </form>
-                <span th:if="${!esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
+                <span th:if="${!esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,143,28,0.15); color:var(--orange-2); border:1px solid rgba(255,143,28,0.3); border-radius:4px; margin-bottom:4px;">
                   ⏳ Esperando aprobación cliente
                 </span>
 
-                <!-- 4. Si es orden de trabajo y es técnico: botón de marcar completado -->
-                <form th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
+                <!-- 4. Si es orden de trabajo y es técnico: botón de marcar completado (REQUIERE PRECIO Y APROBACIÓN PREVIA) -->
+                <form th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && m.costoEstimado != null && m.costoEstimado > 0}"
                       th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST" style="display:inline;">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <button type="submit" class="action-btn-sm btn-completar" style="margin-bottom:4px; width:100%;">
                     ✓ Finalizar Trabajo
                   </button>
                 </form>
+                <span th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
+                      style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); border-radius:4px; margin-bottom:4px;">
+                  ⚠️ Requiere cotización de Gerencia
+                </span>
                 <span th:if="${!esTecnico && !esCliente && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(2,132,199,0.15); color:#38bdf8; border:1px solid rgba(2,132,199,0.3); border-radius:4px; margin-bottom:4px;">
                   🔧 En taller técnico
@@ -152,11 +161,11 @@
                   🔧 Máquina en mantenimiento
                 </span>
 
-                <!-- Factura / Cotización link -->
-                <a th:if="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado' || m.costoEstimado != null}"
+                <!-- Factura / Cotización oficial: SOLO se muestra si Gerencia ya fijó el precio -->
+                <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && (m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
                    th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
                    class="action-btn-sm btn-factura" style="margin-bottom:4px; display:block; text-align:center;">
-                  📄 Factura / Orden
+                  📄 <span th:text="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada'} ? 'Ver Cotización' : 'Factura / Orden'">Factura / Orden</span>
                 </a>
 
                 <!-- Editar datos generales (operativo) -->

@@ -129,34 +129,53 @@
         <div th:if="${!esSolicitud}" style="margin-top:14px;">
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
             <div class="form-row">
-              <label for="estado" style="display:block; margin-bottom:6px; font-weight:600;">Estado</label>
-              <select id="estado" name="estado"
+              <label for="solicitante" style="display:block; margin-bottom:6px; font-weight:600;">Cliente / Propietario del Equipo *</label>
+              <select id="solicitante" name="solicitante" required
                       style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
-                <option th:selected="${mantenimiento.estado == 'Pendiente'}">Pendiente</option>
-                <option th:selected="${mantenimiento.estado == 'En proceso'}">En proceso</option>
-                <option th:selected="${mantenimiento.estado == 'Completado'}">Completado</option>
+                <option th:each="cliente : ${clientes}" th:value="${cliente.username}"
+                        th:text="${cliente.username + ' (Cliente)'}"
+                        th:selected="${mantenimiento.solicitante == cliente.username || (mantenimiento.solicitante == null && cliente.username == 'usuario')}">usuario</option>
+                <option th:if="${clientes == null || #lists.isEmpty(clientes)}" value="usuario" selected>usuario (Cliente)</option>
               </select>
             </div>
+
             <div class="form-row">
               <label for="tecnicoAsignado" style="display:block; margin-bottom:6px; font-weight:600;">Técnico asignado</label>
               <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" th:value="${mantenimiento.tecnicoAsignado}" placeholder="Usuario del técnico" style="width:100%;">
             </div>
           </div>
 
-          <div class="form-row" style="margin-top:14px;">
-            <label class="file-upload-card" for="informe" style="display:flex; align-items:center; gap:12px; padding:12px 16px;">
-              <div class="file-upload-card__icon">↑</div>
-              <div>
-                <span id="informeTexto" style="display:block; font-weight:600;">Subir informe técnico PDF o Word</span>
-                <small>PDF, DOC o DOCX</small>
-              </div>
-              <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx" style="display:none;">
-            </label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:14px;">
+            <div class="form-row">
+              <label for="estado" style="display:block; margin-bottom:6px; font-weight:600;">Estado del Proceso</label>
+              <select id="estado" name="estado"
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <!-- En creación: solo Presolicitud o Pendiente -->
+                <option th:if="${!esEdicion}" value="Presolicitud" selected>Presolicitud (Para Diagnóstico en Taller)</option>
+                <option th:if="${!esEdicion}" value="Pendiente">Pendiente</option>
+                <!-- En edición: conservar o avanzar válidamente -->
+                <option th:if="${esEdicion}" th:value="${mantenimiento.estado}" th:text="${mantenimiento.estado}" selected></option>
+                <option th:if="${esEdicion && mantenimiento.estado != 'Presolicitud'}" value="Presolicitud">Presolicitud</option>
+                <option th:if="${esEdicion && mantenimiento.estado != 'Diagnosticado'}" value="Diagnosticado">Diagnosticado</option>
+                <option th:if="${esEdicion && mantenimiento.costoEstimado != null && mantenimiento.costoEstimado > 0 && mantenimiento.estado != 'Cotizada'}" value="Cotizada">Cotizada</option>
+                <option th:if="${esEdicion && mantenimiento.costoEstimado != null && mantenimiento.costoEstimado > 0 && mantenimiento.estado != 'Orden de trabajo'}" value="Orden de trabajo">Orden de trabajo</option>
+                <option th:if="${esEdicion && mantenimiento.costoEstimado != null && mantenimiento.costoEstimado > 0 && mantenimiento.estado == 'Orden de trabajo'}" value="Completado">Completado</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label class="file-upload-card" for="informe" style="display:flex; align-items:center; gap:12px; padding:12px 16px; height:48px; box-sizing:border-box;">
+                <div class="file-upload-card__icon">↑</div>
+                <div>
+                  <span id="informeTexto" style="display:block; font-weight:600; font-size:13px;">Subir informe técnico PDF/Word</span>
+                </div>
+                <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx" style="display:none;">
+              </label>
+            </div>
           </div>
         </div>
 
         <input th:if="${esSolicitud}" type="hidden" name="estado" value="Presolicitud">
-        <input th:if="${!esSolicitud}" type="hidden" name="solicitante" value="equipo-tecnico">
 
         <!-- BOTÓN DE ENVÍO -->
         <button class="btn btn--primary" type="submit" style="margin-top:22px; width:100%; padding:14px; font-size:15px; font-weight:700;"

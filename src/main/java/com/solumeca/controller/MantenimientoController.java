@@ -52,6 +52,9 @@ public class MantenimientoController {
     @Autowired
     private ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
+    @Autowired
+    private com.solumeca.repository.UsuarioRepository usuarioRepository;
+
     @GetMapping
     public String listar(Authentication authentication, Model model) {
         if (authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
@@ -81,8 +84,21 @@ public class MantenimientoController {
         if (mantenimiento.getFecha() == null) {
             mantenimiento.setFecha(LocalDate.now());
         }
-        if (mantenimiento.getEstado() == null || mantenimiento.getEstado().isBlank()) {
-            mantenimiento.setEstado("Pendiente");
+        // Jamás permitir que se cree directamente en 'Completado' o 'Orden de trabajo' sin cotización ni aprobación
+        if (mantenimiento.getEstado() == null || mantenimiento.getEstado().isBlank()
+                || "Completado".equalsIgnoreCase(mantenimiento.getEstado())
+                || "Orden de trabajo".equalsIgnoreCase(mantenimiento.getEstado())
+                || "En proceso".equalsIgnoreCase(mantenimiento.getEstado())) {
+            if (mantenimiento.getAnalisis() != null && !mantenimiento.getAnalisis().isBlank()) {
+                mantenimiento.setEstado("Diagnosticado");
+            } else {
+                mantenimiento.setEstado("Presolicitud");
+            }
+        }
+        // Si el solicitante no está asignado o es genérico 'equipo-tecnico', asociarlo al cliente 'usuario'
+        if (mantenimiento.getSolicitante() == null || mantenimiento.getSolicitante().isBlank()
+                || "equipo-tecnico".equalsIgnoreCase(mantenimiento.getSolicitante())) {
+            mantenimiento.setSolicitante("usuario");
         }
         guardarArchivos(mantenimiento, evidencias, informe);
         mantenimientoRepository.save(mantenimiento);
@@ -191,8 +207,13 @@ public class MantenimientoController {
     @GetMapping("/cliente")
     public String misSolicitudes(Authentication authentication, Model model) {
         String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "usuario";
-        model.addAttribute("mantenimientos", mantenimientoRepository
-                .findBySolicitanteOrderByFechaDesc(username));
+        java.util.List<Mantenimiento> misMantenimientos = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
+                .filter(m -> username.equalsIgnoreCase(m.getSolicitante())
+                          || "usuario".equalsIgnoreCase(m.getSolicitante())
+                          || "cliente".equalsIgnoreCase(m.getSolicitante())
+                          || "equipo-tecnico".equalsIgnoreCase(m.getSolicitante()))
+                .collect(Collectors.toList());
+        model.addAttribute("mantenimientos", misMantenimientos);
         model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
                 .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
@@ -304,13 +325,24 @@ public class MantenimientoController {
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
 
-        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
         boolean esCliente = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
+        boolean esGenerico = "equipo-tecnico".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "cliente".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante());
 
-        if (!esPropio || !esCliente) {
+        if (!esCliente && !esPropio && !esGenerico) {
             throw new org.springframework.security.access.AccessDeniedException(
-                    "Solo el usuario cliente que solicitó el mantenimiento puede aprobar la cotización.");
+                    "Solo un usuario cliente puede aprobar la cotización.");
+        }
+
+        if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
+            throw new IllegalStateException("La cotización no tiene precio fijado por la Gerencia.");
+        }
+
+        if (authentication != null && authentication.getName() != null) {
+            mantenimiento.setSolicitante(authentication.getName());
         }
 
         mantenimiento.setEstado("Orden de trabajo");
@@ -318,9 +350,7 @@ public class MantenimientoController {
         if (mantenimiento.getNumeroOrden() == null || mantenimiento.getNumeroOrden().isBlank()) {
             mantenimiento.setNumeroOrden(String.format("ORD-%d-%03d", LocalDate.now().getYear(), mantenimiento.getId()));
         }
-        if (mantenimiento.getValorTotal() == null) {
-            mantenimiento.setValorTotal(mantenimiento.getCostoEstimado() != null ? mantenimiento.getCostoEstimado() : 0.0);
-        }
+        mantenimiento.setValorTotal(mantenimiento.getCostoEstimado());
         mantenimientoRepository.save(mantenimiento);
 
         if (mantenimiento.getMaquinariaId() != null) {
@@ -336,15 +366,26 @@ public class MantenimientoController {
     // =========================================================================
     // 4. COMPLETAR / FINALIZAR MANTENIMIENTO (EXCLUSIVO DEL TÉCNICO EN TALLER)
     // El técnico finaliza el trabajo mecánico y restablece la máquina a Operativa.
+    // NUNCA se permite completar si Gerencia no creó el precio o el cliente no aprobó.
     // =========================================================================
     @PostMapping("/{id}/completar")
     public String completar(@PathVariable Long id, Authentication authentication) {
         exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+
+        // Validación estricta: NO se puede finalizar si no ha sido cotizado por Gerencia
+        if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
+            throw new IllegalStateException("No se puede finalizar el mantenimiento porque la Gerencia aún no ha establecido el precio comercial.");
+        }
+        // Validación estricta: El mantenimiento debe estar aprobado por el cliente como 'Orden de trabajo'
+        if (!"Orden de trabajo".equalsIgnoreCase(mantenimiento.getEstado()) && !"En proceso".equalsIgnoreCase(mantenimiento.getEstado())) {
+            throw new IllegalStateException("El mantenimiento debe ser primero aprobado por el usuario cliente como Orden de trabajo.");
+        }
+
         mantenimiento.setEstado("Completado");
-        if (mantenimiento.getValorTotal() == null) {
-            mantenimiento.setValorTotal(mantenimiento.getCostoEstimado() != null ? mantenimiento.getCostoEstimado() : 0.0);
+        if (mantenimiento.getValorTotal() == null || mantenimiento.getValorTotal() <= 0) {
+            mantenimiento.setValorTotal(mantenimiento.getCostoEstimado());
         }
         mantenimientoRepository.save(mantenimiento);
 
@@ -363,9 +404,18 @@ public class MantenimientoController {
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
 
-        boolean esPropio = authentication != null && authentication.getName().equals(mantenimiento.getSolicitante());
+        boolean esPropio = authentication != null && (authentication.getName().equals(mantenimiento.getSolicitante())
+                || "equipo-tecnico".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "cliente".equalsIgnoreCase(mantenimiento.getSolicitante())
+                || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante()));
+
         if (!esPropio && !esOperativo(authentication)) {
             throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+        }
+
+        // Validación: La factura/cotización no puede verse sin precio
+        if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
+            throw new IllegalStateException("La cotización / factura aún no ha sido creada con precio por la Gerencia.");
         }
 
         com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
@@ -396,13 +446,30 @@ public class MantenimientoController {
         actual.setMaquinariaId(datos.getMaquinariaId());
         actual.setTipo(datos.getTipo());
         actual.setDescripcion(datos.getDescripcion());
-        actual.setEstado(datos.getEstado());
+        if (datos.getSolicitante() != null && !datos.getSolicitante().isBlank()) {
+            actual.setSolicitante(datos.getSolicitante());
+        }
+
+        // Si intentan poner 'Completado' en edición sin tener precio o sin aprobación, bloquearlo
+        if ("Completado".equalsIgnoreCase(datos.getEstado())) {
+            if (actual.getCostoEstimado() == null || actual.getCostoEstimado() <= 0 || !"Orden de trabajo".equalsIgnoreCase(actual.getEstado())) {
+                datos.setEstado(actual.getEstado());
+            } else {
+                actual.setEstado("Completado");
+            }
+        } else {
+            actual.setEstado(datos.getEstado());
+        }
+
         actual.setTecnicoAsignado(datos.getTecnicoAsignado());
         if (datos.getAnalisis() != null) actual.setAnalisis(datos.getAnalisis());
         if (datos.getSolucion() != null) actual.setSolucion(datos.getSolucion());
-        if (datos.getCostoEstimado() != null) actual.setCostoEstimado(datos.getCostoEstimado());
+        if (datos.getCostoEstimado() != null && esAdmin(authentication)) {
+            actual.setCostoEstimado(datos.getCostoEstimado());
+            actual.setValorTotal(datos.getCostoEstimado());
+        }
         if (datos.getDiasEstimados() != null) actual.setDiasEstimados(datos.getDiasEstimados());
-        if (datos.getValorTotal() != null) actual.setValorTotal(datos.getValorTotal());
+        if (datos.getValorTotal() != null && esAdmin(authentication)) actual.setValorTotal(datos.getValorTotal());
         guardarArchivos(actual, evidencias, informe);
         mantenimientoRepository.save(actual);
         return "redirect:/mantenimientos";
@@ -586,6 +653,7 @@ public class MantenimientoController {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquinas", maquinariaRepository.findAll());
         model.addAttribute("marcasDisponibles", marcaRepository.findAllByOrderByNombreAsc());
+        model.addAttribute("clientes", usuarioRepository.findByRol("CLIENTE"));
         model.addAttribute("esSolicitud", esSolicitud);
     }
 }
