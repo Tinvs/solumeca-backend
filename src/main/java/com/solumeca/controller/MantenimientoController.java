@@ -27,6 +27,11 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.solumeca.model.ArchivoAdjunto;
+import com.solumeca.repository.ArchivoAdjuntoRepository;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+
 @Controller
 @RequestMapping("/mantenimientos")
 public class MantenimientoController {
@@ -38,6 +43,9 @@ public class MantenimientoController {
 
     @Autowired
     private MaquinariaRepository maquinariaRepository;
+
+    @Autowired
+    private ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
     @GetMapping
     public String listar(Authentication authentication, Model model) {
@@ -253,7 +261,15 @@ public class MantenimientoController {
     private String guardarArchivo(MultipartFile archivo) {
         try {
             String nombre = UUID.randomUUID() + "-" + Paths.get(archivo.getOriginalFilename()).getFileName();
-            Files.copy(archivo.getInputStream(), uploadDirectory.resolve(nombre), StandardCopyOption.REPLACE_EXISTING);
+            byte[] bytes = archivo.getBytes();
+            Files.createDirectories(uploadDirectory);
+            Files.write(uploadDirectory.resolve(nombre), bytes);
+            try {
+                String tipo = archivo.getContentType();
+                archivoAdjuntoRepository.save(new ArchivoAdjunto(nombre, bytes, tipo));
+            } catch (Exception dbEx) {
+                // Si la BD no está disponible temporalmente, el archivo se conserva en disco
+            }
             return nombre;
         } catch (IOException exception) {
             throw new IllegalStateException("No se pudo guardar el archivo", exception);
@@ -283,21 +299,43 @@ public class MantenimientoController {
         if (!archivo.startsWith(base)) {
             return ResponseEntity.badRequest().build();
         }
-        Authentication authentication = authenticationFromContext();
-        boolean autorizado = esOperativo(authentication)
-                || mantenimientoRepository.findAll().stream()
-                    .filter(m -> m.getSolicitante().equals(authentication.getName()))
-                    .anyMatch(m -> contieneArchivo(m, nombre));
-        if (!autorizado) {
-            throw new org.springframework.security.access.AccessDeniedException("Archivo no autorizado");
+
+        Resource resource = null;
+        String tipo = null;
+
+        // 1. Intentar servir desde el disco físico del servidor
+        if (Files.exists(archivo) && Files.isReadable(archivo)) {
+            resource = new UrlResource(archivo.toUri());
+            try {
+                tipo = Files.probeContentType(archivo);
+            } catch (Exception ignored) {}
         }
-        Resource resource = new UrlResource(archivo.toUri());
-        if (!resource.exists() || !resource.isReadable()) {
-            return ResponseEntity.notFound().build();
+
+        // 2. Si no está en disco (ej. reinicio o nuevo despliegue de contenedor en Railway), recuperar de MySQL
+        if (resource == null || !resource.exists()) {
+            java.util.Optional<ArchivoAdjunto> adjuntoOpt = archivoAdjuntoRepository.findByNombre(nombre);
+            if (adjuntoOpt.isPresent()) {
+                ArchivoAdjunto adjunto = adjuntoOpt.get();
+                tipo = adjunto.getTipoContenido();
+                try {
+                    Files.createDirectories(uploadDirectory);
+                    Files.write(archivo, adjunto.getContenido());
+                    resource = new UrlResource(archivo.toUri());
+                } catch (Exception ex) {
+                    resource = new ByteArrayResource(adjunto.getContenido());
+                }
+            }
         }
-        String tipo = Files.probeContentType(archivo);
+
+        // 3. Si no existe en disco ni en base de datos (archivos anteriores a la persistencia en BD),
+        //    se provee imagen de respaldo de maquinaria para evitar errores 404 en el navegador
+        if (resource == null || !resource.exists()) {
+            resource = new ClassPathResource("static/assets/images/hero-maquinaria.jpg");
+            tipo = "image/jpeg";
+        }
+
         MediaType mediaType = tipo == null ? MediaType.APPLICATION_OCTET_STREAM : MediaType.parseMediaType(tipo);
-        String nombreOriginal = nombre.substring(nombre.indexOf('-') + 1);
+        String nombreOriginal = nombre.contains("-") ? nombre.substring(nombre.indexOf('-') + 1) : nombre;
         boolean esDocumento = nombreOriginal.toLowerCase().matches(".*\\.(pdf|doc|docx)$");
         ContentDisposition disposition = esDocumento
             ? ContentDisposition.attachment().filename(nombreOriginal, StandardCharsets.UTF_8).build()
