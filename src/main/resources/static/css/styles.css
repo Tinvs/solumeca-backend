@@ -1827,6 +1827,38 @@ h1, h2, h3 {
 .dashboard-page .login-footer,
 .dashboard-page .login-footer a { color: var(--white); }
 
+.dashboard-page .login-card .form-row label {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+.dashboard-page .login-card input,
+.dashboard-page .login-card textarea,
+.dashboard-page .login-card select {
+  background: rgba(10, 14, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.dashboard-page .login-card input::placeholder,
+.dashboard-page .login-card textarea::placeholder {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.dashboard-page .login-card input:focus,
+.dashboard-page .login-card textarea:focus,
+.dashboard-page .login-card select:focus {
+  outline: none;
+  border-color: var(--orange-1);
+  background: rgba(15, 20, 26, 0.95);
+  box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.25);
+}
+
+.dashboard-page .login-card select option {
+  background: #11171c;
+  color: #ffffff;
+}
+
 .dashboard-menu li a {
   display: grid;
   grid-template-columns: 32px 1fr 24px;

@@ -136,3 +136,4 @@ Un ecosistema web integral en la nube que articula a cuatro actores clave:
 9. **Botón del Ojito para Contraseñas:** Alternancia dinámica de visibilidad en login y registro con SVG e inicializador universal en `script.js`.
 10. **Diseño y Legibilidad:** Título formal *"Presolicitud"* y etiquetas de formulario en color blanco puro (`#ffffff`) sobre el panel industrial.
 11. **Módulo de Contáctenos Conectado:** Exención de CSRF en Spring Security, almacenamiento automático de prospectos en MySQL (`mensajes_contacto`) y despacho por correo electrónico SMTP.
+
