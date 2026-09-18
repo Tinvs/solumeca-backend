@@ -1,8 +1,10 @@
 package com.solumeca.controller;
 
 import com.solumeca.model.Mantenimiento;
+import com.solumeca.model.Maquinaria;
 import com.solumeca.repository.MantenimientoRepository;
 import com.solumeca.repository.MaquinariaRepository;
+import com.solumeca.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -43,6 +45,9 @@ public class MantenimientoController {
 
     @Autowired
     private MaquinariaRepository maquinariaRepository;
+
+    @Autowired
+    private MarcaRepository marcaRepository;
 
     @Autowired
     private ArchivoAdjuntoRepository archivoAdjuntoRepository;
@@ -93,6 +98,11 @@ public class MantenimientoController {
 
     @PostMapping("/cliente")
     public String guardarSolicitud(@ModelAttribute Mantenimiento solicitud,
+                                   @RequestParam(name = "nombreEquipo", required = false) String nombreEquipo,
+                                   @RequestParam(name = "marcaEquipo", required = false) String marcaEquipo,
+                                   @RequestParam(name = "marcaPersonalizada", required = false) String marcaPersonalizada,
+                                   @RequestParam(name = "modeloEquipo", required = false) String modeloEquipo,
+                                   @RequestParam(name = "numeroSerie", required = false) String numeroSerie,
                                    Authentication authentication,
                                    @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
                                    @RequestParam(name = "informe", required = false) MultipartFile informe)
@@ -103,6 +113,36 @@ public class MantenimientoController {
             solicitud.setTipo("Solicitud cliente");
         }
         solicitud.setFecha(LocalDate.now());
+
+        // Si el cliente ingresa datos de su maquinaria, registrarla automáticamente en el inventario
+        if (nombreEquipo != null && !nombreEquipo.trim().isEmpty()) {
+            String marcaFinal = ("Otra".equalsIgnoreCase(marcaEquipo) && marcaPersonalizada != null && !marcaPersonalizada.trim().isEmpty())
+                    ? marcaPersonalizada.trim()
+                    : (marcaEquipo != null && !marcaEquipo.trim().isEmpty() ? marcaEquipo.trim() : "CATERPILLAR");
+
+            long count = maquinariaRepository.count() + 1;
+            String codigo = String.format("MQ-%03d", count);
+            while (maquinariaRepository.existsByCodigo(codigo)) {
+                count++;
+                codigo = String.format("MQ-%03d", count);
+            }
+
+            String serieFinal = (numeroSerie != null && !numeroSerie.trim().isEmpty())
+                    ? numeroSerie.trim()
+                    : ("SN-" + codigo + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase());
+
+            Maquinaria nuevaMaquina = new Maquinaria(
+                    codigo,
+                    nombreEquipo.trim(),
+                    marcaFinal,
+                    modeloEquipo != null ? modeloEquipo.trim() : "",
+                    serieFinal,
+                    "En mantenimiento"
+            );
+            nuevaMaquina = maquinariaRepository.save(nuevaMaquina);
+            solicitud.setMaquinariaId(nuevaMaquina.getId());
+        }
+
         guardarArchivos(solicitud, evidencias, informe);
         mantenimientoRepository.save(solicitud);
         return "redirect:/mantenimientos/cliente";
@@ -192,6 +232,14 @@ public class MantenimientoController {
             mantenimiento.setValorTotal(mantenimiento.getCostoEstimado() != null ? mantenimiento.getCostoEstimado() : 0.0);
         }
         mantenimientoRepository.save(mantenimiento);
+
+        if (mantenimiento.getMaquinariaId() != null) {
+            maquinariaRepository.findById(mantenimiento.getMaquinariaId()).ifPresent(m -> {
+                m.setEstado("Operativa");
+                maquinariaRepository.save(m);
+            });
+        }
+
         return "redirect:/mantenimientos";
     }
 
@@ -361,6 +409,7 @@ public class MantenimientoController {
     private void prepararFormulario(Model model, Mantenimiento mantenimiento, boolean esSolicitud) {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquinas", maquinariaRepository.findAll());
+        model.addAttribute("marcasDisponibles", marcaRepository.findAllByOrderByNombreAsc());
         model.addAttribute("esSolicitud", esSolicitud);
     }
 }

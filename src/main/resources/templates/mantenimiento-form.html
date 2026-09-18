@@ -3,72 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${esEdicion} ? 'Modificar mantenimiento | SOLUMECA' : 'Presolicitud | SOLUMECA'">Presolicitud | SOLUMECA</title>
+  <title th:text="${esEdicion} ? 'Modificar mantenimiento | SOLUMECA' : (${esSolicitud} ? 'Solicitar mantenimiento | SOLUMECA' : 'Orden de Trabajo | SOLUMECA')">Solicitar mantenimiento | SOLUMECA</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="dashboard-page">
   <main class="workspace-shell">
-    <section class="workspace-panel">
+    <section class="workspace-panel" style="max-width:760px; margin:20px auto;">
       <div style="margin-bottom:14px;">
-        <p class="plate-tag" style="margin-bottom:0;"><span class="plate-tag__bolt"></span><span th:text="${esSolicitud} ? 'SOLUMECA // PRESOLICITUD TÉCNICA' : 'SOLUMECA // ORDEN DE TRABAJO'">SOLUMECA // PRESOLICITUD TÉCNICA</span></p>
+        <p class="plate-tag" style="margin-bottom:0;">
+          <span class="plate-tag__bolt"></span>
+          <span th:text="${esSolicitud} ? 'SOLUMECA S.A.S. // SOLICITAR MANTENIMIENTO' : (${esEdicion} ? 'SOLUMECA // MODIFICAR MANTENIMIENTO' : 'SOLUMECA // ORDEN DE TRABAJO')">SOLUMECA S.A.S. // SOLICITAR MANTENIMIENTO</span>
+        </p>
       </div>
-      <h1 class="login-title" th:text="${esEdicion} ? 'Modificar mantenimiento' : 'Presolicitud'">Presolicitud</h1>
-      <p class="login-subtitle" th:text="${esSolicitud} ? 'Documenta la solicitud y deja trazabilidad del equipo.' : 'Documenta la intervención y deja trazabilidad del equipo.'">Documenta la solicitud y deja trazabilidad del equipo.</p>
+
+      <h1 class="login-title" th:text="${esEdicion} ? 'Modificar mantenimiento' : (${esSolicitud} ? 'Solicitar mantenimiento' : 'Registrar orden de trabajo')">Solicitar mantenimiento</h1>
+      <p class="login-subtitle" th:text="${esSolicitud} ? 'Complete los datos técnicos del equipo, adjunte fotos y describa la falla.' : 'Documenta la intervención técnica y deja trazabilidad del equipo.'">Complete los datos técnicos del equipo, adjunte fotos y describa la falla.</p>
+
       <form class="data-form" enctype="multipart/form-data"
-        th:action="${esEdicion} ? '/mantenimientos/' + ${mantenimiento.id} + '/editar' : (${esSolicitud ? '/mantenimientos/cliente' : '/mantenimientos'})" method="post">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <label>Máquina
-          <select name="maquinariaId" required>
-            <option value="">Selecciona una máquina</option>
-            <option th:each="maquina : ${maquinas}" th:value="${maquina.id}"
-                    th:text="${'[' + (maquina.codigo != null ? maquina.codigo : 'MQ-' + maquina.id) + '] ' + maquina.nombre + ' · ' + maquina.marca + ' (' + maquina.numeroSerie + ')'}"
-                    th:selected="${mantenimiento.maquinariaId != null && mantenimiento.maquinariaId == maquina.id}"></option>
-          </select>
-        </label>
-        <label th:if="${!esSolicitud}">Tipo
-          <select name="tipo" th:required="${!esSolicitud}">
-            <option value="Preventivo">Preventivo</option>
-            <option value="Predictivo">Predictivo</option>
-            <option value="Correctivo">Correctivo</option>
-          </select>
-        </label>
-        <input th:if="${esSolicitud}" type="hidden" name="tipo" value="Solicitud cliente">
-        <label>Descripción
-          <textarea name="descripcion" rows="5" required placeholder="Describe el trabajo, falla u observación"></textarea>
-        </label>
-        <label th:if="${!esSolicitud}">Estado
-          <select name="estado">
-            <option>Pendiente</option>
-            <option>En proceso</option>
-            <option>Completado</option>
-          </select>
-        </label>
-        <label th:if="${!esSolicitud}">Técnico asignado
-          <input type="text" name="tecnicoAsignado" th:value="${mantenimiento.tecnicoAsignado}" placeholder="Usuario del técnico">
-        </label>
-        <input th:if="${esSolicitud}" type="hidden" name="estado" value="Pendiente">
-        <input th:if="${!esSolicitud}" type="hidden" name="solicitante" value="equipo-tecnico">
-        <!-- La carga de imágenes e informes técnicos es administrada exclusivamente por el técnico -->
-        <div th:if="${!esSolicitud}" class="upload-grid">
-          <label class="custum-file-upload" for="evidencias">
-            <div class="icon"><span class="upload-icon">▣</span></div>
-            <div class="text"><span>Subir fotos o videos del trabajo</span></div>
-            <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple>
-          </label>
-          <label class="file-upload-card" for="informe">
-            <div class="file-upload-card__icon">↑</div>
-            <span>Subir informe PDF o Word</span>
-            <small>PDF, DOC o DOCX</small>
-            <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx">
-          </label>
+            th:action="${esEdicion} ? '/mantenimientos/' + ${mantenimiento.id} + '/editar' : (${esSolicitud ? '/mantenimientos/cliente' : '/mantenimientos'})"
+            method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <!-- ==========================================
+             CAMPOS DE LA MÁQUINA (SOLICITUD CLIENTE)
+             ========================================== -->
+        <div th:if="${esSolicitud}">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-row">
+              <label for="nombreEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Nombre del Equipo *</label>
+              <input type="text" id="nombreEquipo" name="nombreEquipo" placeholder="Ej: Retroexcavadora 420F2" required style="width:100%;">
+            </div>
+
+            <div class="form-row">
+              <label for="marcaEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Marca *</label>
+              <select id="marcaEquipo" name="marcaEquipo" required
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <option value="">Seleccione una marca</option>
+                <option th:each="m : ${marcasDisponibles}" th:value="${m.nombre}" th:text="${m.nombre}"></option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="CATERPILLAR">CATERPILLAR</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="TOYOTA">TOYOTA</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="KOMATSU">KOMATSU</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="BOBCAT">BOBCAT</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="YALE">YALE</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="GENIE">GENIE</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="CLARK">CLARK</option>
+                <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="RAYMOND">RAYMOND</option>
+                <option value="Otra">Otra marca...</option>
+              </select>
+              <input type="text" id="marcaPersonalizada" name="marcaPersonalizada"
+                     placeholder="Escriba el nombre de la marca" style="display:none; margin-top:8px; width:100%;"
+                     aria-label="Otra marca">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:12px;">
+            <div class="form-row">
+              <label for="modeloEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Modelo</label>
+              <input type="text" id="modeloEquipo" name="modeloEquipo" placeholder="Ej: 420F2" style="width:100%;">
+            </div>
+
+            <div class="form-row">
+              <label for="numeroSerie" style="display:block; margin-bottom:6px; font-weight:600;">Número de serie</label>
+              <input type="text" id="numeroSerie" name="numeroSerie" placeholder="Ej: CAT420F2-0091 (opcional)" style="width:100%;">
+            </div>
+          </div>
         </div>
-        <button class="btn btn--primary" type="submit" th:text="${esEdicion} ? 'Guardar cambios' : (${esSolicitud} ? 'Guardar presolicitud' : 'Guardar orden')">Guardar orden</button>
+
+        <!-- ==========================================
+             CAMPOS DE MÁQUINA (PERSONAL TÉCNICO / EDICIÓN)
+             ========================================== -->
+        <div th:if="${!esSolicitud}">
+          <div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px;">
+            <div class="form-row">
+              <label for="maquinariaId" style="display:block; margin-bottom:6px; font-weight:600;">Máquina *</label>
+              <select id="maquinariaId" name="maquinariaId" required
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <option value="">Selecciona una máquina</option>
+                <option th:each="maquina : ${maquinas}" th:value="${maquina.id}"
+                        th:text="${'[' + (maquina.codigo != null ? maquina.codigo : 'MQ-' + maquina.id) + '] ' + maquina.nombre + ' · ' + maquina.marca + ' (' + maquina.numeroSerie + ')'}"
+                        th:selected="${mantenimiento.maquinariaId != null && mantenimiento.maquinariaId == maquina.id}"></option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="tipo" style="display:block; margin-bottom:6px; font-weight:600;">Tipo *</label>
+              <select id="tipo" name="tipo"
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <option value="Preventivo" th:selected="${mantenimiento.tipo == 'Preventivo'}">Preventivo</option>
+                <option value="Correctivo" th:selected="${mantenimiento.tipo == 'Correctivo'}">Correctivo</option>
+                <option value="Predictivo" th:selected="${mantenimiento.tipo == 'Predictivo'}">Predictivo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <input th:if="${esSolicitud}" type="hidden" name="tipo" value="Solicitud cliente">
+
+        <!-- ==========================================
+             DESCRIPCIÓN DE LA FALLA O TRABAJO
+             ========================================== -->
+        <div class="form-row" style="margin-top:14px;">
+          <label for="descripcion" style="display:block; margin-bottom:6px; font-weight:600;">Descripción de la falla o requerimiento *</label>
+          <textarea id="descripcion" name="descripcion" rows="4" required style="width:100%;"
+                    th:text="${mantenimiento.descripcion}"
+                    placeholder="Describe la falla, ruidos extraños, fugas u observaciones para el diagnóstico técnico..."></textarea>
+        </div>
+
+        <!-- ==========================================
+             CARGA DE FOTOS O EVIDENCIAS
+             ========================================== -->
+        <div class="form-row" style="margin-top:16px;">
+          <label style="display:block; margin-bottom:8px; font-weight:600;">Fotos o videos del equipo / falla</label>
+          <div class="upload-grid" style="grid-template-columns: 1fr; margin:0;">
+            <label class="custum-file-upload" for="evidencias" style="min-height:100px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+              <div class="icon"><span class="upload-icon" style="font-size:26px;">📷</span></div>
+              <div class="text"><span id="evidenciasTexto" style="font-weight:600; font-size:13.5px;">Haga clic aquí para adjuntar fotos o videos</span></div>
+              <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             CAMPOS EXCLUSIVOS PERSONAL TÉCNICO
+             ========================================== -->
+        <div th:if="${!esSolicitud}" style="margin-top:14px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-row">
+              <label for="estado" style="display:block; margin-bottom:6px; font-weight:600;">Estado</label>
+              <select id="estado" name="estado"
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <option th:selected="${mantenimiento.estado == 'Pendiente'}">Pendiente</option>
+                <option th:selected="${mantenimiento.estado == 'En proceso'}">En proceso</option>
+                <option th:selected="${mantenimiento.estado == 'Completado'}">Completado</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="tecnicoAsignado" style="display:block; margin-bottom:6px; font-weight:600;">Técnico asignado</label>
+              <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" th:value="${mantenimiento.tecnicoAsignado}" placeholder="Usuario del técnico" style="width:100%;">
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:14px;">
+            <label class="file-upload-card" for="informe" style="display:flex; align-items:center; gap:12px; padding:12px 16px;">
+              <div class="file-upload-card__icon">↑</div>
+              <div>
+                <span id="informeTexto" style="display:block; font-weight:600;">Subir informe técnico PDF o Word</span>
+                <small>PDF, DOC o DOCX</small>
+              </div>
+              <input type="file" id="informe" name="informe" accept=".pdf,.doc,.docx" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <input th:if="${esSolicitud}" type="hidden" name="estado" value="Presolicitud">
+        <input th:if="${!esSolicitud}" type="hidden" name="solicitante" value="equipo-tecnico">
+
+        <!-- BOTÓN DE ENVÍO -->
+        <button class="btn btn--primary" type="submit" style="margin-top:22px; width:100%; padding:14px; font-size:15px; font-weight:700;"
+                th:text="${esEdicion} ? 'Guardar cambios' : (${esSolicitud} ? 'Solicitar mantenimiento' : 'Guardar orden')">
+          Solicitar mantenimiento
+        </button>
       </form>
-      <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <a class="panel-return" th:href="${esSolicitud} ? '/mantenimientos/cliente' : '/mantenimientos'">← Volver al listado</a>
-        <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:8px 16px; border-radius:var(--radius); font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">Panel de Opciones</a>
+
+      <!-- BOTONES INFERIORES: VOLVER AL LISTADO (IZQ) Y PANEL DE OPCIONES (DER) -->
+      <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <a class="panel-return" th:href="${esSolicitud} ? '/mantenimientos/cliente' : '/mantenimientos'" style="margin:0;">← Volver al listado</a>
+        <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 18px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">Panel de Opciones</a>
       </div>
     </section>
   </main>
+
+  <script>
+    // Mostrar u ocultar campo de marca personalizada
+    const selectMarca = document.getElementById('marcaEquipo');
+    const inputOtra = document.getElementById('marcaPersonalizada');
+    if (selectMarca && inputOtra) {
+      selectMarca.addEventListener('change', function() {
+        if (this.value === 'Otra') {
+          inputOtra.style.display = 'block';
+          inputOtra.required = true;
+          inputOtra.focus();
+        } else {
+          inputOtra.style.display = 'none';
+          inputOtra.required = false;
+        }
+      });
+    }
+
+    // Feedback visual al seleccionar fotos
+    const fileInput = document.getElementById('evidencias');
+    const textoEvidencias = document.getElementById('evidenciasTexto');
+    if (fileInput && textoEvidencias) {
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          textoEvidencias.textContent = '✓ ' + this.files.length + ' foto(s) / video(s) seleccionada(s)';
+          textoEvidencias.style.color = '#ff8f1c';
+        }
+      });
+    }
+
+    // Feedback visual al seleccionar informe técnico
+    const informeInput = document.getElementById('informe');
+    const textoInforme = document.getElementById('informeTexto');
+    if (informeInput && textoInforme) {
+      informeInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          textoInforme.textContent = '✓ Archivo: ' + this.files[0].name;
+          textoInforme.style.color = '#ff8f1c';
+        }
+      });
+    }
+  </script>
 </body>
 </html>
