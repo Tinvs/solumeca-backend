@@ -10,7 +10,8 @@ public class EncargadoController {
 
     @GetMapping("/encargado/dashboard")
     public String dashboard(Authentication authentication, Model model) {
-        model.addAttribute("username", authentication.getName());
+        String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "encargado";
+        model.addAttribute("username", username);
         return "encargado-dashboard";
     }
 }

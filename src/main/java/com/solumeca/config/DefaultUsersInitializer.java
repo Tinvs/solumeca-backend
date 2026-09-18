@@ -136,10 +136,7 @@ public class DefaultUsersInitializer {
                                  String username,
                                  String password,
                                  String role) {
-        if (usuarioRepository.findByUsername(username).isPresent()) {
-            return;
-        }
-        Usuario usuario = new Usuario();
+        Usuario usuario = usuarioRepository.findByUsername(username).orElseGet(Usuario::new);
         usuario.setUsername(username);
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setRol(role);

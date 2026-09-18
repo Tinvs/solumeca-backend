@@ -10,7 +10,8 @@ public class ClienteController {
 
     @GetMapping("/cliente/dashboard")
     public String dashboard(Authentication authentication, Model model) {
-        model.addAttribute("username", authentication.getName());
+        String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "cliente";
+        model.addAttribute("username", username);
         return "cliente-dashboard";
     }
 }

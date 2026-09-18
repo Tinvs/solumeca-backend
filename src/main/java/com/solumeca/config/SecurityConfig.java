@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/index.html", "/nosotros.html", "/servicios.html",
                     "/proyectos.html", "/contacto.html", "/login.html", "/registro.html", "/registro", "/api/contacto",
-                    "/css/**", "/js/**", "/assets/**", "/api/session"
+                    "/css/**", "/js/**", "/assets/**", "/api/session", "/error"
                 ).permitAll()
                 .requestMatchers("/repuestos/**").hasAnyRole("ADMIN", "SUPERVISOR", "TECNICO", "ENCARGADO")
                 .requestMatchers("/admin/proveedores/**", "/admin/marcas/**").hasAnyRole("ADMIN", "SUPERVISOR", "ENCARGADO")
