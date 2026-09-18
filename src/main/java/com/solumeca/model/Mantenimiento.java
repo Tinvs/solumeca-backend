@@ -38,10 +38,10 @@ public class Mantenimiento {
     @Column(name = "informe_archivo", length = 500)
     private String informeArchivo;
 
-    @Column(name = "analisis", length = 1000)
+    @Column(name = "analisis", columnDefinition = "TEXT")
     private String analisis;
 
-    @Column(name = "solucion", length = 1000)
+    @Column(name = "solucion", columnDefinition = "TEXT")
     private String solucion;
 
     @Column(name = "costo_estimado")
@@ -59,7 +59,7 @@ public class Mantenimiento {
     @Column(name = "fecha_aprobacion")
     private LocalDate fechaAprobacion;
 
-    @Column(name = "motivo_rechazo", length = 1000)
+    @Column(name = "motivo_rechazo", columnDefinition = "TEXT")
     private String motivoRechazo;
 
     public Long getId() { return id; }

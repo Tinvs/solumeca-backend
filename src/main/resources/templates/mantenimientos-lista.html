@@ -112,13 +112,13 @@
                 <span th:if="${m.informeArchivo == null && m.archivosEvidencia == null}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
               </td>
               <td style="white-space:nowrap;">
-                <!-- 1. Si es presolicitud y es técnico: botón de diagnosticar (sin costo) -->
-                <a th:if="${esTecnico && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                <!-- 1. Si es presolicitud y es técnico o admin: botón de diagnosticar (sin costo) -->
+                <a th:if="${(esTecnico || esAdmin) && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
                    th:href="@{'/mantenimientos/' + ${m.id} + '/diagnosticar'}"
                    class="action-btn-sm btn-analizar" style="margin-bottom:4px; display:block; text-align:center;">
                   🔍 Diagnóstico Técnico
                 </a>
-                <span th:if="${!esTecnico && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
+                <span th:if="${!esTecnico && !esAdmin && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,255,255,0.08); color:var(--steel-light); border:1px solid rgba(255,255,255,0.15); border-radius:4px; margin-bottom:4px;">
                   ⏳ Pendiente diagnóstico
                 </span>

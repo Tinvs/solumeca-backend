@@ -231,9 +231,13 @@ public class MantenimientoController {
     // =========================================================================
     @GetMapping("/{id}/diagnosticar")
     public String formularioDiagnostico(@PathVariable Long id, Authentication authentication, Model model) {
-        exigirTecnico(authentication);
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        if (!esOperativo(authentication)) {
+            return "redirect:/mantenimientos";
+        }
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos";
+        }
         com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
@@ -243,26 +247,35 @@ public class MantenimientoController {
 
     @PostMapping("/{id}/diagnosticar")
     public String guardarDiagnostico(@PathVariable Long id,
-                                     @RequestParam String analisis,
-                                     @RequestParam String solucion,
-                                     @RequestParam Integer diasEstimados,
+                                     @RequestParam(required = false, defaultValue = "") String analisis,
+                                     @RequestParam(required = false, defaultValue = "") String solucion,
+                                     @RequestParam(required = false, defaultValue = "2") Integer diasEstimados,
                                      @RequestParam(required = false) String tecnicoAsignado,
                                      @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
                                      @RequestParam(name = "informe", required = false) MultipartFile informe,
-                                     Authentication authentication) throws IOException {
-        exigirTecnico(authentication);
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
-        mantenimiento.setAnalisis(analisis);
-        mantenimiento.setSolucion(solucion);
-        mantenimiento.setDiasEstimados(diasEstimados);
-        String tecnico = (tecnicoAsignado != null && !tecnicoAsignado.isBlank())
-                ? tecnicoAsignado
-                : (authentication != null ? authentication.getName() : "tecnico");
-        mantenimiento.setTecnicoAsignado(tecnico);
-        mantenimiento.setEstado("Diagnosticado");
-        guardarArchivos(mantenimiento, evidencias, informe);
-        mantenimientoRepository.save(mantenimiento);
+                                     Authentication authentication) {
+        if (!esOperativo(authentication)) {
+            return "redirect:/mantenimientos";
+        }
+        try {
+            Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+            if (mantenimiento == null) {
+                return "redirect:/mantenimientos";
+            }
+            mantenimiento.setAnalisis(analisis);
+            mantenimiento.setSolucion(solucion);
+            mantenimiento.setDiasEstimados(diasEstimados != null && diasEstimados > 0 ? diasEstimados : 2);
+            String tecnico = (tecnicoAsignado != null && !tecnicoAsignado.isBlank())
+                    ? tecnicoAsignado
+                    : (authentication != null ? authentication.getName() : "tecnico");
+            mantenimiento.setTecnicoAsignado(tecnico);
+            mantenimiento.setEstado("Diagnosticado");
+            guardarArchivos(mantenimiento, evidencias, informe);
+            mantenimientoRepository.save(mantenimiento);
+        } catch (Exception ex) {
+            // Protección contra cualquier fallo inesperado, redirigiendo de forma segura
+            return "redirect:/mantenimientos";
+        }
         return "redirect:/mantenimientos";
     }
 
@@ -273,9 +286,13 @@ public class MantenimientoController {
     // =========================================================================
     @GetMapping("/{id}/cotizar")
     public String formularioCotizar(@PathVariable Long id, Authentication authentication, Model model) {
-        exigirAdmin(authentication);
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        if (!esAdmin(authentication)) {
+            return "redirect:/mantenimientos";
+        }
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos";
+        }
         com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
@@ -285,22 +302,30 @@ public class MantenimientoController {
 
     @PostMapping("/{id}/cotizar")
     public String guardarCotizacion(@PathVariable Long id,
-                                    @RequestParam Double costoEstimado,
-                                    @RequestParam(required = false) Integer diasEstimados,
-                                    Authentication authentication) {
-        exigirAdmin(authentication);
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
-        mantenimiento.setCostoEstimado(costoEstimado);
-        mantenimiento.setValorTotal(costoEstimado);
-        if (diasEstimados != null && diasEstimados > 0) {
-            mantenimiento.setDiasEstimados(diasEstimados);
+                                     @RequestParam Double costoEstimado,
+                                     @RequestParam(required = false) Integer diasEstimados,
+                                     Authentication authentication) {
+        if (!esAdmin(authentication)) {
+            return "redirect:/mantenimientos";
         }
-        if (mantenimiento.getNumeroOrden() == null || mantenimiento.getNumeroOrden().isBlank()) {
-            mantenimiento.setNumeroOrden(String.format("ORD-%d-%03d", LocalDate.now().getYear(), mantenimiento.getId()));
+        try {
+            Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+            if (mantenimiento == null) {
+                return "redirect:/mantenimientos";
+            }
+            mantenimiento.setCostoEstimado(costoEstimado);
+            mantenimiento.setValorTotal(costoEstimado);
+            if (diasEstimados != null && diasEstimados > 0) {
+                mantenimiento.setDiasEstimados(diasEstimados);
+            }
+            if (mantenimiento.getNumeroOrden() == null || mantenimiento.getNumeroOrden().isBlank()) {
+                mantenimiento.setNumeroOrden(String.format("ORD-%d-%03d", LocalDate.now().getYear(), mantenimiento.getId()));
+            }
+            mantenimiento.setEstado("Cotizada");
+            mantenimientoRepository.save(mantenimiento);
+        } catch (Exception ex) {
+            return "redirect:/mantenimientos";
         }
-        mantenimiento.setEstado("Cotizada");
-        mantenimientoRepository.save(mantenimiento);
         return "redirect:/mantenimientos";
     }
 
@@ -322,8 +347,10 @@ public class MantenimientoController {
     // =========================================================================
     @PostMapping("/{id}/aprobar")
     public String aprobar(@PathVariable Long id, Authentication authentication) {
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos/cliente";
+        }
 
         boolean esCliente = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
@@ -333,12 +360,11 @@ public class MantenimientoController {
                 || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante());
 
         if (!esCliente && !esPropio && !esGenerico) {
-            throw new org.springframework.security.access.AccessDeniedException(
-                    "Solo un usuario cliente puede aprobar la cotización.");
+            return "redirect:/mantenimientos";
         }
 
         if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
-            throw new IllegalStateException("La cotización no tiene precio fijado por la Gerencia.");
+            return "redirect:/mantenimientos/cliente";
         }
 
         if (authentication != null && authentication.getName() != null) {
@@ -371,8 +397,10 @@ public class MantenimientoController {
     public String rechazar(@PathVariable Long id,
                            @RequestParam(name = "motivo", required = false) String motivo,
                            Authentication authentication) {
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos/cliente";
+        }
 
         boolean esCliente = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
@@ -382,8 +410,7 @@ public class MantenimientoController {
                 || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante());
 
         if (!esCliente && !esPropio && !esGenerico) {
-            throw new org.springframework.security.access.AccessDeniedException(
-                    "Solo el usuario cliente puede indicar desacuerdo con la cotización.");
+            return "redirect:/mantenimientos";
         }
 
         String motivoLimpio = (motivo != null && !motivo.isBlank())
@@ -404,23 +431,27 @@ public class MantenimientoController {
     }
 
     // =========================================================================
-    // 4. COMPLETAR / FINALIZAR MANTENIMIENTO (EXCLUSIVO DEL TÉCNICO EN TALLER)
-    // El técnico finaliza el trabajo mecánico y restablece la máquina a Operativa.
+    // 4. COMPLETAR / FINALIZAR MANTENIMIENTO (TÉCNICO O GERENTE EN TALLER)
+    // El personal operativo finaliza el trabajo mecánico y restablece la máquina a Operativa.
     // NUNCA se permite completar si Gerencia no creó el precio o el cliente no aprobó.
     // =========================================================================
     @PostMapping("/{id}/completar")
     public String completar(@PathVariable Long id, Authentication authentication) {
-        exigirTecnico(authentication);
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        if (!esOperativo(authentication)) {
+            return "redirect:/mantenimientos";
+        }
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos";
+        }
 
         // Validación estricta: NO se puede finalizar si no ha sido cotizado por Gerencia
         if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
-            throw new IllegalStateException("No se puede finalizar el mantenimiento porque la Gerencia aún no ha establecido el precio comercial.");
+            return "redirect:/mantenimientos";
         }
         // Validación estricta: El mantenimiento debe estar aprobado por el cliente como 'Orden de trabajo'
         if (!"Orden de trabajo".equalsIgnoreCase(mantenimiento.getEstado()) && !"En proceso".equalsIgnoreCase(mantenimiento.getEstado())) {
-            throw new IllegalStateException("El mantenimiento debe ser primero aprobado por el usuario cliente como Orden de trabajo.");
+            return "redirect:/mantenimientos";
         }
 
         mantenimiento.setEstado("Completado");
@@ -441,8 +472,10 @@ public class MantenimientoController {
 
     @GetMapping("/{id}/factura")
     public String verFactura(@PathVariable Long id, Authentication authentication, Model model) {
-        Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
+        Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
+        if (mantenimiento == null) {
+            return "redirect:/mantenimientos";
+        }
 
         boolean esPropio = authentication != null && (authentication.getName().equals(mantenimiento.getSolicitante())
                 || "equipo-tecnico".equalsIgnoreCase(mantenimiento.getSolicitante())
@@ -450,12 +483,12 @@ public class MantenimientoController {
                 || "usuario".equalsIgnoreCase(mantenimiento.getSolicitante()));
 
         if (!esPropio && !esOperativo(authentication)) {
-            throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+            return "redirect:/mantenimientos";
         }
 
         // Validación: La factura/cotización no puede verse sin precio
         if (mantenimiento.getCostoEstimado() == null || mantenimiento.getCostoEstimado() <= 0) {
-            throw new IllegalStateException("La cotización / factura aún no ha sido creada con precio por la Gerencia.");
+            return "redirect:/mantenimientos";
         }
 
         com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);

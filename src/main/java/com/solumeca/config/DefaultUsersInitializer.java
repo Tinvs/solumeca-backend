@@ -13,6 +13,9 @@ import java.util.*;
 @Configuration
 public class DefaultUsersInitializer {
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
     @Bean
     CommandLineRunner initializeDefaultData(UsuarioRepository usuarioRepository,
                                            PasswordEncoder passwordEncoder,
@@ -22,6 +25,15 @@ public class DefaultUsersInitializer {
                                            RepuestoRepository repuestoRepository,
                                            MantenimientoRepository mantenimientoRepository) {
         return args -> {
+            if (jdbcTemplate != null) {
+                try {
+                    jdbcTemplate.execute("ALTER TABLE mantenimientos MODIFY COLUMN analisis TEXT");
+                    jdbcTemplate.execute("ALTER TABLE mantenimientos MODIFY COLUMN solucion TEXT");
+                    jdbcTemplate.execute("ALTER TABLE mantenimientos MODIFY COLUMN descripcion TEXT");
+                    jdbcTemplate.execute("ALTER TABLE mantenimientos MODIFY COLUMN motivo_rechazo TEXT");
+                } catch (Exception ignored) {}
+            }
+
             // 1. Usuarios
             createIfMissing(usuarioRepository, passwordEncoder, "gerente", "gerente123", "ADMIN");
             createIfMissing(usuarioRepository, passwordEncoder, "usuario", "usuario123", "CLIENTE");
