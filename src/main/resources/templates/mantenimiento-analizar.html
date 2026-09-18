@@ -9,11 +9,8 @@
 <body class="dashboard-page">
   <section class="login-section">
     <div class="login-card" style="max-width: 680px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+      <div style="margin-bottom:14px;">
         <p class="plate-tag" style="margin-bottom:0;"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // EVALUACIÓN TÉCNICA</p>
-        <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:6px 14px; border-radius:var(--radius); font-size:12.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-          🏠 Panel de Opciones
-        </a>
       </div>
       <h1 class="login-title">Analizar y Cotizar Presolicitud</h1>
       <p class="login-subtitle">Defina el diagnóstico, solución técnica, técnico a cargo, tiempo y presupuesto.</p>
@@ -69,7 +66,8 @@
 
         <div class="form-row">
           <label for="tecnicoAsignado" style="color:#ffffff; font-weight:600;">5. Técnico Responsable Asignado *</label>
-          <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" placeholder="Ej: tecnico (o nombre del profesional)" th:value="${mantenimiento.tecnicoAsignado}" required
+          <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" placeholder="Ej: tecnico (o nombre del profesional)"
+                 th:value="${mantenimiento.tecnicoAsignado != null ? mantenimiento.tecnicoAsignado : (username != null ? username : 'tecnico')}" required
                  style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.25); background:rgba(10,14,18,0.85); color:#ffffff; font-family:var(--font-body); font-size:14.5px; box-sizing:border-box;">
         </div>
 
@@ -88,7 +86,7 @@
           ← Volver a mantenimientos
         </a>
         <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 18px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='var(--orange-1)'; this.style.borderColor='var(--orange-1)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(255,255,255,0.25)'">
-          🏠 Volver al Panel de Opciones
+          Panel de Opciones
         </a>
       </div>
     </div>

@@ -61,6 +61,7 @@ public class MantenimientoController {
         model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("esOperativo", esOperativo(authentication));
+        model.addAttribute("esTecnico", esTecnico(authentication));
         model.addAttribute("esCliente", false);
         return "mantenimientos-lista";
     }
@@ -161,12 +162,13 @@ public class MantenimientoController {
 
     @GetMapping("/{id}/analizar")
     public String formularioAnalisis(@PathVariable Long id, Authentication authentication, Model model) {
-        exigirOperativo(authentication);
+        exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
         com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
+        model.addAttribute("username", authentication != null ? authentication.getName() : "tecnico");
         return "mantenimiento-analizar";
     }
 
@@ -180,7 +182,7 @@ public class MantenimientoController {
                                   @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
                                   @RequestParam(name = "informe", required = false) MultipartFile informe,
                                   Authentication authentication) throws IOException {
-        exigirOperativo(authentication);
+        exigirTecnico(authentication);
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado: " + id));
         mantenimiento.setAnalisis(analisis);
@@ -332,6 +334,18 @@ public class MantenimientoController {
     private void exigirOperativo(Authentication authentication) {
         if (!esOperativo(authentication)) {
             throw new org.springframework.security.access.AccessDeniedException("No autorizado");
+        }
+    }
+
+    private boolean esTecnico(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TECNICO"));
+    }
+
+    private void exigirTecnico(Authentication authentication) {
+        if (!esTecnico(authentication)) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Acceso restringido: El análisis y cotización técnica debe ser realizado por el técnico.");
         }
     }
 

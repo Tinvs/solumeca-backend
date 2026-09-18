@@ -29,7 +29,6 @@
         </div>
         <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
           <input type="text" id="filtroMantenimientos" placeholder="🔍 Buscar máquina, estado, orden..." class="table-search-input" style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:240px; background:var(--concrete);">
-          <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:10px 16px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">🏠 Panel de Opciones</a>
           <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
           <a th:if="${esCliente}" class="btn btn--primary" href="/mantenimientos/cliente/nueva">+ Nueva presolicitud</a>
         </div>
@@ -83,12 +82,18 @@
                 <span th:if="${m.informeArchivo == null && m.archivosEvidencia == null}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
               </td>
               <td style="white-space:nowrap;">
-                <!-- Si es presolicitud y es personal operativo: botón de analizar -->
-                <a th:if="${esOperativo && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                <!-- Si es presolicitud y es técnico: botón de analizar y cotizar -->
+                <a th:if="${esTecnico && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
                    th:href="@{'/mantenimientos/' + ${m.id} + '/analizar'}"
                    class="action-btn-sm btn-analizar" style="margin-bottom:4px; display:block; text-align:center;">
                   🔍 Analizar y Cotizar
                 </a>
+
+                <!-- Si es presolicitud y es gerente/supervisor: indicar que está en espera de análisis técnico -->
+                <span th:if="${!esTecnico && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                      style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,255,255,0.08); color:var(--steel-light); border:1px solid rgba(255,255,255,0.15); border-radius:4px; margin-bottom:4px;">
+                  ⏳ Pendiente técnico
+                </span>
 
                 <!-- Si la presolicitud ya fue analizada: botón de aprobar a orden de trabajo (EXCLUSIVO DEL CLIENTE, SIN POPUP) -->
                 <form th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
@@ -99,20 +104,26 @@
                   </button>
                 </form>
 
-                <!-- Si es personal operativo (gerente, etc.) y está analizada: indicar que está en espera de aprobación del cliente -->
-                <span th:if="${esOperativo && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
+                <!-- Si no es cliente (gerente, técnico) y está analizada: indicar que está en espera de aprobación del cliente -->
+                <span th:if="${!esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada')}"
                       style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(255,143,28,0.15); color:var(--orange-2); border:1px solid rgba(255,143,28,0.3); border-radius:4px; margin-bottom:4px;">
                   ⏳ Esperando aprobación cliente
                 </span>
 
-                <!-- Si es orden de trabajo y es operativo: botón de marcar completado -->
-                <form th:if="${esOperativo && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
+                <!-- Si es orden de trabajo y es técnico: botón de marcar completado -->
+                <form th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
                       th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST" style="display:inline;">
                   <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <button type="submit" class="action-btn-sm btn-completar" style="margin-bottom:4px; width:100%;">
                     ✓ Finalizar
                   </button>
                 </form>
+
+                <!-- Si es orden de trabajo y es gerente/supervisor: indicador de trabajo en taller -->
+                <span th:if="${!esTecnico && !esCliente && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
+                      style="display:block; text-align:center; font-size:11px; padding:5px 6px; background:rgba(2,132,199,0.15); color:#38bdf8; border:1px solid rgba(2,132,199,0.3); border-radius:4px; margin-bottom:4px;">
+                  🔧 En taller técnico
+                </span>
 
                 <!-- Si es orden o completado (o tiene costo): ver factura -->
                 <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'Completado' || m.costoEstimado != null}"
