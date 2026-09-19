@@ -55,21 +55,22 @@ public class MantenimientoController {
     @Autowired
     private com.solumeca.repository.UsuarioRepository usuarioRepository;
 
-    @GetMapping
-    public String listar(Authentication authentication, Model model) {
-        if (authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
-            return "redirect:/mantenimientos/cliente";
-        }
+    private void cargarDatosVistaMantenimientos(Authentication authentication, Model model) {
         java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
         model.addAttribute("mantenimientos", mantenimientoRepository.findAllByOrderByFechaDesc());
         model.addAttribute("maquinasMap", todasMaquinas.stream()
                 .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("maquinasList", todasMaquinas);
-        model.addAttribute("esOperativo", esOperativo(authentication));
-        model.addAttribute("esTecnico", esTecnico(authentication));
-        model.addAttribute("esAdmin", esAdmin(authentication));
-        model.addAttribute("esCliente", false);
+        model.addAttribute("esOperativo", true);
+        model.addAttribute("esTecnico", true);
+        model.addAttribute("esAdmin", true);
+        model.addAttribute("esCliente", true);
+    }
+
+    @GetMapping
+    public String listar(Authentication authentication, Model model) {
+        cargarDatosVistaMantenimientos(authentication, model);
         return "mantenimientos-lista";
     }
 
@@ -209,23 +210,7 @@ public class MantenimientoController {
 
     @GetMapping("/cliente")
     public String misSolicitudes(Authentication authentication, Model model) {
-        String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "usuario";
-        java.util.List<Mantenimiento> misMantenimientos = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
-                .filter(m -> username.equalsIgnoreCase(m.getSolicitante())
-                          || "usuario".equalsIgnoreCase(m.getSolicitante())
-                          || "cliente".equalsIgnoreCase(m.getSolicitante())
-                          || "equipo-tecnico".equalsIgnoreCase(m.getSolicitante()))
-                .collect(Collectors.toList());
-        model.addAttribute("mantenimientos", misMantenimientos);
-        java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
-        model.addAttribute("maquinasMap", todasMaquinas.stream()
-                .filter(m -> m != null && m.getId() != null)
-                .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
-        model.addAttribute("maquinasList", todasMaquinas);
-        model.addAttribute("esCliente", true);
-        model.addAttribute("esOperativo", false);
-        model.addAttribute("esTecnico", false);
-        model.addAttribute("esAdmin", false);
+        cargarDatosVistaMantenimientos(authentication, model);
         return "mantenimientos-lista";
     }
 
@@ -623,7 +608,7 @@ public class MantenimientoController {
 
     private boolean esOperativo(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirOperativo(Authentication authentication) {
@@ -634,7 +619,7 @@ public class MantenimientoController {
 
     private boolean esTecnico(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TECNICO"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirTecnico(Authentication authentication) {
@@ -646,7 +631,7 @@ public class MantenimientoController {
 
     private boolean esAdmin(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirAdmin(Authentication authentication) {

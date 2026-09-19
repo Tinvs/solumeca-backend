@@ -55,13 +55,14 @@
     /* LAYOUT MASTER - DETAIL A 2 COLUMNAS GARANTIZADO */
     .master-detail-grid {
       display: grid !important;
-      grid-template-columns: minmax(0, 1fr) 520px !important;
-      gap: 24px !important;
+      grid-template-columns: minmax(0, 1fr) 460px !important;
+      gap: 20px !important;
       align-items: start !important;
-      margin-top: 20px !important;
+      margin-top: 18px !important;
+      width: 100% !important;
     }
 
-    @media (max-width: 1040px) {
+    @media (max-width: 860px) {
       .master-detail-grid {
         grid-template-columns: 1fr !important;
       }
@@ -409,10 +410,10 @@
                     class="master-row"
                     th:classappend="${iterStat.first} ? 'is-active' : ''"
                     th:attr="data-id=${m.id},
-                             data-codigo=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].codigo : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].codigo : 'MQ-012')},
-                             data-nombre=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? (maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre) : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].nombre : 'caterpila')},
-                             data-marca=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].marca : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA')},
-                             data-serie=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].numeroSerie : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].numeroSerie : '34492882')},
+                             data-codigo=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).codigo : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].codigo : 'MQ-012')},
+                             data-nombre=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? (maquinasMap.get(m.maquinariaId).nombre != null && #strings.length(maquinasMap.get(m.maquinariaId).nombre) > 20 ? #strings.substring(maquinasMap.get(m.maquinariaId).nombre, 0, 20) : maquinasMap.get(m.maquinariaId).nombre) : (maquinasList != null && !maquinasList.isEmpty() ? (maquinasList[0].nombre != null && #strings.length(maquinasList[0].nombre) > 20 ? #strings.substring(maquinasList[0].nombre, 0, 20) : maquinasList[0].nombre) : 'caterpila')},
+                             data-marca=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).marca : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA')},
+                             data-serie=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).numeroSerie : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].numeroSerie : '34492882')},
                              data-orden=${m.numeroOrden != null ? m.numeroOrden : (m.estado == 'Completado' ? 'ORD-2026-006' : 'En proceso')},
                              data-estado=${m.estado}"
                     onclick="seleccionarFila(this)">
@@ -422,16 +423,16 @@
 
                   <!-- 2. Máquina -->
                   <td style="max-width:220px; word-break:break-word; overflow-wrap:anywhere;">
-                    <span th:if="${maquinasMap != null && maquinasMap[m.maquinariaId] != null}">
-                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap[m.maquinariaId].codigo + ']'}">[MQ-012]</strong>
+                    <span th:if="${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId)}">
+                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap.get(m.maquinariaId).codigo + ']'}">[MQ-012]</strong>
                       <br>
-                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre}">Nombre</span>
-                      <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasMap[m.maquinariaId].marca}">Marca</small>
+                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasMap.get(m.maquinariaId).nombre != null && #strings.length(maquinasMap.get(m.maquinariaId).nombre) > 20 ? #strings.substring(maquinasMap.get(m.maquinariaId).nombre, 0, 20) : maquinasMap.get(m.maquinariaId).nombre}">Nombre</span>
+                      <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasMap.get(m.maquinariaId).marca}">Marca</small>
                     </span>
-                    <span th:if="${maquinasMap == null || maquinasMap[m.maquinariaId] == null}">
+                    <span th:if="${m.maquinariaId == null || maquinasMap == null || !maquinasMap.containsKey(m.maquinariaId)}">
                       <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${maquinasList != null && !maquinasList.isEmpty() ? '[' + maquinasList[0].codigo + ']' : '[MQ-012]'}">[MQ-012]</strong>
                       <br>
-                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].nombre : 'caterpila'}">caterpila</span>
+                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? (maquinasList[0].nombre != null && #strings.length(maquinasList[0].nombre) > 20 ? #strings.substring(maquinasList[0].nombre, 0, 20) : maquinasList[0].nombre) : 'caterpila'}">caterpila</span>
                       <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA'}">TOYOTA</small>
                     </span>
                   </td>
@@ -500,6 +501,12 @@
                        class="btn-drawer-act btn-drawer-act--yellow">
                       🔍 Diagnóstico Técnico
                     </a>
+                    <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso' || m.estado == 'Completado'}"
+                       th:href="@{'/mantenimientos/' + ${m.id} + '/diagnosticar'}"
+                       data-role="TECNICO ADMIN TODOS"
+                       class="btn-drawer-act btn-drawer-act--yellow">
+                      🔍 Ver Diagnóstico Técnico
+                    </a>
 
                     <!-- 2. Cotizar / Facturar (Gerente y Admin) -->
                     <a th:if="${m.estado == 'Presolicitud' || m.estado == 'Diagnosticado' || m.costoEstimado == null || m.costoEstimado <= 0}"
@@ -520,6 +527,12 @@
                        class="btn-drawer-act btn-drawer-act--dark">
                       ✏️ Ajustar Cotización
                     </a>
+                    <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Completado'}"
+                       th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
+                       data-role="ADMIN TODOS"
+                       class="btn-drawer-act btn-drawer-act--dark">
+                      💰 Ver Cotización Aplicada
+                    </a>
 
                     <!-- 3. En Taller Técnico / Finalizar (Técnico y Admin) -->
                     <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso'}"
@@ -531,7 +544,7 @@
                     <form th:if="${(m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && m.costoEstimado != null && m.costoEstimado > 0}"
                           th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST"
                           data-role="TECNICO ADMIN TODOS" style="margin:0;">
-                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                      <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
                       <button type="submit" class="btn-drawer-act btn-drawer-act--orange">
                         ✓ Finalizar Trabajo
                       </button>
@@ -541,7 +554,7 @@
                     <form th:if="${(m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
                           th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST"
                           data-role="CLIENTE ADMIN TODOS" style="margin:0;">
-                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                      <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
                       <button type="submit" class="btn-drawer-act btn-drawer-act--green">
                         ✓ Aprobar Mantenimiento
                       </button>
@@ -557,10 +570,19 @@
                     <a th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
                        data-role="ADMIN TECNICO CLIENTE TODOS"
                        class="btn-drawer-act btn-drawer-act--dark">
-                      🧾 <span th:text="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada'} ? 'Cotización Oficial' : 'Factura / Orden'">Factura / Orden</span>
+                      🧾 <span th:text="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada'} ? 'Cotización Oficial' : (m.estado == 'Completado' ? 'Factura / Acta Oficial' : 'Factura / Orden')">Factura / Orden</span>
                     </a>
 
-                    <!-- 6. Editar Orden (Admin, Técnico y Todos) -->
+                    <!-- 6. Botón de Asesoría WhatsApp Directa (Cliente) -->
+                    <a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento"
+                       target="_blank"
+                       data-role="CLIENTE TODOS"
+                       class="btn-drawer-act"
+                       style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e;">
+                      💬 Cotizar por WhatsApp
+                    </a>
+
+                    <!-- 7. Editar Orden (Admin, Técnico y Todos) -->
                     <a th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}"
                        data-role="ADMIN TECNICO TODOS"
                        style="color:var(--steel-light); font-size:11.5px; display:block; text-align:center; margin-top:4px; text-decoration:none;">
@@ -576,7 +598,7 @@
                     </p>
                     <div style="font-size:12px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:4px; margin-bottom:8px;">
                       <strong style="color:var(--orange-2);">Procedimiento:</strong>
-                      <span th:text="${m.solucion != null && !m.solucion.isBlank() ? m.solucion : 'Sustitución de manguera 3/4\" R2 y calibración hidráulica.'}">...</span>
+                      <span th:text="${m.solucion != null && !m.solucion.isBlank() ? m.solucion : 'Sustitución de manguera 3/4 R2 y calibración hidráulica.'}">...</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--steel-light);">
                       <span>Técnico: <strong style="color:#fff;" th:text="${m.tecnicoAsignado != null ? m.tecnicoAsignado : 'tecnico'}">tecnico</strong></span>
@@ -735,7 +757,7 @@
         Indica tus observaciones a continuación (ej: costo elevado, tiempo de entrega extenso o reajuste de piezas/mano de obra). Esta información le llegará directamente al <strong>Gerente</strong> para evaluar tu solicitud y emitir una nueva propuesta.
       </p>
       <form id="formRechazo" method="POST">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
         <div style="margin-bottom:18px;">
           <label for="motivoRechazoInput" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#ffffff;">
             Motivo / Observación del cliente *
