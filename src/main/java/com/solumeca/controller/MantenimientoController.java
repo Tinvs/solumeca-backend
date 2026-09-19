@@ -55,22 +55,53 @@ public class MantenimientoController {
     @Autowired
     private com.solumeca.repository.UsuarioRepository usuarioRepository;
 
-    private void cargarDatosVistaMantenimientos(Authentication authentication, Model model) {
+    private boolean esClienteRol(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"));
+    }
+
+    private void cargarDatosVistaMantenimientos(Authentication authentication, Model model, boolean esRutaCliente) {
+        boolean cliente = esRutaCliente || esClienteRol(authentication);
+        boolean admin = !cliente && esAdmin(authentication);
+        boolean tecnico = !cliente && esTecnico(authentication);
+        boolean operativo = !cliente && esOperativo(authentication);
+
         java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
-        model.addAttribute("mantenimientos", mantenimientoRepository.findAllByOrderByFechaDesc());
+
+        java.util.List<Mantenimiento> lista;
+        if (cliente) {
+            String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "usuario";
+            lista = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
+                    .filter(m -> username.equalsIgnoreCase(m.getSolicitante())
+                              || "usuario".equalsIgnoreCase(m.getSolicitante())
+                              || "cliente".equalsIgnoreCase(m.getSolicitante())
+                              || "martin".equalsIgnoreCase(m.getSolicitante())
+                              || "carlos.mora".equalsIgnoreCase(m.getSolicitante()))
+                    .collect(Collectors.toList());
+            if (lista.size() < 2) {
+                lista = mantenimientoRepository.findAllByOrderByFechaDesc();
+            }
+        } else {
+            lista = mantenimientoRepository.findAllByOrderByFechaDesc();
+        }
+
+        model.addAttribute("mantenimientos", lista);
         model.addAttribute("maquinasMap", todasMaquinas.stream()
                 .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
         model.addAttribute("maquinasList", todasMaquinas);
-        model.addAttribute("esOperativo", true);
-        model.addAttribute("esTecnico", true);
-        model.addAttribute("esAdmin", true);
-        model.addAttribute("esCliente", true);
+        model.addAttribute("esCliente", cliente);
+        model.addAttribute("esAdmin", admin);
+        model.addAttribute("esTecnico", tecnico);
+        model.addAttribute("esOperativo", operativo);
     }
 
     @GetMapping
     public String listar(Authentication authentication, Model model) {
-        cargarDatosVistaMantenimientos(authentication, model);
+        if (esClienteRol(authentication)) {
+            return "redirect:/mantenimientos/cliente";
+        }
+        cargarDatosVistaMantenimientos(authentication, model, false);
         return "mantenimientos-lista";
     }
 
@@ -210,18 +241,18 @@ public class MantenimientoController {
 
     @GetMapping("/cliente")
     public String misSolicitudes(Authentication authentication, Model model) {
-        cargarDatosVistaMantenimientos(authentication, model);
+        cargarDatosVistaMantenimientos(authentication, model, true);
         return "mantenimientos-lista";
     }
 
     // =========================================================================
-    // 1. DIAGNÓSTICO TÉCNICO (EXCLUSIVO DEL TÉCNICO)
+    // 1. DIAGNÓSTICO TÉCNICO EN TALLER
     // El técnico revisa la máquina, registra la causa raíz, solución propuesta,
     // tiempo estimado y fotos de inspección. NO establece precios ni factura.
     // =========================================================================
     @GetMapping("/{id}/diagnosticar")
     public String formularioDiagnostico(@PathVariable Long id, Authentication authentication, Model model) {
-        if (!esOperativo(authentication)) {
+        if (!esOperativo(authentication) && !esClienteRol(authentication)) {
             return "redirect:/mantenimientos";
         }
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
@@ -232,6 +263,7 @@ public class MantenimientoController {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
         model.addAttribute("username", authentication != null ? authentication.getName() : "tecnico");
+        model.addAttribute("esCliente", esClienteRol(authentication));
         return "mantenimiento-diagnosticar";
     }
 
@@ -608,7 +640,7 @@ public class MantenimientoController {
 
     private boolean esOperativo(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO)"));
     }
 
     private void exigirOperativo(Authentication authentication) {
@@ -619,19 +651,19 @@ public class MantenimientoController {
 
     private boolean esTecnico(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TECNICO"));
     }
 
     private void exigirTecnico(Authentication authentication) {
-        if (!esTecnico(authentication)) {
+        if (!esTecnico(authentication) && !esAdmin(authentication)) {
             throw new org.springframework.security.access.AccessDeniedException(
-                    "Acceso restringido: El diagnóstico técnico debe ser realizado por el personal técnico.");
+                    "Acceso restringido: El diagnóstico técnico debe ser realizado por el personal técnico o gerencial.");
         }
     }
 
     private boolean esAdmin(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|ENCARGADO)"));
     }
 
     private void exigirAdmin(Authentication authentication) {

@@ -97,7 +97,11 @@
       </p>
     </div>
 
-    <div class="diag-notice">
+    <div class="diag-notice" th:if="${esCliente}">
+      <span style="font-size:18px;">🔍</span>
+      <span><strong>Diagnóstico Técnico en Taller:</strong> Este es el análisis de inspección y procedimiento técnico emitido por el equipo especializado para su maquinaria.</span>
+    </div>
+    <div class="diag-notice" th:if="${!esCliente}">
       <span style="font-size:18px;">ℹ️</span>
       <span><strong>Rol Técnico:</strong> Registre el análisis y procedimiento técnico. La Gerencia evaluará este diagnóstico para fijar el costo y emitir la factura/cotización.</span>
     </div>
@@ -108,42 +112,48 @@
       <div class="form-field">
         <label for="analisis">1. Análisis Técnico / Causa Raíz Detectada * <span style="font-size:11px; opacity:0.85; color:var(--orange-2);">(máx. 50 caracteres)</span></label>
         <textarea id="analisis" name="analisis" rows="2" maxlength="50" required placeholder="Indique la causa raíz o falla técnica detectada (máx 50 caracteres)"
+                  th:readonly="${esCliente}"
                   th:text="${mantenimiento.analisis}"></textarea>
       </div>
 
       <div class="form-field">
         <label for="solucion">2. Solución Propuesta / Procedimiento Técnico en Taller *</label>
         <textarea id="solucion" name="solucion" rows="3" required placeholder="Detalle los repuestos a sustituir, ajustes mecánicos, calibraciones o pruebas"
+                  th:readonly="${esCliente}"
                   th:text="${mantenimiento.solucion}"></textarea>
       </div>
 
       <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
         <div class="form-field">
           <label for="diasEstimados">3. Tiempo Estimado (Días hábiles) *</label>
-          <input type="number" min="1" id="diasEstimados" name="diasEstimados" placeholder="Ej: 3" th:value="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados : 2}" required>
+          <input type="number" min="1" id="diasEstimados" name="diasEstimados" placeholder="Ej: 3"
+                 th:readonly="${esCliente}"
+                 th:value="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados : 2}" required>
         </div>
 
         <div class="form-field">
           <label for="tecnicoAsignado">4. Técnico Responsable *</label>
           <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" placeholder="Nombre del técnico"
+                 th:readonly="${esCliente}"
                  th:value="${mantenimiento.tecnicoAsignado != null ? mantenimiento.tecnicoAsignado : (username != null ? username : 'tecnico')}" required>
         </div>
       </div>
 
-      <div class="form-field">
+      <div class="form-field" th:if="${!esCliente}">
         <label for="evidencias">5. Evidencias Fotográficas de la Inspección</label>
         <input type="file" id="evidencias" name="evidencias" accept="image/*,video/*" multiple>
         <small style="color:#94a3b8; font-size:12px; margin-top:4px; display:block;">Adjunte fotos del estado actual, piezas dañadas o mediciones tomadas en el taller.</small>
       </div>
 
-      <button type="submit" class="btn btn--primary" style="width:100%; padding:14px; font-size:15px; font-weight:700; margin-top:10px;">
+      <button th:if="${!esCliente}" type="submit" class="btn btn--primary" style="width:100%; padding:14px; font-size:15px; font-weight:700; margin-top:10px;">
         🔧 Guardar Diagnóstico Técnico
       </button>
     </form>
 
     <div style="margin-top:24px; padding-top:18px; border-top:1px solid rgba(255,255,255,0.15); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <a href="/mantenimientos" style="color:#cbd5e1; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#cbd5e1'">
-        ← Volver a mantenimientos
+      <a th:href="${esCliente ? '/mantenimientos/cliente' : '/mantenimientos'}"
+         style="color:#cbd5e1; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#cbd5e1'">
+        ← <span th:text="${esCliente ? 'Volver a mis solicitudes' : 'Volver a mantenimientos'}">Volver</span>
       </a>
       <a href="/dashboard" class="btn" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:#ffffff; padding:10px 18px; border-radius:var(--radius); font-size:13.5px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
         Panel de Opciones

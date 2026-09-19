@@ -4,71 +4,238 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Mantenimientos | SOLUMECA S.A.S.</title>
-  <link rel="stylesheet" href="/css/styles.css">
   <style>
     :root {
       --orange-1: #ff5d1c;
       --orange-2: #ff8f1c;
+      --orange-glow: rgba(255, 93, 28, 0.4);
+      --dark-0: #121820;
+      --dark-1: #18222d;
+      --dark-2: #223040;
+      --dark-card: rgba(24, 34, 46, 0.92);
       --steel-line: rgba(255, 255, 255, 0.14);
       --steel-light: #94a3b8;
       --steel-bright: #cbd5e1;
-      --dark-card: rgba(24, 34, 46, 0.96);
+      --white: #ffffff;
+      --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Fira Code', monospace;
+      --font-display: 'Impact', 'Trebuchet MS', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.45);
+      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    body.dashboard-page {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--dark-0);
+      background-image: 
+        linear-gradient(135deg, rgba(18, 24, 32, 0.92) 0%, rgba(24, 34, 45, 0.88) 100%),
+        url('/assets/images/hero-maquinaria.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Override del contenedor para pantalla completa */
-    .workspace-shell {
-      min-height: 100vh !important;
-      padding: 24px 24px 60px !important;
-      display: block !important;
-      width: 100% !important;
-      max-width: 100vw !important;
-      box-sizing: border-box !important;
+    /* ==========================================================================
+       BARRA SUPERIOR: NARANJA Y NEGRO (ESTILO SOLUMECA)
+       ========================================================================== */
+    .top-bar {
+      background: linear-gradient(90deg, #090c10 0%, #121820 60%, #1a2430 100%);
+      border-bottom: 3px solid var(--orange-1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.65), 0 2px 10px var(--orange-glow);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    .workspace-panel.workspace-panel--wide {
-      width: 100% !important;
-      max-width: 1680px !important;
-      margin: 0 auto !important;
-      padding: 26px 30px !important;
-      box-sizing: border-box !important;
-      background: rgba(18, 24, 32, 0.95) !important;
-      border: 1px solid rgba(255, 255, 255, 0.14) !important;
-      border-top: 4px solid var(--orange-1) !important;
-      border-radius: 12px !important;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
-    /* Badges de Estado */
-    .badge-presolicitud { background: #1e293b; color: #94a3b8; border: 1px solid #475569; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; }
-    .badge-diagnosticado { background: #082f49; color: #7dd3fc; border: 1px solid #0284c7; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-analizada { background: #713f12; color: #fde047; border: 1px solid #eab308; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; }
-    .badge-orden { background: #431407; color: #fdba74; border: 1px solid #f97316; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; }
-    .badge-rechazada { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-completado { background: #14532d; color: #86efac; border: 1px solid #22c55e; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+    .brand-pill {
+      background: var(--orange-1);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
 
-    /* LAYOUT MASTER - DETAIL A 2 COLUMNAS GARANTIZADO */
+    .top-bar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13.5px;
+    }
+
+    .user-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 6px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-pill strong {
+      color: var(--orange-2);
+    }
+
+    .role-selector {
+      background: #090c10;
+      color: #fff;
+      border: 1px solid var(--steel-line);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       CONTENEDOR PRINCIPAL: LAYOUT MASTER - DETAIL (2 COLUMNAS)
+       ========================================================================== */
+    .workspace-container {
+      max-width: 1540px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 24px 48px;
+      flex: 1;
+    }
+
     .master-detail-grid {
-      display: grid !important;
-      grid-template-columns: minmax(0, 1fr) 460px !important;
-      gap: 20px !important;
-      align-items: start !important;
-      margin-top: 18px !important;
-      width: 100% !important;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 540px;
+      gap: 24px;
+      align-items: start;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 1280px) {
       .master-detail-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr;
       }
     }
 
-    /* Pestañas de Filtro */
+    /* ==========================================================================
+       COLUMNA IZQUIERDA: TABLA MASTER DE MANTENIMIENTOS
+       ========================================================================== */
+    .master-panel {
+      background: var(--dark-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--steel-line);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .plate-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--orange-1);
+      letter-spacing: 1.2px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plate-tag__bolt {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--orange-1);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--orange-1);
+    }
+
+    .master-heading {
+      margin-bottom: 20px;
+    }
+
+    .master-heading h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .master-heading p {
+      font-size: 13.5px;
+      color: var(--steel-light);
+    }
+
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--steel-line);
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(15, 21, 29, 0.85);
+      border: 1px solid var(--steel-line);
+      border-radius: var(--radius);
+      color: #ffffff;
+      font-size: 13.5px;
+      padding: 10px 14px 10px 36px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .search-box input:focus {
+      border-color: var(--orange-1);
+      box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.6;
+    }
+
     .filter-tabs {
       display: flex;
       gap: 6px;
@@ -84,7 +251,7 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all var(--transition);
     }
 
     .filter-btn:hover,
@@ -95,18 +262,19 @@
       font-weight: 800;
     }
 
-    /* Tabla Master */
-    .master-table-wrap {
+    /* Tabla */
+    .table-container {
+      overflow-x: auto;
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(15, 21, 29, 0.75);
-      overflow-x: auto;
+      background: rgba(15, 21, 29, 0.6);
     }
 
     .master-table {
       width: 100%;
+      min-width: 660px;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 13.5px;
       text-align: left;
     }
 
@@ -114,25 +282,26 @@
       background: #e6dfd5;
       color: #111827;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      padding: 13px 14px;
+      padding: 12px 14px;
       border-bottom: 2px solid var(--orange-1);
       white-space: nowrap;
     }
 
     .master-table td {
-      padding: 13px 14px;
+      padding: 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       color: #f1f5f9;
       vertical-align: middle;
-      transition: background 0.2s ease;
+      transition: background var(--transition);
     }
 
     .master-row {
       cursor: pointer;
+      position: relative;
     }
 
     .master-row:hover td {
@@ -148,17 +317,70 @@
       border-left: 4px solid var(--orange-1);
     }
 
-    /* Panel Lateral Derecho (Sticky Detail Drawer) */
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      text-transform: capitalize;
+    }
+
+    .status--completado {
+      background: #14532d;
+      color: #86efac;
+      border: 1px solid #22c55e;
+    }
+
+    .status--orden {
+      background: #431407;
+      color: #fdba74;
+      border: 1px solid #f97316;
+    }
+
+    .status--cotizada {
+      background: #713f12;
+      color: #fde047;
+      border: 1px solid #eab308;
+    }
+
+    .status--diagnosticado {
+      background: #082f49;
+      color: #7dd3fc;
+      border: 1px solid #0284c7;
+    }
+
+    .status--presolicitud {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #475569;
+    }
+
+    .status--rechazada {
+      background: #450a0a;
+      color: #fca5a5;
+      border: 1px solid #ef4444;
+    }
+
+    /* ==========================================================================
+       COLUMNA DERECHA: PANEL LATERAL DE DETALLE (DRAWER DINÁMICO)
+       ========================================================================== */
     .detail-drawer {
-      background: linear-gradient(180deg, rgba(26, 36, 48, 0.98) 0%, rgba(15, 22, 30, 0.98) 100%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.18) !important;
-      border-top: 4px solid var(--orange-1) !important;
-      border-radius: 12px !important;
-      padding: 22px !important;
-      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5) !important;
-      position: sticky !important;
-      top: 24px !important;
-      box-sizing: border-box !important;
+      background: linear-gradient(180deg, rgba(26, 36, 48, 0.96) 0%, rgba(18, 25, 34, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--orange-1);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 86px;
+      transition: all 0.3s ease;
     }
 
     .drawer-header {
@@ -172,13 +394,11 @@
     }
 
     .drawer-machine-title {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 800;
       color: #ffffff;
       line-height: 1.25;
       margin-top: 4px;
-      max-width: 320px;
-      word-break: break-word;
     }
 
     .drawer-code-tag {
@@ -189,7 +409,7 @@
       display: inline-block;
     }
 
-    /* 2 Columnas Dentro del Panel: Archivos a la izquierda y Acciones a la derecha */
+    /* Distribución en 2 Columnas Dentro del Panel: Archivos a la Izquierda y Acciones a la Derecha */
     .drawer-split-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -210,7 +430,7 @@
       background: #e6dfd5;
       color: #111827;
       font-family: var(--font-mono);
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 900;
       letter-spacing: 1px;
       text-transform: uppercase;
@@ -221,16 +441,64 @@
       text-align: center;
     }
 
-    .docs-list, .actions-list {
+    .docs-list {
       display: flex;
       flex-direction: column;
       gap: 7px;
     }
 
-    /* Documentos */
-    .doc-card-drawer {
+    .actions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .drawer-section {
+      margin-bottom: 16px;
+      background: rgba(12, 17, 24, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .drawer-section-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--steel-bright);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drawer-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      font-size: 13px;
+    }
+
+    .drawer-info-item span {
+      display: block;
+      color: var(--steel-light);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .drawer-info-item strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Chips de Documentos */
+    .doc-card {
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 6px;
       padding: 8px 10px;
       text-decoration: none;
@@ -238,23 +506,71 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      transition: all var(--transition);
+      cursor: pointer;
       font-size: 12px;
       font-weight: 700;
-      transition: all 0.2s ease;
+      box-sizing: border-box;
     }
-    .doc-card-drawer:hover {
-      background: rgba(255, 255, 255, 0.14);
-      transform: translateY(-1px);
-    }
-    .doc-card-drawer--informe { border-left: 3px solid #ff8a3d; }
-    .doc-card-drawer--cotizacion { border-left: 3px solid #fbbf24; }
-    .doc-card-drawer--acta { border-left: 3px solid #4ade80; }
-    .doc-card-drawer--evidencia { border-left: 3px solid #38bdf8; }
 
-    /* Acciones */
-    .btn-drawer-act {
+    .doc-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+      border-color: var(--orange-1);
+    }
+
+    .doc-card__badge {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .doc-card__title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .doc-card__sub {
+      font-size: 10.5px;
+      color: var(--steel-light);
+    }
+
+    .doc-card--informe { border-left: 3px solid #ff8a3d; }
+    .doc-card--cotizacion { border-left: 3px solid #fbbf24; }
+    .doc-card--acta { border-left: 3px solid #4ade80; }
+    .doc-card--factura { border-left: 3px solid #38bdf8; }
+
+    /* Galería de evidencias */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .evidence-thumb {
+      aspect-ratio: 16/11;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .evidence-thumb img {
       width: 100%;
-      padding: 8px 10px;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+
+    .evidence-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Botonera de acciones */
+    .btn-act {
+      width: 100%;
+      padding: 8px 12px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 700;
@@ -264,69 +580,124 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+      transition: all var(--transition);
       text-decoration: none;
-      transition: all 0.2s ease;
       box-sizing: border-box;
       text-align: center;
     }
-    .btn-drawer-act--yellow { background: #facc15; color: #000000; font-weight: 800; }
-    .btn-drawer-act--yellow:hover { background: #fde047; }
-    .btn-drawer-act--orange { background: var(--orange-1); color: #ffffff; }
-    .btn-drawer-act--orange:hover { background: var(--orange-2); }
-    .btn-drawer-act--blue { background: #0284c7; color: #ffffff; }
-    .btn-drawer-act--blue:hover { background: #38bdf8; }
-    .btn-drawer-act--dark { background: #000000; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); }
-    .btn-drawer-act--dark:hover { background: #1e293b; }
-    .btn-drawer-act--green { background: #16a34a; color: #ffffff; }
-    .btn-drawer-act--green:hover { background: #15803d; }
-    .btn-drawer-act--red { background: #dc2626; color: #ffffff; }
-    .btn-drawer-act--red:hover { background: #b91c1c; }
 
-    /* Secciones Detalle */
-    .drawer-section {
-      margin-bottom: 14px;
-      background: rgba(12, 17, 24, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      padding: 12px 14px;
+    .btn-act--primary {
+      background: var(--orange-1);
+      color: #000000;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(255, 93, 28, 0.35);
     }
 
-    .drawer-section-title {
-      font-family: var(--font-mono);
-      font-size: 11px;
+    .btn-act--primary:hover {
+      background: var(--orange-2);
+      transform: translateY(-1px);
+    }
+
+    .btn-act--dark {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-act--dark:hover {
+      background: #1e293b;
+    }
+
+    .btn-act--danger {
+      background: rgba(239, 68, 68, 0.16);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-act--danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-act--secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .btn-act--yellow {
+      background: #facc15;
+      color: #000000;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--steel-bright);
-      margin-bottom: 8px;
+      box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
+    }
+
+    .btn-act--yellow:hover {
+      background: #fde047;
+      transform: translateY(-1px);
+    }
+
+    .btn-act--blue {
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-act--blue:hover {
+      background: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    /* Modal de Vista Previa de Imagen */
+    .img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .img-modal.is-open { display: flex; }
+
+    .img-modal-content {
+      max-width: 720px;
+      width: 100%;
+      background: var(--dark-1);
+      border-radius: var(--radius);
+      border: 1px solid var(--steel-line);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    }
+
+    .img-modal-content img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .img-modal-bar {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notice-prototype {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .evidence-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-    }
-
-    .evidence-thumb-link {
-      display: block;
-      aspect-ratio: 16/11;
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #000;
-      transition: transform 0.2s ease;
-    }
-    .evidence-thumb-link:hover {
-      transform: scale(1.05);
-      border-color: var(--orange-1);
-    }
-    .evidence-thumb-link img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      gap: 10px;
     }
 
     /* Modal de Rechazo */
@@ -344,417 +715,232 @@
     }
   </style>
 </head>
-<body class="dashboard-page">
-  <main class="workspace-shell">
-    <section class="workspace-panel workspace-panel--wide">
-      <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // FLUJO DE ÓRDENES Y SERVICIOS</p>
-      
-      <div class="workspace-heading" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div>
-          <h1 class="login-title" th:text="${esCliente} ? 'Mis Presolicitudes y Órdenes' : 'Gestión de Mantenimientos'">Mantenimientos</h1>
-          <p class="login-subtitle">Trazabilidad desde el diagnóstico técnico del taller y cotización de gerencia hasta la orden final.</p>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-          <input type="text" id="filtroTexto" placeholder="🔍 Buscar máquina, código, orden..." class="table-search-input"
-                 oninput="filtrarTabla()"
-                 style="padding:10px 14px; border:1px solid var(--steel-line); border-radius:var(--radius); font-size:14px; min-width:240px; background:var(--concrete); color:#fff;">
-          <a th:if="${esOperativo}" class="btn btn--primary" href="/mantenimientos/nuevo">+ Nueva orden</a>
-          <a th:if="${esCliente}" class="btn btn--primary" href="/mantenimientos/cliente/nueva">+ Nueva presolicitud</a>
-        </div>
+<body>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR CON SELECCIÓN DE ROL PARA PRUEBAS (TAL CUAL LA IMAGEN)
+       ======================================================================== -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <a href="/dashboard" class="brand-pill">SOLUMECA S.A.S.</a>
+      <span class="top-bar-title">🛠️ Centro Operativo // Flujo de Mantenimiento</span>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="user-pill">
+        <span>Sesión activa:</span>
+        <strong id="labelUsuario" th:text="${#authentication != null ? #authentication.name : 'martin'}">martin</strong>
+        <span style="opacity:0.4;">|</span>
+        <span id="labelRol" style="color:var(--steel-light); font-size:12px;" th:text="${esAdmin ? 'Gerente General' : (esTecnico ? 'Técnico de Taller' : 'Cliente Propietario')}">Gerente General</span>
       </div>
 
-      <!-- BARRA SUPERIOR DE SESIÓN Y VISTA DE ROLES -->
-      <div style="background:rgba(0,0,0,0.35); border:1px solid var(--steel-line); border-radius:8px; padding:10px 16px; margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <!-- Filtros por Estado -->
-        <div class="filter-tabs">
-          <button class="filter-btn active" onclick="filtrarPorEstado('TODOS', this)">Todos</button>
-          <button class="filter-btn" onclick="filtrarPorEstado('Presolicitud', this)">Presolicitud</button>
-          <button class="filter-btn" onclick="filtrarPorEstado('Diagnosticado', this)">Diagnosticada</button>
-          <button class="filter-btn" onclick="filtrarPorEstado('Cotizada', this)">Cotizada</button>
-          <button class="filter-btn" onclick="filtrarPorEstado('Completado', this)">Completado</button>
-        </div>
-
-        <!-- SELECTOR DE VISTA DE ROL (Permite ver y operar con todos los roles) -->
-        <div style="display:flex; align-items:center; gap:10px;">
-          <label for="selectorRolVista" style="font-size:12px; color:var(--steel-light); font-weight:700;">Simular / Vista Rol:</label>
-          <select id="selectorRolVista" onchange="cambiarRolVista(this.value)"
-                  style="background:#090d12; color:#ffffff; border:1px solid var(--orange-1); border-radius:6px; padding:6px 14px; font-size:12.5px; font-weight:700; cursor:pointer; outline:none;">
-            <option value="TODOS" selected>👥 Todos los Roles (Completo)</option>
-            <option value="ADMIN">👔 Gerente (Admin)</option>
-            <option value="TECNICO">🔧 Técnico de Taller</option>
-            <option value="CLIENTE">👤 Cliente / Propietario</option>
-          </select>
-        </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <label for="rolSimulado" style="font-size:12px; color:var(--steel-light);">Simular Vista:</label>
+        <select id="rolSimulado" class="role-selector" onchange="cambiarRolSimulado(this.value)">
+          <option value="ADMIN" th:selected="${esAdmin}">Gerente (Admin)</option>
+          <option value="TECNICO" th:selected="${esTecnico}">Técnico de Taller</option>
+          <option value="CLIENTE" th:selected="${esCliente}">Cliente / Propietario</option>
+        </select>
       </div>
 
-      <!-- LAYOUT MASTER - DETAIL A 2 COLUMNAS (SIDE-BY-SIDE) -->
-      <div class="master-detail-grid">
+      <a href="/dashboard" style="color:#cbd5e1; text-decoration:none; font-size:12.5px; margin-left:8px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+        ← Volver
+      </a>
+    </div>
+  </header>
 
-        <!-- ==================================================================
-             COLUMNA IZQUIERDA: TABLA MASTER DE MANTENIMIENTOS
-             ================================================================== -->
-        <div>
-          <div class="master-table-wrap">
-            <table class="master-table" id="tablaMaster">
-              <thead>
-                <tr>
-                  <th>FECHA</th>
-                  <th>MÁQUINA</th>
-                  <th>TIPO</th>
-                  <th>SOLICITANTE</th>
-                  <th>ESTADO</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyMantenimientos">
-                <tr th:each="m, iterStat : ${mantenimientos}"
-                    class="master-row"
-                    th:classappend="${iterStat.first} ? 'is-active' : ''"
-                    th:attr="data-id=${m.id},
-                             data-codigo=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).codigo : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].codigo : 'MQ-012')},
-                             data-nombre=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? (maquinasMap.get(m.maquinariaId).nombre != null && #strings.length(maquinasMap.get(m.maquinariaId).nombre) > 20 ? #strings.substring(maquinasMap.get(m.maquinariaId).nombre, 0, 20) : maquinasMap.get(m.maquinariaId).nombre) : (maquinasList != null && !maquinasList.isEmpty() ? (maquinasList[0].nombre != null && #strings.length(maquinasList[0].nombre) > 20 ? #strings.substring(maquinasList[0].nombre, 0, 20) : maquinasList[0].nombre) : 'caterpila')},
-                             data-marca=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).marca : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA')},
-                             data-serie=${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).numeroSerie : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].numeroSerie : '34492882')},
-                             data-orden=${m.numeroOrden != null ? m.numeroOrden : (m.estado == 'Completado' ? 'ORD-2026-006' : 'En proceso')},
-                             data-estado=${m.estado}"
-                    onclick="seleccionarFila(this)">
+  <!-- ========================================================================
+       CONTENIDO PRINCIPAL: 2 COLUMNAS (TABLA + MENÚ LATERAL DESPLEGABLE)
+       ======================================================================== -->
+  <main class="workspace-container">
 
-                  <!-- 1. Fecha -->
-                  <td th:text="${m.fecha}" style="white-space:nowrap; font-family:var(--font-mono); font-size:12.5px;">2026-09-18</td>
+    <div class="notice-prototype">
+      <span style="font-size:20px;">💡</span>
+      <div>
+        <strong>Plantilla interactiva en vivo:</strong> Haz clic sobre cualquier fila de la tabla a la izquierda. Verás cómo el panel lateral derecho se actualiza instantáneamente con su respectivo <strong>Informe</strong>, <strong>Cotización</strong>, <strong>Evidencias</strong>, <strong>Factura / Orden</strong> y <strong>Diagnóstico Técnico</strong>.
+      </div>
+    </div>
 
-                  <!-- 2. Máquina -->
-                  <td style="max-width:220px; word-break:break-word; overflow-wrap:anywhere;">
-                    <span th:if="${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId)}">
-                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap.get(m.maquinariaId).codigo + ']'}">[MQ-012]</strong>
-                      <br>
-                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasMap.get(m.maquinariaId).nombre != null && #strings.length(maquinasMap.get(m.maquinariaId).nombre) > 20 ? #strings.substring(maquinasMap.get(m.maquinariaId).nombre, 0, 20) : maquinasMap.get(m.maquinariaId).nombre}">Nombre</span>
-                      <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasMap.get(m.maquinariaId).marca}">Marca</small>
-                    </span>
-                    <span th:if="${m.maquinariaId == null || maquinasMap == null || !maquinasMap.containsKey(m.maquinariaId)}">
-                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${maquinasList != null && !maquinasList.isEmpty() ? '[' + maquinasList[0].codigo + ']' : '[MQ-012]'}">[MQ-012]</strong>
-                      <br>
-                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? (maquinasList[0].nombre != null && #strings.length(maquinasList[0].nombre) > 20 ? #strings.substring(maquinasList[0].nombre, 0, 20) : maquinasList[0].nombre) : 'caterpila'}">caterpila</span>
-                      <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA'}">TOYOTA</small>
-                    </span>
-                  </td>
+    <div class="master-detail-grid">
 
-                  <!-- 3. Tipo -->
-                  <td><span class="status-pill" th:text="${m.tipo}" style="font-size:12px; background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px;">Preventivo</span></td>
-
-                  <!-- 4. Solicitante -->
-                  <td th:text="${m.solicitante}" style="white-space:nowrap; font-weight:600;">usuario</td>
-
-                  <!-- 5. Estado -->
-                  <td class="row-estado-cell">
-                    <span th:if="${m.estado == 'Presolicitud' || m.estado == 'Pendiente'}" class="badge-presolicitud">Presolicitud</span>
-                    <span th:if="${m.estado == 'Diagnosticado'}" class="badge-diagnosticado">🔧 Diagnosticada</span>
-                    <span th:if="${m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada'}" class="badge-analizada">💰 Cotizada</span>
-                    <span th:if="${m.estado == 'Rechazada'}" class="badge-rechazada">❌ No Aprobada</span>
-                    <span th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso'}" class="badge-orden">
-                      En Orden <small th:if="${m.numeroOrden != null}" th:text="${'(' + m.numeroOrden + ')'}"></small>
-                    </span>
-                    <span th:if="${m.estado == 'Completado'}" class="badge-completado" style="white-space:nowrap;">✓ Completado</span>
-                    <div th:if="${m.motivoRechazo != null && esAdmin}" style="margin-top:4px; font-size:11px; color:#fca5a5; line-height:1.2; max-width:140px; word-break:break-word;">
-                      <strong style="color:#f87171;">Obs:</strong> <span th:text="${#strings.length(m.motivoRechazo) > 35 ? #strings.substring(m.motivoRechazo,0,35)+'...' : m.motivoRechazo}"></span>
-                    </div>
-                  </td>
-
-                  <!-- ==========================================================
-                       TEMPLATES OCULTOS PROYECTADOS AL PANEL DERECHO AL SELECCIONAR
-                       ========================================================== -->
-
-                  <!-- Archivos Oficiales -->
-                  <td style="display:none;" class="row-archivos-template">
-                    <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" target="_blank"
-                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe Técnico</a>
-                    <a th:if="${m.informeArchivo == null && (m.estado == 'Diagnosticado' || m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe Técnico</a>
-
-                    <a th:if="${m.costoEstimado != null && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       class="doc-card-drawer doc-card-drawer--cotizacion">📄 Cotización Oficial</a>
-
-                    <a th:if="${m.estado == 'Completado'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       class="doc-card-drawer doc-card-drawer--acta">📋 Acta de entrega</a>
-
-                    <span th:if="${m.archivosEvidencia != null}" style="display:contents;">
-                      <span th:each="archivo, stat : ${#strings.arraySplit(m.archivosEvidencia, ',')}" style="display:contents;">
-                        <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank"
-                           class="doc-card-drawer doc-card-drawer--evidencia"
-                           th:text="${stat.size > 1 ? '📷 Foto ' + stat.count : '📷 Evidencia'}">📷 Evidencia</a>
-                      </span>
-                    </span>
-
-                    <span th:if="${m.informeArchivo == null && (m.costoEstimado == null || m.estado == 'Presolicitud' || m.estado == 'Pendiente') && m.archivosEvidencia == null && m.estado != 'Diagnosticado' && m.estado != 'Completado'}"
-                          style="color:var(--steel-light); font-size:11px; padding:8px; text-align:center; display:block;">
-                      Sin adjuntos emitidos
-                    </span>
-                  </td>
-
-                  <!-- Acciones y Factura (Con data-role para simular y filtrar roles) -->
-                  <td style="display:none;" class="row-acciones-template">
-                    <!-- 1. Diagnóstico Técnico (Técnico y Admin) -->
-                    <a th:if="${m.estado == 'Presolicitud' || m.estado == 'Pendiente' || m.estado == 'Diagnosticado'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/diagnosticar'}"
-                       data-role="TECNICO ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--yellow">
-                      🔍 Diagnóstico Técnico
-                    </a>
-                    <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso' || m.estado == 'Completado'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/diagnosticar'}"
-                       data-role="TECNICO ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--yellow">
-                      🔍 Ver Diagnóstico Técnico
-                    </a>
-
-                    <!-- 2. Cotizar / Facturar (Gerente y Admin) -->
-                    <a th:if="${m.estado == 'Presolicitud' || m.estado == 'Diagnosticado' || m.costoEstimado == null || m.costoEstimado <= 0}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
-                       data-role="ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--orange">
-                      💰 Cotizar / Facturar
-                    </a>
-                    <a th:if="${m.estado == 'Rechazada'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
-                       data-role="ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--orange">
-                      💰 Re-evaluar / Recotizar
-                    </a>
-                    <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Cotizada'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
-                       data-role="ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--dark">
-                      ✏️ Ajustar Cotización
-                    </a>
-                    <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Completado'}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
-                       data-role="ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--dark">
-                      💰 Ver Cotización Aplicada
-                    </a>
-
-                    <!-- 3. En Taller Técnico / Finalizar (Técnico y Admin) -->
-                    <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso'}"
-                       href="#" onclick="alert('Equipo en proceso de reparación en taller técnico'); return false;"
-                       data-role="TECNICO ADMIN TODOS"
-                       class="btn-drawer-act btn-drawer-act--blue">
-                      🔧 En taller técnico
-                    </a>
-                    <form th:if="${(m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && m.costoEstimado != null && m.costoEstimado > 0}"
-                          th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST"
-                          data-role="TECNICO ADMIN TODOS" style="margin:0;">
-                      <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
-                      <button type="submit" class="btn-drawer-act btn-drawer-act--orange">
-                        ✓ Finalizar Trabajo
-                      </button>
-                    </form>
-
-                    <!-- 4. Aprobar / No Aprobar (Cliente y Admin) -->
-                    <form th:if="${(m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
-                          th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST"
-                          data-role="CLIENTE ADMIN TODOS" style="margin:0;">
-                      <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
-                      <button type="submit" class="btn-drawer-act btn-drawer-act--green">
-                        ✓ Aprobar Mantenimiento
-                      </button>
-                    </form>
-                    <button th:if="${(m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
-                            type="button" class="btn-drawer-act btn-drawer-act--red"
-                            data-role="CLIENTE ADMIN TODOS"
-                            th:onclick="'abrirModalRechazar(' + ${m.id} + ')'">
-                      ✕ No Aprobar Cotización
-                    </button>
-
-                    <!-- 5. Factura / Orden (Visible para TODOS) -->
-                    <a th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       data-role="ADMIN TECNICO CLIENTE TODOS"
-                       class="btn-drawer-act btn-drawer-act--dark">
-                      🧾 <span th:text="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada'} ? 'Cotización Oficial' : (m.estado == 'Completado' ? 'Factura / Acta Oficial' : 'Factura / Orden')">Factura / Orden</span>
-                    </a>
-
-                    <!-- 6. Botón de Asesoría WhatsApp Directa (Cliente) -->
-                    <a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento"
-                       target="_blank"
-                       data-role="CLIENTE TODOS"
-                       class="btn-drawer-act"
-                       style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e;">
-                      💬 Cotizar por WhatsApp
-                    </a>
-
-                    <!-- 7. Editar Orden (Admin, Técnico y Todos) -->
-                    <a th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}"
-                       data-role="ADMIN TECNICO TODOS"
-                       style="color:var(--steel-light); font-size:11.5px; display:block; text-align:center; margin-top:4px; text-decoration:none;">
-                      ✏️ Editar orden
-                    </a>
-                  </td>
-
-                  <!-- Diagnóstico Técnico -->
-                  <td style="display:none;" class="row-diagnostico-template">
-                    <p style="font-size:13px; color:#ffffff; line-height:1.4; margin-bottom:8px;"
-                       th:text="${m.analisis != null && !m.analisis.isBlank() ? ( #strings.length(m.analisis) > 50 ? #strings.substring(m.analisis,0,50) : m.analisis ) : 'Fisura en manguera principal y desgaste en sellos frontales.'}">
-                      Diagnóstico...
-                    </p>
-                    <div style="font-size:12px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:4px; margin-bottom:8px;">
-                      <strong style="color:var(--orange-2);">Procedimiento:</strong>
-                      <span th:text="${m.solucion != null && !m.solucion.isBlank() ? m.solucion : 'Sustitución de manguera 3/4 R2 y calibración hidráulica.'}">...</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--steel-light);">
-                      <span>Técnico: <strong style="color:#fff;" th:text="${m.tecnicoAsignado != null ? m.tecnicoAsignado : 'tecnico'}">tecnico</strong></span>
-                      <span>Tiempo: <strong style="color:#fff;" th:text="${m.diasEstimados != null && m.diasEstimados > 0 ? m.diasEstimados + ' días hábiles' : '2 días hábiles'}">2 días</strong></span>
-                    </div>
-                  </td>
-
-                  <!-- Evidencias Fotográficas -->
-                  <td style="display:none;" class="row-evidencias-template">
-                    <div th:if="${m.archivosEvidencia != null}" class="evidence-grid">
-                      <a th:each="archivo : ${#strings.arraySplit(m.archivosEvidencia, ',')}"
-                         th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank"
-                         class="evidence-thumb-link">
-                        <img th:src="@{'/mantenimientos/archivo/' + ${archivo}}" alt="Evidencia" onerror="this.src='/assets/images/icono.png';">
-                      </a>
-                    </div>
-                    <div th:if="${m.archivosEvidencia == null}" class="evidence-grid">
-                      <a href="/assets/images/galeria-01.jpg" target="_blank" class="evidence-thumb-link">
-                        <img src="/assets/images/galeria-01.jpg" alt="Evidencia">
-                      </a>
-                      <a href="/assets/images/galeria-02.jpg" target="_blank" class="evidence-thumb-link">
-                        <img src="/assets/images/galeria-02.jpg" alt="Evidencia">
-                      </a>
-                      <a href="/assets/images/galeria-03.jpg" target="_blank" class="evidence-thumb-link">
-                        <img src="/assets/images/galeria-03.jpg" alt="Evidencia">
-                      </a>
-                    </div>
-                  </td>
-
-                  <!-- Datos Generales -->
-                  <td style="display:none;" class="row-generales-template">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; font-size:12.5px;">
-                      <div>
-                        <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Solicitante:</span>
-                        <strong style="color:#fff;" th:text="${m.solicitante}">martin</strong>
-                      </div>
-                      <div>
-                        <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Fecha:</span>
-                        <strong style="color:#fff;" th:text="${m.fecha}">2026-09-18</strong>
-                      </div>
-                      <div>
-                        <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Tipo:</span>
-                        <strong style="color:#fff;" th:text="${m.tipo}">Correctivo</strong>
-                      </div>
-                      <div>
-                        <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Falla Inicial:</span>
-                        <strong style="color:#fff;" th:text="${m.descripcion != null ? (#strings.length(m.descripcion) > 30 ? #strings.substring(m.descripcion, 0, 30) + '...' : m.descripcion) : 'Fuga y calentamiento'}">Fuga</strong>
-                      </div>
-                    </div>
-                  </td>
-
-                </tr>
-                <tr th:if="${#lists.isEmpty(mantenimientos)}">
-                  <td colspan="5" style="text-align:center; padding:32px; color:var(--steel-light);">Aún no hay mantenimientos registrados.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--steel-light);">
-            <span th:text="${'Total: ' + #lists.size(mantenimientos) + ' solicitudes'}">Total: 0 solicitudes</span>
-            <a class="btn" href="/dashboard" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); color:#ffffff; padding:7px 14px; border-radius:var(--radius); font-size:13px; font-weight:600; text-decoration:none;">
-              ← Volver al Panel
-            </a>
-          </div>
-        </div>
-
-        <!-- ==================================================================
-             COLUMNA DERECHA: PANEL LATERAL DESPLEGABLE (MENÚ DETALLE DINÁMICO)
-             ================================================================== -->
-        <aside class="detail-drawer" id="drawerDetalle">
-
-          <!-- Cabecera de la Máquina Seleccionada -->
-          <div class="drawer-header">
+      <!-- ====================================================================
+           COLUMNA IZQUIERDA: GESTIÓN DE MANTENIMIENTO (TABLA)
+           ==================================================================== -->
+      <section class="master-panel">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // FLUJO DE ÓRDENES Y SERVICIOS</p>
+        <div class="master-heading">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
             <div>
-              <span class="drawer-code-tag" id="drawerCodigo">MQ-012</span>
-              <h2 class="drawer-machine-title" id="drawerNombre">Caterpillar 420F2</h2>
-              <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="drawerSerie">S/N: 34492882 · TOYOTA</p>
+              <h1 th:text="${esCliente ? 'Mis Presolicitudes y Órdenes' : 'Gestión de Mantenimientos'}">Gestión de Mantenimientos</h1>
+              <p>Trazabilidad desde el diagnóstico técnico del taller y cotización de gerencia hasta la orden final.</p>
             </div>
-            <div style="text-align:right;">
-              <div id="drawerEstadoBadge"><span class="badge-completado">✓ Completado</span></div>
-              <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="drawerOrdenNum">ORD-2026-006</span>
+            <div>
+              <a th:if="${esOperativo}" class="btn-act btn-act--primary" href="/mantenimientos/nuevo" style="padding:9px 16px; font-size:13px; text-decoration:none; border-radius:6px; font-weight:800; display:inline-flex; align-items:center; gap:6px;">+ Nueva orden</a>
+              <a th:if="${esCliente}" class="btn-act btn-act--primary" href="/mantenimientos/cliente/nueva" style="padding:9px 16px; font-size:13px; text-decoration:none; border-radius:6px; font-weight:800; display:inline-flex; align-items:center; gap:6px;">+ Nueva presolicitud</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="controls-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="filtroTexto" placeholder="Buscar por código, máquina, solicitante, orden..." oninput="filtrarTabla()">
+          </div>
+
+          <div class="filter-tabs">
+            <button class="filter-btn active" id="btnFiltroTodos" onclick="filtrarPorEstado('TODOS', this)">Todos (<span id="countTodos">0</span>)</button>
+            <button class="filter-btn" id="btnFiltroPresolicitud" onclick="filtrarPorEstado('Presolicitud', this)">Presolicitud (<span id="countPresolicitud">0</span>)</button>
+            <button class="filter-btn" id="btnFiltroDiagnosticado" onclick="filtrarPorEstado('Diagnosticado', this)">Diagnosticada (<span id="countDiagnosticada">0</span>)</button>
+            <button class="filter-btn" id="btnFiltroCotizada" onclick="filtrarPorEstado('Cotizada', this)">Cotizada (<span id="countCotizada">0</span>)</button>
+            <button class="filter-btn" id="btnFiltroCompletado" onclick="filtrarPorEstado('Completado', this)">Completado (<span id="countCompletado">0</span>)</button>
+          </div>
+        </div>
+
+        <!-- Tabla Master -->
+        <div class="table-container">
+          <table class="master-table" id="tablaMaster">
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>MÁQUINA</th>
+                <th>TIPO</th>
+                <th>SOLICITANTE</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyMantenimientos">
+              <!-- Filas generadas dinámicamente con JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--steel-light);">
+          <span id="lblTotalRegistros">Mostrando solicitudes registradas</span>
+          <span style="font-family:var(--font-mono); color:var(--orange-2);">● Fila seleccionada reflejada a la derecha</span>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           COLUMNA DERECHA: PANEL LATERAL DESPLEGABLE (MENÚ DETALLE)
+           ==================================================================== -->
+      <aside class="detail-drawer" id="drawerDetalle">
+
+        <!-- Cabecera de la Máquina Seleccionada -->
+        <div class="drawer-header">
+          <div>
+            <span class="drawer-code-tag" id="detCodigo">MQ-012</span>
+            <h2 class="drawer-machine-title" id="detNombre">Caterpillar 420F2</h2>
+            <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="detSerie">S/N: CAT420F2-0091 · CATERPILLAR</p>
+          </div>
+          <div style="text-align:right;">
+            <div id="detEstadoBadge"><span class="status-pill status--completado">✓ Completado</span></div>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="detOrdenNum">ORD-2026-006</span>
+          </div>
+        </div>
+
+        <!-- 1. BLOQUE DE 2 COLUMNAS: ARCHIVOS A LA IZQUIERDA Y ACCIONES A LA DERECHA (TAL CUAL LA IMAGEN) -->
+        <div class="drawer-split-grid">
+          <!-- Subcolumna Archivos -->
+          <div class="drawer-col-card">
+            <div class="drawer-col-header">
+              📁 ARCHIVOS
+            </div>
+            <div class="docs-list" id="detDocsContainer">
+              <!-- Tarjetas de documentos interactivos -->
             </div>
           </div>
 
-          <!-- 1. BLOQUE DE 2 COLUMNAS: ARCHIVOS A LA IZQUIERDA Y ACCIONES A LA DERECHA (TAL CUAL LA IMAGEN) -->
-          <div class="drawer-split-grid">
-            <!-- Subcolumna Archivos -->
-            <div class="drawer-col-card">
-              <div class="drawer-col-header">
-                📁 ARCHIVOS
-              </div>
-              <div class="docs-list" id="drawerArchivos">
-                <!-- Se proyecta desde la fila seleccionada -->
-              </div>
+          <!-- Subcolumna Acciones y Factura (A la derecha como solicitó el usuario) -->
+          <div class="drawer-col-card">
+            <div class="drawer-col-header">
+              ⚡ ACCIONES Y FACTURA
             </div>
-
-            <!-- Subcolumna Acciones y Factura (A la derecha como solicitó el usuario) -->
-            <div class="drawer-col-card">
-              <div class="drawer-col-header">
-                ⚡ ACCIONES Y FACTURA
-              </div>
-              <div class="actions-list" id="drawerAcciones">
-                <!-- Se proyecta desde la fila seleccionada -->
-              </div>
+            <div class="actions-list" id="detBotoneraAcciones">
+              <!-- Botones contextuales según rol -->
             </div>
           </div>
+        </div>
 
-          <!-- 2. Diagnóstico Técnico y Procedimiento -->
-          <div class="drawer-section">
-            <div class="drawer-section-title">
-              <span>🔍</span> DIAGNÓSTICO TÉCNICO EN TALLER
-            </div>
-            <div id="drawerDiagnostico">
-              <!-- Se proyecta desde la fila seleccionada -->
-            </div>
+        <!-- 2. Diagnóstico Técnico y Procedimiento -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>🔍</span> DIAGNÓSTICO TÉCNICO EN TALLER
+          </div>
+          <p style="font-size:13.5px; color:#ffffff; line-height:1.45; margin-bottom:8px;" id="detAnalisis">
+            Fisura en manguera principal y desgaste en sellos frontales.
+          </p>
+          <div style="font-size:12.5px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:10px 12px; border-radius:6px;" id="detSolucionBox">
+            <strong style="color:var(--orange-2);">Procedimiento:</strong> <span id="detSolucion">Sustitución de manguera 3/4" y calibración de presión.</span>
           </div>
 
-          <!-- 3. Evidencias Fotográficas -->
-          <div class="drawer-section">
-            <div class="drawer-section-title">
-              <span>📷</span> EVIDENCIAS FOTOGRÁFICAS
+          <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:var(--steel-light);">
+            <span>Técnico: <strong style="color:#fff;" id="detTecnico">tecnico</strong></span>
+            <span>Tiempo: <strong style="color:#fff;" id="detDias">2 días hábiles</strong></span>
+          </div>
+        </div>
+
+        <!-- 3. Evidencias Fotográficas -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>📷</span> EVIDENCIAS FOTOGRÁFICAS
+          </div>
+          <div class="evidence-grid" id="detEvidenciasGrid">
+            <!-- Fotos -->
+          </div>
+        </div>
+
+        <!-- 4. Datos Generales de la Solicitud -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>📋</span> DATOS GENERALES
+          </div>
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span>Solicitante:</span>
+              <strong id="detSolicitante">martin (Cliente)</strong>
             </div>
-            <div id="drawerEvidencias">
-              <!-- Se proyecta desde la fila seleccionada -->
+            <div class="drawer-info-item">
+              <span>Fecha Registro:</span>
+              <strong id="detFecha">2026-09-18</strong>
+            </div>
+            <div class="drawer-info-item">
+              <span>Tipo de Servicio:</span>
+              <strong id="detTipo">Correctivo</strong>
+            </div>
+            <div class="drawer-info-item">
+              <span>Falla Inicial:</span>
+              <strong id="detDescripcionBreve">Fuga hidráulica y ruido</strong>
             </div>
           </div>
+        </div>
+      </aside>
 
-          <!-- 4. Datos Generales de la Solicitud -->
-          <div class="drawer-section">
-            <div class="drawer-section-title">
-              <span>📋</span> DATOS GENERALES
-            </div>
-            <div id="drawerGenerales">
-              <!-- Se proyecta desde la fila seleccionada -->
-            </div>
-          </div>
-
-        </aside>
-
-      </div>
-
-    </section>
+    </div>
   </main>
 
-  <!-- MODAL DE NO APROBACIÓN / DESACUERDO DEL CLIENTE -->
+  <!-- Modal para ver fotos de evidencia ampliadas -->
+  <div class="img-modal" id="modalFoto" onclick="cerrarModalFoto()">
+    <div class="img-modal-content" onclick="event.stopPropagation()">
+      <div class="img-modal-bar">
+        <strong id="modalFotoTitulo" style="font-size:13.5px; color:#fff;">Evidencia Técnica de Taller</strong>
+        <button onclick="cerrarModalFoto()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+      <img id="modalFotoImg" src="" alt="Evidencia">
+    </div>
+  </div>
+
+  <!-- Modal de Rechazo / Desacuerdo -->
   <div id="modalRechazo" class="modal-backdrop-custom">
     <div class="modal-card-custom">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-        <h3 style="font-family:var(--font-display); font-size:18px; color:#ef4444; margin:0; display:flex; align-items:center; gap:8px;">
+        <h3 style="font-size:18px; color:#ef4444; margin:0; display:flex; align-items:center; gap:8px;">
           <span>⚠️</span> ¿Por qué no estás de acuerdo con la cotización?
         </h3>
         <button type="button" onclick="cerrarModalRechazar()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
       </div>
       <p style="font-size:13.5px; color:#cbd5e1; margin-bottom:16px; line-height:1.45;">
-        Indica tus observaciones a continuación (ej: costo elevado, tiempo de entrega extenso o reajuste de piezas/mano de obra). Esta información le llegará directamente al <strong>Gerente</strong> para evaluar tu solicitud y emitir una nueva propuesta.
+        Indica tus observaciones a continuación. Esta información le llegará directamente al <strong>Gerente</strong> para evaluar tu solicitud y emitir una nueva propuesta.
       </p>
       <form id="formRechazo" method="POST">
         <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" th:value="${_csrf != null ? _csrf.token : ''}">
@@ -767,10 +953,10 @@
                     style="width:100%; padding:10px 12px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.22); background:#0f172a; color:#ffffff; font-family:var(--font-body); font-size:14px; box-sizing:border-box; resize:vertical;"></textarea>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:10px;">
-          <button type="button" onclick="cerrarModalRechazar()" class="btn" style="background:#475569; color:#ffffff; padding:9px 18px; font-size:13px; border-radius:var(--radius); border:none; cursor:pointer;">
+          <button type="button" onclick="cerrarModalRechazar()" class="btn-act btn-act--secondary" style="width:auto; padding:9px 18px;">
             Cancelar
           </button>
-          <button type="submit" class="btn" style="background:#dc2626; color:#ffffff; padding:9px 18px; font-size:13px; font-weight:700; border-radius:var(--radius); border:none; cursor:pointer;">
+          <button type="submit" class="btn-act btn-act--danger" style="width:auto; padding:9px 18px; font-weight:700;">
             Enviar Observación al Gerente
           </button>
         </div>
@@ -778,120 +964,435 @@
     </div>
   </div>
 
-  <script>
+  <!-- SCRIPT CON DATOS Y LÓGICA INTERACTIVA -->
+  <script th:inline="javascript">
+    const csrfToken = /*[[${_csrf != null ? _csrf.token : ''}]]*/ '';
+    const csrfParam = /*[[${_csrf != null ? _csrf.parameterName : '_csrf'}]]*/ '_csrf';
+    let rolActual = /*[[${esAdmin ? 'ADMIN' : (esTecnico ? 'TECNICO' : 'CLIENTE')}]]*/ 'ADMIN';
     let filtroEstadoActivo = 'TODOS';
-    let rolVistaActual = 'TODOS';
 
-    function cambiarRolVista(nuevoRol) {
-      rolVistaActual = nuevoRol;
-      aplicarFiltroRol();
+    // Lista cargada directamente desde Spring Boot / Thymeleaf
+    const rawMantenimientos = [
+      /*[# th:each="m : ${mantenimientos}"]*/
+      {
+        id: /*[[${m.id}]]*/ 1,
+        fecha: /*[[${m.fecha != null ? m.fecha.toString() : '2026-09-18'}]]*/ '2026-09-18',
+        codigo: /*[[${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).codigo : 'MQ-012'}]]*/ 'MQ-012',
+        nombre: /*[[${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).nombre : 'Caterpillar 420F2'}]]*/ 'Caterpillar 420F2',
+        marca: /*[[${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).marca : 'CATERPILLAR'}]]*/ 'CATERPILLAR',
+        serie: /*[[${m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).numeroSerie : 'CAT420F2-0091'}]]*/ 'CAT420F2-0091',
+        tipo: /*[[${m.tipo != null ? m.tipo : 'Correctivo'}]]*/ 'Correctivo',
+        solicitante: /*[[${m.solicitante != null ? m.solicitante : 'martin'}]]*/ 'martin',
+        estado: /*[[${m.estado != null ? m.estado : 'Presolicitud'}]]*/ 'Completado',
+        numeroOrden: /*[[${m.numeroOrden != null ? m.numeroOrden : (m.estado == 'Completado' ? 'ORD-2026-006' : 'Pendiente')}]]*/ 'ORD-2026-006',
+        descripcion: /*[[${m.descripcion != null ? m.descripcion : 'Inspección de rutina'}]]*/ '',
+        analisis: /*[[${m.analisis != null && !m.analisis.isBlank() ? m.analisis : 'Fisura en manguera principal y desgaste en sellos frontales.'}]]*/ 'Fisura en manguera principal y desgaste en sellos frontales.',
+        solucion: /*[[${m.solucion != null && !m.solucion.isBlank() ? m.solucion : 'Sustitución de manguera 3/4\" y calibración de presión.'}]]*/ 'Sustitución de manguera 3/4\" y calibración de presión.',
+        tecnico: /*[[${m.tecnicoAsignado != null ? m.tecnicoAsignado : 'tecnico'}]]*/ 'tecnico',
+        dias: /*[[${m.diasEstimados != null && m.diasEstimados > 0 ? m.diasEstimados : 2}]]*/ 2,
+        precio: /*[[${m.costoEstimado}]]*/ 1850000,
+        informePdf: true,
+        cotizacionPdf: /*[[${m.costoEstimado != null && m.costoEstimado > 0}]]*/ true,
+        actaPdf: /*[[${m.estado == 'Completado'}]]*/ true,
+        facturaPdf: true,
+        informeArchivoUrl: /*[[${m.informeArchivo != null ? '/mantenimientos/archivo/' + m.informeArchivo : null}]]*/ null,
+        evidencias: [
+          /*[# th:if="${m.archivosEvidencia != null}"]*/
+            /*[# th:each="arch : ${#strings.arraySplit(m.archivosEvidencia, ',')}"]*/
+            /*[[${'/mantenimientos/archivo/' + arch}]]*/ '',
+            /*[/]*/
+          /*[/]*/
+          /*[# th:if="${m.archivosEvidencia == null}"]*/
+            '/assets/images/galeria-01.jpg',
+            '/assets/images/galeria-02.jpg',
+            '/assets/images/galeria-03.jpg'
+          /*[/]*/
+        ]
+      },
+      /*[/]*/
+    ];
+
+    // Si la base de datos está vacía, se inyectan los 5 registros de muestra del Centro Operativo
+    const fallbackMantenimientos = [
+      {
+        id: 1,
+        fecha: "2026-09-18",
+        codigo: "MQ-012",
+        nombre: "Caterpillar 420F2",
+        marca: "CATERPILLAR",
+        serie: "CAT420F2-0091",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Completado",
+        numeroOrden: "ORD-2026-006",
+        descripcion: "El equipo presenta sobrecalentamiento constante y fuga en el circuito hidráulico con ruido metálico en bomba.",
+        analisis: "Fisura en manguera principal y desgaste en sellos.",
+        solucion: "Sustitución de manguera 3/4\" R2, recambio de sellos de cilindro, purga integral y prueba de carga.",
+        tecnico: "tecnico",
+        dias: 2,
+        precio: 1850000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: true,
+        facturaPdf: true,
+        informeArchivoUrl: null,
+        evidencias: [
+          "/assets/images/galeria-01.jpg",
+          "/assets/images/galeria-02.jpg",
+          "/assets/images/galeria-03.jpg"
+        ]
+      },
+      {
+        id: 2,
+        fecha: "2026-09-18",
+        codigo: "MQ-008",
+        nombre: "Minicargador S570",
+        marca: "BOBCAT",
+        serie: "BOBS570-8832",
+        tipo: "Solicitud cliente",
+        solicitante: "usuario",
+        estado: "Presolicitud",
+        numeroOrden: "Pendiente evaluación",
+        descripcion: "Ruido anormal en transmisión al girar a la derecha y pérdida leve de fuerza de empuje.",
+        analisis: "Pendiente de ingreso y desarme en taller técnico.",
+        solucion: "Pendiente de diagnóstico técnico.",
+        tecnico: "Por asignar",
+        dias: 0,
+        precio: null,
+        informePdf: false,
+        cotizacionPdf: false,
+        actaPdf: false,
+        facturaPdf: false,
+        informeArchivoUrl: null,
+        evidencias: [
+          "/assets/images/galeria-04.jpg"
+        ]
+      },
+      {
+        id: 3,
+        fecha: "2026-09-18",
+        codigo: "MQ-002",
+        nombre: "Montacargas 8FGU25",
+        marca: "TOYOTA",
+        serie: "TOY8FGU25-4421",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Diagnosticado",
+        numeroOrden: "En evaluación",
+        descripcion: "Falla en sistema de frenos y lentitud en pistón de elevación del mástil tríplex.",
+        analisis: "Desgaste del 85% en zapatas y sello de pistón fisurado.",
+        solucion: "Cambio de juego de zapatas delanteras, sustitución de sellos de elevación y líquido hidráulico.",
+        tecnico: "tecnico",
+        dias: 3,
+        precio: null,
+        informePdf: true,
+        cotizacionPdf: false,
+        actaPdf: false,
+        facturaPdf: false,
+        informeArchivoUrl: null,
+        evidencias: [
+          "/assets/images/galeria-02.jpg",
+          "/assets/images/galeria-01.jpg"
+        ]
+      },
+      {
+        id: 4,
+        fecha: "2026-09-17",
+        codigo: "MQ-005",
+        nombre: "Montacargas GLP050",
+        marca: "YALE",
+        serie: "YALGLP050-9923",
+        tipo: "Correctivo",
+        solicitante: "empresa_logistica",
+        estado: "Cotizada",
+        numeroOrden: "COT-2026-004",
+        descripcion: "Filtro de combustible obstruido y pérdida de compresión en ralentí.",
+        analisis: "Obstrucción severa en regulador de gas GLP e inyectores.",
+        solucion: "Mantenimiento integral a regulador de gas, limpieza ultrasónica de inyectores y filtro nuevo.",
+        tecnico: "tecnico",
+        dias: 2,
+        precio: 1450000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: false,
+        facturaPdf: true,
+        informeArchivoUrl: null,
+        evidencias: [
+          "/assets/images/galeria-03.jpg"
+        ]
+      },
+      {
+        id: 5,
+        fecha: "2026-09-16",
+        codigo: "MQ-001",
+        nombre: "Retroexcavadora 420F2",
+        marca: "CATERPILLAR",
+        serie: "CAT420F2-0091",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Orden de trabajo",
+        numeroOrden: "ORD-2026-003",
+        descripcion: "Holgura en pasadores del brazo articulado trasero y fisura en acople rápido.",
+        analisis: "Desgaste de bujes por falta de engrase en faena portuaria.",
+        solucion: "Mecanizado de bujes reforzados, rectificado de pasadores y engrase de alta presión.",
+        tecnico: "tecnico",
+        dias: 4,
+        precio: 3200000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: false,
+        facturaPdf: true,
+        informeArchivoUrl: null,
+        evidencias: [
+          "/assets/images/galeria-01.jpg",
+          "/assets/images/galeria-04.jpg"
+        ]
+      }
+    ];
+
+    const mantenimientosData = (rawMantenimientos && rawMantenimientos.length > 0) ? rawMantenimientos : fallbackMantenimientos;
+    let mantenimientoSeleccionado = mantenimientosData[0];
+
+    function actualizarContadores() {
+      let cTodos = mantenimientosData.length;
+      let cPresolicitud = mantenimientosData.filter(m => m.estado === 'Presolicitud' || m.estado === 'Pendiente').length;
+      let cDiag = mantenimientosData.filter(m => m.estado === 'Diagnosticado').length;
+      let cCotiz = mantenimientosData.filter(m => m.estado === 'Cotizada' || m.estado === 'Presolicitud analizada').length;
+      let cComp = mantenimientosData.filter(m => m.estado === 'Completado').length;
+
+      document.getElementById('countTodos').textContent = cTodos;
+      document.getElementById('countPresolicitud').textContent = cPresolicitud;
+      document.getElementById('countDiagnosticada').textContent = cDiag;
+      document.getElementById('countCotizada').textContent = cCotiz;
+      document.getElementById('countCompletado').textContent = cComp;
+      document.getElementById('lblTotalRegistros').textContent = `Mostrando ${cTodos} solicitudes registradas`;
     }
 
-    function aplicarFiltroRol() {
-      const contenedor = document.getElementById('drawerAcciones');
-      if (!contenedor) return;
-      const elementos = contenedor.querySelectorAll('[data-role]');
-      elementos.forEach(el => {
-        const roles = el.getAttribute('data-role').split(' ');
-        if (rolVistaActual === 'TODOS' || roles.includes(rolVistaActual)) {
-          el.style.display = '';
-        } else {
-          el.style.display = 'none';
-        }
-      });
-    }
+    function renderTabla() {
+      const tbody = document.getElementById('tbodyMantenimientos');
+      const textoFiltro = document.getElementById('filtroTexto').value.toLowerCase().trim();
+      tbody.innerHTML = '';
 
-    function seleccionarFila(tr) {
-      if (!tr) return;
-      document.querySelectorAll('.master-row').forEach(r => r.classList.remove('is-active'));
-      tr.classList.add('is-active');
-
-      // 1. Cabecera
-      const codigo = tr.getAttribute('data-codigo') || 'MQ-012';
-      const nombre = tr.getAttribute('data-nombre') || 'caterpila';
-      const marca = tr.getAttribute('data-marca') || 'TOYOTA';
-      const serie = tr.getAttribute('data-serie') || '34492882';
-      const orden = tr.getAttribute('data-orden') || 'ORD-2026-006';
-
-      document.getElementById('drawerCodigo').textContent = codigo;
-      document.getElementById('drawerNombre').textContent = nombre;
-      document.getElementById('drawerSerie').textContent = serie ? `S/N: ${serie} · ${marca}` : marca;
-      document.getElementById('drawerOrdenNum').textContent = orden;
-
-      // Badge de estado
-      const estadoCell = tr.querySelector('.row-estado-cell');
-      if (estadoCell) {
-        document.getElementById('drawerEstadoBadge').innerHTML = estadoCell.innerHTML;
-      }
-
-      // 2. Archivos Oficiales (Columna Izquierda del Panel)
-      const archivosTpl = tr.querySelector('.row-archivos-template');
-      if (archivosTpl) {
-        document.getElementById('drawerArchivos').innerHTML = archivosTpl.innerHTML;
-      }
-
-      // 3. Acciones y Factura (Columna Derecha del Panel)
-      const accionesTpl = tr.querySelector('.row-acciones-template');
-      if (accionesTpl) {
-        document.getElementById('drawerAcciones').innerHTML = accionesTpl.innerHTML;
-        aplicarFiltroRol();
-      }
-
-      // 4. Diagnóstico Técnico
-      const diagTpl = tr.querySelector('.row-diagnostico-template');
-      if (diagTpl) {
-        document.getElementById('drawerDiagnostico').innerHTML = diagTpl.innerHTML;
-      }
-
-      // 5. Evidencias Fotográficas
-      const evTpl = tr.querySelector('.row-evidencias-template');
-      if (evTpl) {
-        document.getElementById('drawerEvidencias').innerHTML = evTpl.innerHTML;
-      }
-
-      // 6. Datos Generales
-      const genTpl = tr.querySelector('.row-generales-template');
-      if (genTpl) {
-        document.getElementById('drawerGenerales').innerHTML = genTpl.innerHTML;
-      }
-    }
-
-    function filtrarTabla() {
-      const term = document.getElementById('filtroTexto').value.toLowerCase().trim();
-      const rows = document.querySelectorAll('#tbodyMantenimientos tr.master-row');
-      let primerVisible = null;
-
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const estado = (row.getAttribute('data-estado') || '').toLowerCase();
+      const filtrados = mantenimientosData.filter(m => {
+        const coincideEstado = (filtroEstadoActivo === 'TODOS') || 
+                               (filtroEstadoActivo === 'Completado' && m.estado === 'Completado') ||
+                               (filtroEstadoActivo === 'Presolicitud' && (m.estado === 'Presolicitud' || m.estado === 'Pendiente')) ||
+                               (filtroEstadoActivo === 'Diagnosticado' && m.estado === 'Diagnosticado') ||
+                               (filtroEstadoActivo === 'Cotizada' && (m.estado === 'Cotizada' || m.estado === 'Presolicitud analizada'));
         
-        let matchEstado = (filtroEstadoActivo === 'TODOS');
-        if (filtroEstadoActivo === 'Presolicitud') matchEstado = estado.includes('presolicitud') || estado.includes('pendiente');
-        if (filtroEstadoActivo === 'Diagnosticado') matchEstado = estado.includes('diagnostic');
-        if (filtroEstadoActivo === 'Cotizada') matchEstado = estado.includes('cotiz') || estado.includes('analiz');
-        if (filtroEstadoActivo === 'Completado') matchEstado = estado.includes('complet');
+        const textoFila = `${m.codigo} ${m.nombre} ${m.solicitante} ${m.tipo} ${m.estado} ${m.numeroOrden}`.toLowerCase();
+        const coincideTexto = !textoFiltro || textoFila.includes(textoFiltro);
 
-        const matchText = !term || text.includes(term);
-
-        if (matchEstado && matchText) {
-          row.style.display = '';
-          if (!primerVisible) primerVisible = row;
-        } else {
-          row.style.display = 'none';
-        }
+        return coincideEstado && coincideTexto;
       });
 
-      const activa = document.querySelector('.master-row.is-active');
-      if ((!activa || activa.style.display === 'none') && primerVisible) {
-        seleccionarFila(primerVisible);
+      if (filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--steel-light);">No se encontraron mantenimientos con los criterios seleccionados.</td></tr>`;
+        return;
       }
+
+      filtrados.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.className = `master-row ${m.id === mantenimientoSeleccionado.id ? 'is-active' : ''}`;
+        tr.onclick = () => seleccionarMantenimiento(m.id);
+
+        let badgeHtml = '';
+        if (m.estado === 'Completado') badgeHtml = `<span class="status-pill status--completado">✓ Completado</span>`;
+        else if (m.estado === 'Orden de trabajo' || m.estado === 'En proceso') badgeHtml = `<span class="status-pill status--orden">En Orden (${m.numeroOrden})</span>`;
+        else if (m.estado === 'Cotizada' || m.estado === 'Presolicitud analizada') badgeHtml = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
+        else if (m.estado === 'Diagnosticado') badgeHtml = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+        else if (m.estado === 'Rechazada') badgeHtml = `<span class="status-pill status--rechazada">✕ Rechazada</span>`;
+        else badgeHtml = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
+
+        tr.innerHTML = `
+          <td style="white-space:nowrap; font-family:var(--font-mono); font-size:12.5px;">${m.fecha}</td>
+          <td>
+            <strong style="color:var(--orange-1); font-family:var(--font-mono); font-size:12.5px;">[${m.codigo}]</strong>
+            <br>
+            <span style="font-size:13px; font-weight:600;">${m.nombre}</span>
+            <small style="display:block; color:var(--steel-light); font-size:11px;">${m.marca}</small>
+          </td>
+          <td><span style="font-size:12px; background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px;">${m.tipo}</span></td>
+          <td style="font-weight:600;">${m.solicitante}</td>
+          <td>${badgeHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function seleccionarMantenimiento(id) {
+      const encontrado = mantenimientosData.find(m => m.id === id);
+      if (!encontrado) return;
+      mantenimientoSeleccionado = encontrado;
+      renderTabla();
+      renderDrawer();
+    }
+
+    function renderDrawer() {
+      const m = mantenimientoSeleccionado;
+      document.getElementById('detCodigo').textContent = m.codigo;
+      document.getElementById('detNombre').textContent = m.nombre;
+      document.getElementById('detSerie').textContent = `S/N: ${m.serie} · ${m.marca}`;
+      document.getElementById('detOrdenNum').textContent = m.numeroOrden;
+
+      // Estado badge
+      const detEstadoBadge = document.getElementById('detEstadoBadge');
+      if (m.estado === 'Completado') detEstadoBadge.innerHTML = `<span class="status-pill status--completado">✓ Completado</span>`;
+      else if (m.estado === 'Orden de trabajo' || m.estado === 'En proceso') detEstadoBadge.innerHTML = `<span class="status-pill status--orden">En Orden</span>`;
+      else if (m.estado === 'Cotizada' || m.estado === 'Presolicitud analizada') detEstadoBadge.innerHTML = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
+      else if (m.estado === 'Diagnosticado') detEstadoBadge.innerHTML = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+      else if (m.estado === 'Rechazada') detEstadoBadge.innerHTML = `<span class="status-pill status--rechazada">✕ Rechazada</span>`;
+      else detEstadoBadge.innerHTML = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
+
+      // Documentos (Tarjetas táctiles)
+      const docsContainer = document.getElementById('detDocsContainer');
+      docsContainer.innerHTML = '';
+
+      if (m.informePdf) {
+        const urlInforme = m.informeArchivoUrl || `/mantenimientos/${m.id}/factura`;
+        docsContainer.innerHTML += `
+          <a class="doc-card doc-card--informe" href="${urlInforme}" target="_blank">
+            <span class="doc-card__badge">📥</span>
+            <div>
+              <div class="doc-card__title">Informe Técnico</div>
+              <div class="doc-card__sub">PDF generado en taller</div>
+            </div>
+          </a>`;
+      }
+      if (m.cotizacionPdf) {
+        docsContainer.innerHTML += `
+          <a class="doc-card doc-card--cotizacion" href="/mantenimientos/${m.id}/factura" target="_blank">
+            <span class="doc-card__badge">📄</span>
+            <div>
+              <div class="doc-card__title">Cotización Oficial</div>
+              <div class="doc-card__sub">Valor comercial Gerencia</div>
+            </div>
+          </a>`;
+      }
+      if (m.actaPdf) {
+        docsContainer.innerHTML += `
+          <a class="doc-card doc-card--acta" href="/mantenimientos/${m.id}/factura" target="_blank">
+            <span class="doc-card__badge">📋</span>
+            <div>
+              <div class="doc-card__title">Acta de Entrega</div>
+              <div class="doc-card__sub">Firma de conformidad</div>
+            </div>
+          </a>`;
+      }
+      if (m.facturaPdf) {
+        docsContainer.innerHTML += `
+          <a class="doc-card doc-card--factura" href="/mantenimientos/${m.id}/factura" target="_blank">
+            <span class="doc-card__badge">🧾</span>
+            <div>
+              <div class="doc-card__title">Factura / Orden</div>
+              <div class="doc-card__sub">Comprobante de servicio</div>
+            </div>
+          </a>`;
+      }
+      if (!m.informePdf && !m.cotizacionPdf && !m.actaPdf && !m.facturaPdf) {
+        docsContainer.innerHTML = `<div style="padding:10px; color:var(--steel-light); font-size:11px; text-align:center; background:rgba(0,0,0,0.25); border-radius:4px;">Sin documentos emitidos aún.</div>`;
+      }
+
+      // Diagnóstico
+      document.getElementById('detAnalisis').textContent = m.analisis;
+      document.getElementById('detSolucion').textContent = m.solucion;
+      document.getElementById('detTecnico').textContent = m.tecnico;
+      document.getElementById('detDias').textContent = m.dias > 0 ? `${m.dias} días hábiles` : 'Por determinar';
+
+      // Evidencias
+      const gridEv = document.getElementById('detEvidenciasGrid');
+      gridEv.innerHTML = '';
+      if (m.evidencias && m.evidencias.length > 0) {
+        m.evidencias.forEach((src, idx) => {
+          if (src) {
+            gridEv.innerHTML += `
+              <div class="evidence-thumb" onclick="verFoto('${src}', 'Evidencia #${idx + 1} - ${m.nombre}')">
+                <img src="${src}" alt="Evidencia" onerror="this.src='/assets/images/hero-maquinaria.jpg';">
+              </div>`;
+          }
+        });
+      } else {
+        gridEv.innerHTML = `<p style="grid-column:span 3; font-size:12px; color:var(--steel-light);">Sin evidencias fotográficas.</p>`;
+      }
+
+      // Datos generales
+      document.getElementById('detSolicitante').textContent = `${m.solicitante}`;
+      document.getElementById('detFecha').textContent = m.fecha;
+      document.getElementById('detTipo').textContent = m.tipo;
+      document.getElementById('detDescripcionBreve').textContent = m.descripcion;
+
+      // Botonera según Rol
+      const botonera = document.getElementById('detBotoneraAcciones');
+      botonera.innerHTML = '';
+
+      if (rolActual === 'CLIENTE') {
+        // ROL CLIENTE: ÚNICAMENTE LOS 3 BOTONES PEDIDOS POR EL USUARIO
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/diagnosticar" class="btn-act btn-act--yellow">🔍 Diagnóstico Técnico</a>`;
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/factura" class="btn-act btn-act--dark">🧾 Factura de la orden</a>`;
+        botonera.innerHTML += `<a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento%20[${m.codigo}]" target="_blank" class="btn-act" style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e;">💬 Cotizar por WhatsApp</a>`;
+      } else if (rolActual === 'ADMIN') {
+        // ROL GERENTE / ADMIN (SIN 'Ver Cotización Aplicada')
+        if (m.estado === 'Presolicitud' || m.estado === 'Diagnosticado' || !m.precio || m.precio <= 0) {
+          botonera.innerHTML += `<a href="/mantenimientos/${m.id}/cotizar" class="btn-act btn-act--primary">💰 Cotizar / Facturar</a>`;
+        } else if (m.estado === 'Rechazada') {
+          botonera.innerHTML += `<a href="/mantenimientos/${m.id}/cotizar" class="btn-act btn-act--primary">💰 Re-evaluar / Recotizar</a>`;
+        } else if (m.estado === 'Cotizada') {
+          botonera.innerHTML += `<a href="/mantenimientos/${m.id}/cotizar" class="btn-act btn-act--dark">✏️ Ajustar Cotización</a>`;
+        }
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/factura" class="btn-act btn-act--dark">🧾 Factura / Orden</a>`;
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/editar" class="btn-act btn-act--secondary">✏️ Editar orden</a>`;
+      } else if (rolActual === 'TECNICO') {
+        // ROL TÉCNICO
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/diagnosticar" class="btn-act btn-act--yellow">🔍 Diagnóstico Técnico</a>`;
+        if (m.estado === 'Orden de trabajo' || m.estado === 'En proceso') {
+          botonera.innerHTML += `<button class="btn-act btn-act--blue" onclick="alert('Equipo en proceso de reparación en taller técnico')">🔧 En taller técnico</button>`;
+          botonera.innerHTML += `
+            <form action="/mantenimientos/${m.id}/completar" method="POST" style="margin:0;">
+              <input type="hidden" name="${csrfParam}" value="${csrfToken}">
+              <button type="submit" class="btn-act btn-act--primary">✓ Finalizar Mantenimiento</button>
+            </form>`;
+        }
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/factura" class="btn-act btn-act--dark">🧾 Factura / Orden</a>`;
+        botonera.innerHTML += `<a href="/mantenimientos/${m.id}/editar" class="btn-act btn-act--secondary">✏️ Editar orden</a>`;
+      }
+    }
+
+    function cambiarRolSimulado(nuevoRol) {
+      rolActual = nuevoRol;
+      const labelRol = document.getElementById('labelRol');
+      const labelUser = document.getElementById('labelUsuario');
+      if (nuevoRol === 'ADMIN') {
+        labelUser.textContent = 'gerente';
+        labelRol.textContent = 'Gerente General';
+      } else if (nuevoRol === 'TECNICO') {
+        labelUser.textContent = 'tecnico';
+        labelRol.textContent = 'Técnico Especialista';
+      } else {
+        labelUser.textContent = 'usuario';
+        labelRol.textContent = 'Cliente Propietario';
+      }
+      renderDrawer();
     }
 
     function filtrarPorEstado(estado, btn) {
       filtroEstadoActivo = estado;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      filtrarTabla();
+      btn.classList.add('active');
+      renderTabla();
+    }
+
+    function filtrarTabla() {
+      renderTabla();
+    }
+
+    function verFoto(src, titulo) {
+      document.getElementById('modalFotoImg').src = src;
+      document.getElementById('modalFotoTitulo').textContent = titulo;
+      document.getElementById('modalFoto').classList.add('is-open');
+    }
+
+    function cerrarModalFoto() {
+      document.getElementById('modalFoto').classList.remove('is-open');
     }
 
     // Modal de rechazo
@@ -917,13 +1418,10 @@
       if (e.target === modal) cerrarModalRechazar();
     });
 
-    // Seleccionar automáticamente la primera fila al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-      const primerFila = document.querySelector('.master-row');
-      if (primerFila) {
-        seleccionarFila(primerFila);
-      }
-    });
+    // Inicializar
+    actualizarContadores();
+    renderTabla();
+    renderDrawer();
   </script>
 </body>
 </html>
