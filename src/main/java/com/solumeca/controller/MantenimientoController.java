@@ -60,9 +60,12 @@ public class MantenimientoController {
         if (authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
             return "redirect:/mantenimientos/cliente";
         }
+        java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
         model.addAttribute("mantenimientos", mantenimientoRepository.findAllByOrderByFechaDesc());
-        model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
+        model.addAttribute("maquinasMap", todasMaquinas.stream()
+                .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
+        model.addAttribute("maquinasList", todasMaquinas);
         model.addAttribute("esOperativo", esOperativo(authentication));
         model.addAttribute("esTecnico", esTecnico(authentication));
         model.addAttribute("esAdmin", esAdmin(authentication));
@@ -214,9 +217,11 @@ public class MantenimientoController {
                           || "equipo-tecnico".equalsIgnoreCase(m.getSolicitante()))
                 .collect(Collectors.toList());
         model.addAttribute("mantenimientos", misMantenimientos);
-        model.addAttribute("maquinasMap", maquinariaRepository.findAll().stream()
+        java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
+        model.addAttribute("maquinasMap", todasMaquinas.stream()
                 .filter(m -> m != null && m.getId() != null)
                 .collect(Collectors.toMap(com.solumeca.model.Maquinaria::getId, m -> m, (a, b) -> a)));
+        model.addAttribute("maquinasList", todasMaquinas);
         model.addAttribute("esCliente", true);
         model.addAttribute("esOperativo", false);
         model.addAttribute("esTecnico", false);

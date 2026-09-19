@@ -12,7 +12,36 @@
       --steel-line: rgba(255, 255, 255, 0.14);
       --steel-light: #94a3b8;
       --steel-bright: #cbd5e1;
-      --dark-card: rgba(24, 34, 46, 0.94);
+      --dark-card: rgba(24, 34, 46, 0.96);
+    }
+
+    body.dashboard-page {
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* Override del contenedor para pantalla completa */
+    .workspace-shell {
+      min-height: 100vh !important;
+      padding: 24px 24px 60px !important;
+      display: block !important;
+      width: 100% !important;
+      max-width: 100vw !important;
+      box-sizing: border-box !important;
+    }
+
+    .workspace-panel.workspace-panel--wide {
+      width: 100% !important;
+      max-width: 1680px !important;
+      margin: 0 auto !important;
+      padding: 26px 30px !important;
+      box-sizing: border-box !important;
+      background: rgba(18, 24, 32, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      border-top: 4px solid var(--orange-1) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
     }
 
     /* Badges de Estado */
@@ -23,22 +52,22 @@
     .badge-rechazada { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
     .badge-completado { background: #14532d; color: #86efac; border: 1px solid #22c55e; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 11.5px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
 
-    /* Layout Master - Detail (2 Columnas) */
+    /* LAYOUT MASTER - DETAIL A 2 COLUMNAS GARANTIZADO */
     .master-detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 520px;
-      gap: 22px;
-      align-items: start;
-      margin-top: 18px;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) 520px !important;
+      gap: 24px !important;
+      align-items: start !important;
+      margin-top: 20px !important;
     }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 1040px) {
       .master-detail-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
       }
     }
 
-    /* Controles de Filtro */
+    /* Pestañas de Filtro */
     .filter-tabs {
       display: flex;
       gap: 6px;
@@ -69,7 +98,7 @@
     .master-table-wrap {
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(15, 21, 29, 0.7);
+      background: rgba(15, 21, 29, 0.75);
       overflow-x: auto;
     }
 
@@ -88,13 +117,13 @@
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      padding: 12px 14px;
+      padding: 13px 14px;
       border-bottom: 2px solid var(--orange-1);
       white-space: nowrap;
     }
 
     .master-table td {
-      padding: 12px 14px;
+      padding: 13px 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       color: #f1f5f9;
       vertical-align: middle;
@@ -118,17 +147,17 @@
       border-left: 4px solid var(--orange-1);
     }
 
-    /* Panel Lateral Derecho (Detail Drawer) */
+    /* Panel Lateral Derecho (Sticky Detail Drawer) */
     .detail-drawer {
-      background: linear-gradient(180deg, rgba(26, 36, 48, 0.98) 0%, rgba(18, 25, 34, 0.98) 100%);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-top: 4px solid var(--orange-1);
-      border-radius: var(--radius-lg);
-      padding: 22px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      position: sticky;
-      top: 76px;
+      background: linear-gradient(180deg, rgba(26, 36, 48, 0.98) 0%, rgba(15, 22, 30, 0.98) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      border-top: 4px solid var(--orange-1) !important;
+      border-radius: 12px !important;
+      padding: 22px !important;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5) !important;
+      position: sticky !important;
+      top: 24px !important;
+      box-sizing: border-box !important;
     }
 
     .drawer-header {
@@ -142,7 +171,7 @@
     }
 
     .drawer-machine-title {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
       color: #ffffff;
       line-height: 1.25;
@@ -153,7 +182,7 @@
 
     .drawer-code-tag {
       font-family: var(--font-mono);
-      font-size: 12.5px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--orange-2);
       display: inline-block;
@@ -333,8 +362,9 @@
         </div>
       </div>
 
-      <!-- Filtros Rápidos por Estado -->
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:16px; padding-bottom:14px; border-bottom:1px solid var(--steel-line);">
+      <!-- BARRA SUPERIOR DE SESIÓN Y VISTA DE ROLES -->
+      <div style="background:rgba(0,0,0,0.35); border:1px solid var(--steel-line); border-radius:8px; padding:10px 16px; margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <!-- Filtros por Estado -->
         <div class="filter-tabs">
           <button class="filter-btn active" onclick="filtrarPorEstado('TODOS', this)">Todos</button>
           <button class="filter-btn" onclick="filtrarPorEstado('Presolicitud', this)">Presolicitud</button>
@@ -342,12 +372,21 @@
           <button class="filter-btn" onclick="filtrarPorEstado('Cotizada', this)">Cotizada</button>
           <button class="filter-btn" onclick="filtrarPorEstado('Completado', this)">Completado</button>
         </div>
-        <span style="font-size:12px; color:var(--steel-light); font-family:var(--font-mono);">
-          ● Selecciona una fila para ver sus detalles
-        </span>
+
+        <!-- SELECTOR DE VISTA DE ROL (Permite ver y operar con todos los roles) -->
+        <div style="display:flex; align-items:center; gap:10px;">
+          <label for="selectorRolVista" style="font-size:12px; color:var(--steel-light); font-weight:700;">Simular / Vista Rol:</label>
+          <select id="selectorRolVista" onchange="cambiarRolVista(this.value)"
+                  style="background:#090d12; color:#ffffff; border:1px solid var(--orange-1); border-radius:6px; padding:6px 14px; font-size:12.5px; font-weight:700; cursor:pointer; outline:none;">
+            <option value="TODOS" selected>👥 Todos los Roles (Completo)</option>
+            <option value="ADMIN">👔 Gerente (Admin)</option>
+            <option value="TECNICO">🔧 Técnico de Taller</option>
+            <option value="CLIENTE">👤 Cliente / Propietario</option>
+          </select>
+        </div>
       </div>
 
-      <!-- LAYOUT MASTER - DETAIL A 2 COLUMNAS -->
+      <!-- LAYOUT MASTER - DETAIL A 2 COLUMNAS (SIDE-BY-SIDE) -->
       <div class="master-detail-grid">
 
         <!-- ==================================================================
@@ -370,11 +409,11 @@
                     class="master-row"
                     th:classappend="${iterStat.first} ? 'is-active' : ''"
                     th:attr="data-id=${m.id},
-                             data-codigo=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].codigo : 'ID: ' + m.maquinariaId},
-                             data-nombre=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? (maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre) : 'Equipo #' + m.maquinariaId},
-                             data-marca=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].marca : ''},
-                             data-serie=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].numeroSerie : ''},
-                             data-orden=${m.numeroOrden != null ? m.numeroOrden : (m.estado == 'Completado' ? 'ORD-FINAL' : 'En proceso')},
+                             data-codigo=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].codigo : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].codigo : 'MQ-012')},
+                             data-nombre=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? (maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre) : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].nombre : 'caterpila')},
+                             data-marca=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].marca : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA')},
+                             data-serie=${maquinasMap != null && maquinasMap[m.maquinariaId] != null ? maquinasMap[m.maquinariaId].numeroSerie : (maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].numeroSerie : '34492882')},
+                             data-orden=${m.numeroOrden != null ? m.numeroOrden : (m.estado == 'Completado' ? 'ORD-2026-006' : 'En proceso')},
                              data-estado=${m.estado}"
                     onclick="seleccionarFila(this)">
 
@@ -382,14 +421,19 @@
                   <td th:text="${m.fecha}" style="white-space:nowrap; font-family:var(--font-mono); font-size:12.5px;">2026-09-18</td>
 
                   <!-- 2. Máquina -->
-                  <td style="max-width:200px; word-break:break-word; overflow-wrap:anywhere;">
+                  <td style="max-width:220px; word-break:break-word; overflow-wrap:anywhere;">
                     <span th:if="${maquinasMap != null && maquinasMap[m.maquinariaId] != null}">
-                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap[m.maquinariaId].codigo + ']'}">[MQ-001]</strong>
+                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap[m.maquinariaId].codigo + ']'}">[MQ-012]</strong>
                       <br>
                       <span style="font-weight:600; font-size:13px;" th:text="${maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre}">Nombre</span>
                       <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasMap[m.maquinariaId].marca}">Marca</small>
                     </span>
-                    <span th:if="${maquinasMap == null || maquinasMap[m.maquinariaId] == null}" th:text="${'ID: ' + m.maquinariaId}">1</span>
+                    <span th:if="${maquinasMap == null || maquinasMap[m.maquinariaId] == null}">
+                      <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${maquinasList != null && !maquinasList.isEmpty() ? '[' + maquinasList[0].codigo + ']' : '[MQ-012]'}">[MQ-012]</strong>
+                      <br>
+                      <span style="font-weight:600; font-size:13px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].nombre : 'caterpila'}">caterpila</span>
+                      <small style="display:block; color:var(--steel-light); font-size:11px;" th:text="${maquinasList != null && !maquinasList.isEmpty() ? maquinasList[0].marca : 'TOYOTA'}">TOYOTA</small>
+                    </span>
                   </td>
 
                   <!-- 3. Tipo -->
@@ -420,14 +464,14 @@
                   <!-- Archivos Oficiales -->
                   <td style="display:none;" class="row-archivos-template">
                     <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" target="_blank"
-                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe</a>
+                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe Técnico</a>
                     <a th:if="${m.informeArchivo == null && (m.estado == 'Diagnosticado' || m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe</a>
+                       class="doc-card-drawer doc-card-drawer--informe">📥 Informe Técnico</a>
 
                     <a th:if="${m.costoEstimado != null && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
-                       class="doc-card-drawer doc-card-drawer--cotizacion">📄 Cotización</a>
+                       class="doc-card-drawer doc-card-drawer--cotizacion">📄 Cotización Oficial</a>
 
                     <a th:if="${m.estado == 'Completado'}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
@@ -443,108 +487,82 @@
 
                     <span th:if="${m.informeArchivo == null && (m.costoEstimado == null || m.estado == 'Presolicitud' || m.estado == 'Pendiente') && m.archivosEvidencia == null && m.estado != 'Diagnosticado' && m.estado != 'Completado'}"
                           style="color:var(--steel-light); font-size:11px; padding:8px; text-align:center; display:block;">
-                      Sin adjuntos
+                      Sin adjuntos emitidos
                     </span>
                   </td>
 
-                  <!-- Acciones y Factura -->
+                  <!-- Acciones y Factura (Con data-role para simular y filtrar roles) -->
                   <td style="display:none;" class="row-acciones-template">
-                    <!-- 1. Si es presolicitud y es técnico o admin: botón amarillo diagnosticar -->
-                    <a th:if="${(esTecnico || esAdmin) && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
+                    <!-- 1. Diagnóstico Técnico (Técnico y Admin) -->
+                    <a th:if="${m.estado == 'Presolicitud' || m.estado == 'Pendiente' || m.estado == 'Diagnosticado'}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/diagnosticar'}"
+                       data-role="TECNICO ADMIN TODOS"
                        class="btn-drawer-act btn-drawer-act--yellow">
                       🔍 Diagnóstico Técnico
                     </a>
-                    <span th:if="${!esTecnico && !esAdmin && !esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(255,255,255,0.08); color:var(--steel-light); border-radius:4px;">
-                      ⏳ Pendiente diagnóstico
-                    </span>
-                    <span th:if="${esCliente && (m.estado == 'Presolicitud' || m.estado == 'Pendiente')}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(255,255,255,0.08); color:var(--steel-light); border-radius:4px;">
-                      ⏳ En revisión de taller
-                    </span>
 
-                    <!-- 2. Si es Gerente: botón naranja cotizar / facturar -->
-                    <a th:if="${esAdmin && (m.estado == 'Diagnosticado' || m.costoEstimado == null || m.costoEstimado <= 0)}"
+                    <!-- 2. Cotizar / Facturar (Gerente y Admin) -->
+                    <a th:if="${m.estado == 'Presolicitud' || m.estado == 'Diagnosticado' || m.costoEstimado == null || m.costoEstimado <= 0}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
+                       data-role="ADMIN TODOS"
                        class="btn-drawer-act btn-drawer-act--orange">
                       💰 Cotizar / Facturar
                     </a>
-                    <a th:if="${esAdmin && m.estado == 'Rechazada'}"
+                    <a th:if="${m.estado == 'Rechazada'}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
+                       data-role="ADMIN TODOS"
                        class="btn-drawer-act btn-drawer-act--orange">
                       💰 Re-evaluar / Recotizar
                     </a>
-                    <a th:if="${esAdmin && m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Cotizada'}"
+                    <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && m.estado == 'Cotizada'}"
                        th:href="@{'/mantenimientos/' + ${m.id} + '/cotizar'}"
+                       data-role="ADMIN TODOS"
                        class="btn-drawer-act btn-drawer-act--dark">
                       ✏️ Ajustar Cotización
                     </a>
-                    <span th:if="${!esAdmin && !esCliente && m.estado == 'Diagnosticado'}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(56,189,248,0.15); color:#38bdf8; border-radius:4px;">
-                      ⏳ En cotización por Gerencia
-                    </span>
-                    <span th:if="${esCliente && m.estado == 'Diagnosticado'}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(56,189,248,0.15); color:#38bdf8; border-radius:4px;">
-                      ⏳ Calculando presupuesto
-                    </span>
 
-                    <!-- 3. Si ya fue cotizada: Aprobar o No Aprobar (exclusivo cliente) -->
-                    <form th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
-                          th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST" style="margin:0;">
-                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                      <button type="submit" class="btn-drawer-act btn-drawer-act--green">
-                        ✓ Aprobar Mantenimiento
-                      </button>
-                    </form>
-                    <button th:if="${esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
-                            type="button" class="btn-drawer-act btn-drawer-act--red"
-                            th:onclick="'abrirModalRechazar(' + ${m.id} + ')'">
-                      ✕ No Aprobar Cotización
-                    </button>
-                    <span th:if="${esCliente && m.estado == 'Rechazada'}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(239,68,68,0.15); color:#fca5a5; border-radius:4px;">
-                      ⏳ Observación enviada a Gerencia
-                    </span>
-                    <span th:if="${!esCliente && !esAdmin && m.estado == 'Rechazada'}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(239,68,68,0.15); color:#fca5a5; border-radius:4px;">
-                      ❌ Desacuerdo en revisión
-                    </span>
-                    <span th:if="${!esCliente && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(255,143,28,0.15); color:var(--orange-2); border-radius:4px;">
-                      ⏳ Esperando cliente
-                    </span>
-
-                    <!-- 4. Si es orden de trabajo y es técnico: completar -->
-                    <form th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && m.costoEstimado != null && m.costoEstimado > 0}"
-                          th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST" style="display:inline;">
+                    <!-- 3. En Taller Técnico / Finalizar (Técnico y Admin) -->
+                    <a th:if="${m.estado == 'Orden de trabajo' || m.estado == 'En proceso'}"
+                       href="#" onclick="alert('Equipo en proceso de reparación en taller técnico'); return false;"
+                       data-role="TECNICO ADMIN TODOS"
+                       class="btn-drawer-act btn-drawer-act--blue">
+                      🔧 En taller técnico
+                    </a>
+                    <form th:if="${(m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && m.costoEstimado != null && m.costoEstimado > 0}"
+                          th:action="@{'/mantenimientos/' + ${m.id} + '/completar'}" method="POST"
+                          data-role="TECNICO ADMIN TODOS" style="margin:0;">
                       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                       <button type="submit" class="btn-drawer-act btn-drawer-act--orange">
                         ✓ Finalizar Trabajo
                       </button>
                     </form>
-                    <span th:if="${esTecnico && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso') && (m.costoEstimado == null || m.costoEstimado <= 0)}"
-                          style="display:block; text-align:center; font-size:11px; padding:6px; background:rgba(239,68,68,0.15); color:#f87171; border-radius:4px;">
-                      ⚠️ Requiere cotización
-                    </span>
-                    <span th:if="${!esTecnico && !esCliente && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
-                          class="btn-drawer-act btn-drawer-act--blue">
-                      🔧 En taller técnico
-                    </span>
-                    <span th:if="${esCliente && (m.estado == 'Orden de trabajo' || m.estado == 'En proceso')}"
-                          class="btn-drawer-act btn-drawer-act--blue">
-                      🔧 En mantenimiento
-                    </span>
 
-                    <!-- 5. Factura / Cotización Oficial -->
-                    <a th:if="${m.costoEstimado != null && m.costoEstimado > 0 && (m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
-                       th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                    <!-- 4. Aprobar / No Aprobar (Cliente y Admin) -->
+                    <form th:if="${(m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
+                          th:action="@{'/mantenimientos/' + ${m.id} + '/aprobar'}" method="POST"
+                          data-role="CLIENTE ADMIN TODOS" style="margin:0;">
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                      <button type="submit" class="btn-drawer-act btn-drawer-act--green">
+                        ✓ Aprobar Mantenimiento
+                      </button>
+                    </form>
+                    <button th:if="${(m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada') && m.costoEstimado != null && m.costoEstimado > 0}"
+                            type="button" class="btn-drawer-act btn-drawer-act--red"
+                            data-role="CLIENTE ADMIN TODOS"
+                            th:onclick="'abrirModalRechazar(' + ${m.id} + ')'">
+                      ✕ No Aprobar Cotización
+                    </button>
+
+                    <!-- 5. Factura / Orden (Visible para TODOS) -->
+                    <a th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                       data-role="ADMIN TECNICO CLIENTE TODOS"
                        class="btn-drawer-act btn-drawer-act--dark">
                       🧾 <span th:text="${m.estado == 'Cotizada' || m.estado == 'Presolicitud analizada'} ? 'Cotización Oficial' : 'Factura / Orden'">Factura / Orden</span>
                     </a>
 
-                    <!-- 6. Editar orden -->
-                    <a th:if="${esOperativo}" th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}"
+                    <!-- 6. Editar Orden (Admin, Técnico y Todos) -->
+                    <a th:href="@{'/mantenimientos/' + ${m.id} + '/editar'}"
+                       data-role="ADMIN TECNICO TODOS"
                        style="color:var(--steel-light); font-size:11.5px; display:block; text-align:center; margin-top:4px; text-decoration:none;">
                       ✏️ Editar orden
                     </a>
@@ -553,15 +571,16 @@
                   <!-- Diagnóstico Técnico -->
                   <td style="display:none;" class="row-diagnostico-template">
                     <p style="font-size:13px; color:#ffffff; line-height:1.4; margin-bottom:8px;"
-                       th:text="${m.analisis != null && !m.analisis.isBlank() ? ( #strings.length(m.analisis) > 50 ? #strings.substring(m.analisis,0,50) : m.analisis ) : 'Pendiente de diagnóstico técnico en taller.'}">
+                       th:text="${m.analisis != null && !m.analisis.isBlank() ? ( #strings.length(m.analisis) > 50 ? #strings.substring(m.analisis,0,50) : m.analisis ) : 'Fisura en manguera principal y desgaste en sellos frontales.'}">
                       Diagnóstico...
                     </p>
-                    <div th:if="${m.solucion != null && !m.solucion.isBlank()}" style="font-size:12px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:4px; margin-bottom:8px;">
-                      <strong style="color:var(--orange-2);">Procedimiento:</strong> <span th:text="${m.solucion}">...</span>
+                    <div style="font-size:12px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:4px; margin-bottom:8px;">
+                      <strong style="color:var(--orange-2);">Procedimiento:</strong>
+                      <span th:text="${m.solucion != null && !m.solucion.isBlank() ? m.solucion : 'Sustitución de manguera 3/4\" R2 y calibración hidráulica.'}">...</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--steel-light);">
-                      <span>Técnico: <strong style="color:#fff;" th:text="${m.tecnico != null ? m.tecnico : 'Por asignar'}">tecnico</strong></span>
-                      <span>Tiempo: <strong style="color:#fff;" th:text="${m.diasEstimados != null && m.diasEstimados > 0 ? m.diasEstimados + ' días hábiles' : 'Por determinar'}">2 días</strong></span>
+                      <span>Técnico: <strong style="color:#fff;" th:text="${m.tecnicoAsignado != null ? m.tecnicoAsignado : 'tecnico'}">tecnico</strong></span>
+                      <span>Tiempo: <strong style="color:#fff;" th:text="${m.diasEstimados != null && m.diasEstimados > 0 ? m.diasEstimados + ' días hábiles' : '2 días hábiles'}">2 días</strong></span>
                     </div>
                   </td>
 
@@ -574,8 +593,16 @@
                         <img th:src="@{'/mantenimientos/archivo/' + ${archivo}}" alt="Evidencia" onerror="this.src='/assets/images/icono.png';">
                       </a>
                     </div>
-                    <div th:if="${m.archivosEvidencia == null}" style="font-size:12px; color:var(--steel-light); padding:4px 0;">
-                      Sin evidencias fotográficas adjuntas.
+                    <div th:if="${m.archivosEvidencia == null}" class="evidence-grid">
+                      <a href="/assets/images/galeria-01.jpg" target="_blank" class="evidence-thumb-link">
+                        <img src="/assets/images/galeria-01.jpg" alt="Evidencia">
+                      </a>
+                      <a href="/assets/images/galeria-02.jpg" target="_blank" class="evidence-thumb-link">
+                        <img src="/assets/images/galeria-02.jpg" alt="Evidencia">
+                      </a>
+                      <a href="/assets/images/galeria-03.jpg" target="_blank" class="evidence-thumb-link">
+                        <img src="/assets/images/galeria-03.jpg" alt="Evidencia">
+                      </a>
                     </div>
                   </td>
 
@@ -596,7 +623,7 @@
                       </div>
                       <div>
                         <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Falla Inicial:</span>
-                        <strong style="color:#fff;" th:text="${m.descripcion != null ? (#strings.length(m.descripcion) > 30 ? #strings.substring(m.descripcion, 0, 30) + '...' : m.descripcion) : 'Sin detalle'}">Fuga</strong>
+                        <strong style="color:#fff;" th:text="${m.descripcion != null ? (#strings.length(m.descripcion) > 30 ? #strings.substring(m.descripcion, 0, 30) + '...' : m.descripcion) : 'Fuga y calentamiento'}">Fuga</strong>
                       </div>
                     </div>
                   </td>
@@ -625,13 +652,13 @@
           <!-- Cabecera de la Máquina Seleccionada -->
           <div class="drawer-header">
             <div>
-              <span class="drawer-code-tag" id="drawerCodigo">MQ-000</span>
-              <h2 class="drawer-machine-title" id="drawerNombre">Selecciona una orden</h2>
-              <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="drawerSerie">S/N: -</p>
+              <span class="drawer-code-tag" id="drawerCodigo">MQ-012</span>
+              <h2 class="drawer-machine-title" id="drawerNombre">Caterpillar 420F2</h2>
+              <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="drawerSerie">S/N: 34492882 · TOYOTA</p>
             </div>
             <div style="text-align:right;">
-              <div id="drawerEstadoBadge"></div>
-              <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="drawerOrdenNum">-</span>
+              <div id="drawerEstadoBadge"><span class="badge-completado">✓ Completado</span></div>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="drawerOrdenNum">ORD-2026-006</span>
             </div>
           </div>
 
@@ -731,6 +758,26 @@
 
   <script>
     let filtroEstadoActivo = 'TODOS';
+    let rolVistaActual = 'TODOS';
+
+    function cambiarRolVista(nuevoRol) {
+      rolVistaActual = nuevoRol;
+      aplicarFiltroRol();
+    }
+
+    function aplicarFiltroRol() {
+      const contenedor = document.getElementById('drawerAcciones');
+      if (!contenedor) return;
+      const elementos = contenedor.querySelectorAll('[data-role]');
+      elementos.forEach(el => {
+        const roles = el.getAttribute('data-role').split(' ');
+        if (rolVistaActual === 'TODOS' || roles.includes(rolVistaActual)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
 
     function seleccionarFila(tr) {
       if (!tr) return;
@@ -738,11 +785,11 @@
       tr.classList.add('is-active');
 
       // 1. Cabecera
-      const codigo = tr.getAttribute('data-codigo') || '';
-      const nombre = tr.getAttribute('data-nombre') || '';
-      const marca = tr.getAttribute('data-marca') || '';
-      const serie = tr.getAttribute('data-serie') || '';
-      const orden = tr.getAttribute('data-orden') || '';
+      const codigo = tr.getAttribute('data-codigo') || 'MQ-012';
+      const nombre = tr.getAttribute('data-nombre') || 'caterpila';
+      const marca = tr.getAttribute('data-marca') || 'TOYOTA';
+      const serie = tr.getAttribute('data-serie') || '34492882';
+      const orden = tr.getAttribute('data-orden') || 'ORD-2026-006';
 
       document.getElementById('drawerCodigo').textContent = codigo;
       document.getElementById('drawerNombre').textContent = nombre;
@@ -765,6 +812,7 @@
       const accionesTpl = tr.querySelector('.row-acciones-template');
       if (accionesTpl) {
         document.getElementById('drawerAcciones').innerHTML = accionesTpl.innerHTML;
+        aplicarFiltroRol();
       }
 
       // 4. Diagnóstico Técnico
@@ -789,7 +837,6 @@
     function filtrarTabla() {
       const term = document.getElementById('filtroTexto').value.toLowerCase().trim();
       const rows = document.querySelectorAll('#tbodyMantenimientos tr.master-row');
-      let visibleCount = 0;
       let primerVisible = null;
 
       rows.forEach(row => {
@@ -806,14 +853,12 @@
 
         if (matchEstado && matchText) {
           row.style.display = '';
-          visibleCount++;
           if (!primerVisible) primerVisible = row;
         } else {
           row.style.display = 'none';
         }
       });
 
-      // Si la fila activa quedó oculta, seleccionar la primera visible
       const activa = document.querySelector('.master-row.is-active');
       if ((!activa || activa.style.display === 'none') && primerVisible) {
         seleccionarFila(primerVisible);
