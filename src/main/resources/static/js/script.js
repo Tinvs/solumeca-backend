@@ -562,42 +562,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* ---------------------------------------------------------
-     11. Estimador interactivo de servicio (servicios.html)
+     11. Cotizador interactivo de servicio (servicios.html)
      --------------------------------------------------------- */
   const selectEquipo = document.getElementById('tipoEquipo');
   const selectServicio = document.getElementById('tipoServicio');
-  const textoPresupuesto = document.getElementById('textoPresupuesto');
-  const textoDias = document.getElementById('textoDias');
   const btnCotizarWa = document.getElementById('btnCotizarWa');
 
-  if (selectEquipo && selectServicio && textoPresupuesto && textoDias) {
-    const tarifas = {
-      retroexcavadora: { preventivo: [1200000, 1800000, 2], hidraulico: [1800000, 3200000, 3], frenos: [950000, 1600000, 2], motor: [2800000, 5500000, 4], overhaul: [8500000, 15000000, 12] },
-      montacargas_combustion: { preventivo: [850000, 1400000, 1], hidraulico: [1400000, 2500000, 2], frenos: [750000, 1300000, 1], motor: [2200000, 4200000, 3], overhaul: [6500000, 11000000, 8] },
-      montacargas_electrico: { preventivo: [750000, 1200000, 1], hidraulico: [1300000, 2400000, 2], frenos: [800000, 1400000, 1], motor: [1900000, 3800000, 3], overhaul: [5800000, 9500000, 7] },
-      minicargador: { preventivo: [900000, 1500000, 1], hidraulico: [1600000, 2800000, 2], frenos: [700000, 1200000, 1], motor: [2400000, 4500000, 3], overhaul: [7000000, 12500000, 9] },
-      excavadora: { preventivo: [1500000, 2300000, 2], hidraulico: [2500000, 4800000, 4], frenos: [1200000, 2100000, 2], motor: [3500000, 7200000, 5], overhaul: [12000000, 22000000, 15] },
-      plataforma: { preventivo: [800000, 1300000, 1], hidraulico: [1500000, 2600000, 2], frenos: [750000, 1300000, 1], motor: [2100000, 4000000, 3], overhaul: [6200000, 10500000, 8] },
-    };
-
+  if (selectEquipo && selectServicio && btnCotizarWa) {
     const actualizarEstimacion = () => {
-      const eq = selectEquipo.value;
-      const serv = selectServicio.value;
       const eqText = selectEquipo.options[selectEquipo.selectedIndex]?.text || '';
       const servText = selectServicio.options[selectServicio.selectedIndex]?.text || '';
 
-      const datos = (tarifas[eq] && tarifas[eq][serv]) || [1000000, 2000000, 2];
-      const minCOP = datos[0].toLocaleString('es-CO');
-      const maxCOP = datos[1].toLocaleString('es-CO');
-      const dias = datos[2];
-
-      textoPresupuesto.textContent = `$${minCOP} - $${maxCOP} COP`;
-      textoDias.innerHTML = `⏱️ Tiempo estimado de ejecución: <strong>${dias} a ${dias + 1} días hábiles</strong>`;
-
-      if (btnCotizarWa) {
-        const mensaje = encodeURIComponent(`Hola SOLUMECA, deseo cotizar el servicio de "${servText}" para mi equipo "${eqText}". Presupuesto estimado: $${minCOP} - $${maxCOP} COP.`);
-        btnCotizarWa.href = `https://wa.me/573002464311?text=${mensaje}`;
-      }
+      const mensaje = encodeURIComponent(`Hola SOLUMECA, deseo cotizar el servicio de "${servText}" para mi equipo "${eqText}".`);
+      btnCotizarWa.href = `https://wa.me/573002464311?text=${mensaje}`;
     };
 
     selectEquipo.addEventListener('change', actualizarEstimacion);

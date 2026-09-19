@@ -61,7 +61,7 @@
               <th>Tipo</th>
               <th>Solicitante</th>
               <th>Estado</th>
-              <th>Archivos</th>
+              <th style="min-width:200px;">Archivos</th>
               <th>Acciones y Factura</th>
             </tr>
           </thead>
@@ -91,28 +91,38 @@
                   <strong style="color:#f87171;">Obs:</strong> <span th:text="${#strings.length(m.motivoRechazo) > 35 ? #strings.substring(m.motivoRechazo,0,35)+'...' : m.motivoRechazo}"></span>
                 </div>
               </td>
-              <td>
-                <!-- 1. Informe Técnico -->
-                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" target="_blank" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600; margin-bottom:3px; text-decoration:none;">📥 Informe</a>
-                <a th:if="${m.informeArchivo == null && (m.estado == 'Diagnosticado' || m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
-                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600; margin-bottom:3px; text-decoration:none;">📥 Informe</a>
+              <td style="min-width:200px;">
+                <div style="display:grid; grid-template-columns: repeat(2, max-content); gap:5px 8px; align-items:center;">
+                  <!-- 1. Informe Técnico -->
+                  <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" target="_blank"
+                     class="doc-chip doc-chip--informe">📥 Informe</a>
+                  <a th:if="${m.informeArchivo == null && (m.estado == 'Diagnosticado' || m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
+                     th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                     class="doc-chip doc-chip--informe">📥 Informe</a>
 
-                <!-- 2. Cotización -->
-                <a th:if="${m.costoEstimado != null && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
-                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:var(--orange-2); font-weight:600; margin-bottom:3px; text-decoration:none;">📄 Cotización</a>
+                  <!-- 2. Cotización -->
+                  <a th:if="${m.costoEstimado != null && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
+                     th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                     class="doc-chip doc-chip--cotizacion">📄 Cotización</a>
 
-                <!-- 3. Acta de entrega -->
-                <a th:if="${m.estado == 'Completado'}"
-                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:#4ade80; font-weight:600; margin-bottom:3px; text-decoration:none;">📋 Acta de entrega</a>
+                  <!-- 3. Acta de entrega -->
+                  <a th:if="${m.estado == 'Completado'}"
+                     th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}"
+                     class="doc-chip doc-chip--acta">📋 Acta entrega</a>
 
-                <!-- 4. Evidencias fotográficas -->
-                <span th:if="${m.archivosEvidencia != null}" class="evidence-links" style="display:block;">
-                  <span th:each="archivo : ${#strings.arraySplit(m.archivosEvidencia, ',')}">
-                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank" style="font-size:12px; display:block; margin-bottom:2px; color:#cbd5e1; text-decoration:none;">📷 Evidencia</a>
+                  <!-- 4. Evidencias fotográficas -->
+                  <span th:if="${m.archivosEvidencia != null}" style="display:contents;">
+                    <span th:each="archivo, stat : ${#strings.arraySplit(m.archivosEvidencia, ',')}" style="display:contents;">
+                      <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank"
+                         class="doc-chip doc-chip--evidencia"
+                         th:text="${stat.size > 1 ? '📷 Foto ' + stat.count : '📷 Evidencia'}">📷 Evidencia</a>
+                    </span>
                   </span>
-                </span>
 
-                <span th:if="${m.informeArchivo == null && (m.costoEstimado == null || m.estado == 'Presolicitud' || m.estado == 'Pendiente') && m.archivosEvidencia == null && m.estado != 'Diagnosticado' && m.estado != 'Completado'}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
+                  <!-- Sin adjuntos -->
+                  <span th:if="${m.informeArchivo == null && (m.costoEstimado == null || m.estado == 'Presolicitud' || m.estado == 'Pendiente') && m.archivosEvidencia == null && m.estado != 'Diagnosticado' && m.estado != 'Completado'}"
+                        style="color:var(--steel-light); font-size:12px; white-space:nowrap; grid-column:span 2;">Sin adjuntos</span>
+                </div>
               </td>
               <td style="white-space:nowrap;">
                 <!-- 1. Si es presolicitud y es técnico o admin: botón de diagnosticar (sin costo) -->
