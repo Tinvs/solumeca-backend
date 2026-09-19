@@ -106,8 +106,8 @@
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
       <div class="form-field">
-        <label for="analisis">1. Análisis Técnico / Causa Raíz Detectada *</label>
-        <textarea id="analisis" name="analisis" rows="3" required placeholder="Indique la causa raíz, pruebas mecánicas realizadas o fallas visualizadas en el equipo"
+        <label for="analisis">1. Análisis Técnico / Causa Raíz Detectada * <span style="font-size:11px; opacity:0.85; color:var(--orange-2);">(máx. 50 caracteres)</span></label>
+        <textarea id="analisis" name="analisis" rows="2" maxlength="50" required placeholder="Indique la causa raíz o falla técnica detectada (máx 50 caracteres)"
                   th:text="${mantenimiento.analisis}"></textarea>
       </div>
 

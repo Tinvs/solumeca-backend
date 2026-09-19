@@ -61,24 +61,23 @@
               <th>Tipo</th>
               <th>Solicitante</th>
               <th>Estado</th>
-              <th>Detalle Técnico / Cotización</th>
               <th>Archivos</th>
               <th>Acciones y Factura</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="m : ${mantenimientos}">
-              <td th:text="${m.fecha}">2026-01-01</td>
-              <td>
+              <td th:text="${m.fecha}" style="white-space:nowrap;">2026-01-01</td>
+              <td style="max-width:200px; word-break:break-word; overflow-wrap:anywhere;">
                 <span th:if="${maquinasMap != null && maquinasMap[m.maquinariaId] != null}">
                   <strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${'[' + maquinasMap[m.maquinariaId].codigo + ']'}">[MQ-001]</strong>
                   <br>
-                  <small th:text="${maquinasMap[m.maquinariaId].nombre + ' · ' + maquinasMap[m.maquinariaId].marca}">Nombre</small>
+                  <small th:text="${(maquinasMap[m.maquinariaId].nombre != null && #strings.length(maquinasMap[m.maquinariaId].nombre) > 20 ? #strings.substring(maquinasMap[m.maquinariaId].nombre, 0, 20) : maquinasMap[m.maquinariaId].nombre) + ' · ' + maquinasMap[m.maquinariaId].marca}">Nombre</small>
                 </span>
                 <span th:if="${maquinasMap == null || maquinasMap[m.maquinariaId] == null}" th:text="${'ID: ' + m.maquinariaId}">1</span>
               </td>
               <td><span class="status-pill" th:text="${m.tipo}">Preventivo</span></td>
-              <td th:text="${m.solicitante}">usuario</td>
+              <td th:text="${m.solicitante}" style="white-space:nowrap;">usuario</td>
               <td>
                 <span th:if="${m.estado == 'Presolicitud' || m.estado == 'Pendiente'}" class="badge-presolicitud">Presolicitud</span>
                 <span th:if="${m.estado == 'Diagnosticado'}" class="badge-diagnosticado">🔧 Diagnosticada</span>
@@ -88,28 +87,32 @@
                   En Orden <small th:if="${m.numeroOrden != null}" th:text="${'(' + m.numeroOrden + ')'}"></small>
                 </span>
                 <span th:if="${m.estado == 'Completado'}" class="badge-completado" style="white-space:nowrap;">✓ Completado</span>
-              </td>
-              <td>
-                <p th:text="${m.descripcion}" style="max-width:280px; font-size:13.5px; color:#f4f4f5; line-height:1.4; margin:0;">Descripción del problema</p>
-                <div th:if="${m.analisis != null}" style="margin-top:4px; font-size:12px; color:#38bdf8;">
-                  <strong>Diag:</strong> <span th:text="${m.analisis}">Diagnóstico técnico</span>
-                </div>
-                <div th:if="${m.costoEstimado != null}" style="margin-top:2px; font-size:12px; color:var(--orange-2); font-weight:700;">
-                  <strong>Cotización:</strong> <span th:text="${#numbers.formatDecimal(m.costoEstimado, 0, 'POINT', 0, 'COMMA') + ' COP'}">$0 COP</span>
-                </div>
-                <div th:if="${m.motivoRechazo != null}" style="margin-top:6px; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); padding:6px 10px; border-radius:4px; font-size:12px; color:#fca5a5;">
-                  <strong style="color:#f87171; display:block;">⚠️ Observación del Cliente:</strong>
-                  <span th:text="${m.motivoRechazo}">Motivo de no aprobación</span>
+                <div th:if="${m.motivoRechazo != null && esAdmin}" style="margin-top:4px; font-size:11px; color:#fca5a5; line-height:1.2; max-width:140px; word-break:break-word;">
+                  <strong style="color:#f87171;">Obs:</strong> <span th:text="${#strings.length(m.motivoRechazo) > 35 ? #strings.substring(m.motivoRechazo,0,35)+'...' : m.motivoRechazo}"></span>
                 </div>
               </td>
               <td>
-                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600;">📥 Informe</a>
-                <span th:if="${m.archivosEvidencia != null}" class="evidence-links">
+                <!-- 1. Informe Técnico -->
+                <a th:if="${m.informeArchivo != null}" th:href="@{'/mantenimientos/archivo/' + ${m.informeArchivo}}" target="_blank" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600; margin-bottom:3px; text-decoration:none;">📥 Informe</a>
+                <a th:if="${m.informeArchivo == null && (m.estado == 'Diagnosticado' || m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:var(--orange-1); font-weight:600; margin-bottom:3px; text-decoration:none;">📥 Informe</a>
+
+                <!-- 2. Cotización -->
+                <a th:if="${m.costoEstimado != null && (m.estado == 'Presolicitud analizada' || m.estado == 'Cotizada' || m.estado == 'Orden de trabajo' || m.estado == 'Completado')}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:var(--orange-2); font-weight:600; margin-bottom:3px; text-decoration:none;">📄 Cotización</a>
+
+                <!-- 3. Acta de entrega -->
+                <a th:if="${m.estado == 'Completado'}"
+                   th:href="@{'/mantenimientos/' + ${m.id} + '/factura'}" style="font-size:12px; display:block; color:#4ade80; font-weight:600; margin-bottom:3px; text-decoration:none;">📋 Acta de entrega</a>
+
+                <!-- 4. Evidencias fotográficas -->
+                <span th:if="${m.archivosEvidencia != null}" class="evidence-links" style="display:block;">
                   <span th:each="archivo : ${#strings.arraySplit(m.archivosEvidencia, ',')}">
-                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank" style="font-size:12px; display:block;">📷 Evidencia</a>
+                    <a th:href="@{'/mantenimientos/archivo/' + ${archivo}}" target="_blank" style="font-size:12px; display:block; margin-bottom:2px; color:#cbd5e1; text-decoration:none;">📷 Evidencia</a>
                   </span>
                 </span>
-                <span th:if="${m.informeArchivo == null && m.archivosEvidencia == null}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
+
+                <span th:if="${m.informeArchivo == null && (m.costoEstimado == null || m.estado == 'Presolicitud' || m.estado == 'Pendiente') && m.archivosEvidencia == null && m.estado != 'Diagnosticado' && m.estado != 'Completado'}" style="color:var(--steel-light); font-size:12px;">Sin adjuntos</span>
               </td>
               <td style="white-space:nowrap;">
                 <!-- 1. Si es presolicitud y es técnico o admin: botón de diagnosticar (sin costo) -->
@@ -214,7 +217,7 @@
                 </a>
               </td>
             </tr>
-            <tr th:if="${#lists.isEmpty(mantenimientos)}"><td colspan="8" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">Aún no hay mantenimientos registrados.</td></tr>
+            <tr th:if="${#lists.isEmpty(mantenimientos)}"><td colspan="7" class="empty-state" style="text-align:center; padding:24px; color:var(--steel-light);">Aún no hay mantenimientos registrados.</td></tr>
           </tbody>
         </table>
       </div>

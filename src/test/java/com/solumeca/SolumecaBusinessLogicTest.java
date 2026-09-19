@@ -53,7 +53,7 @@ public class SolumecaBusinessLogicTest {
         assertNull(m.getNumeroOrden());
 
         // 1. Análisis técnico y cotización
-        m.setAnalisis("Inspección visual y cambio preventivo de fluidos y filtros");
+        m.setAnalisis("Inspección visual y cambio de fluidos y filtros");
         m.setSolucion("Sustitución de aceite motor 15W40 y filtros primarios");
         m.setCostoEstimado(1200000.0);
         m.setDiasEstimados(2);
@@ -93,7 +93,7 @@ public class SolumecaBusinessLogicTest {
         assertNull(m.getCostoEstimado());
 
         // Paso 1: El técnico diagnostica físicamente (sin poner precio ni generar factura)
-        m.setAnalisis("Falla de presión por sello desgastado en cilindro hidráulico");
+        m.setAnalisis("Falla de presión por sello en cilindro hidráulico");
         m.setSolucion("Reemplazo de kit de sellos y prueba de banco a 3000 PSI");
         m.setDiasEstimados(3);
         m.setTecnicoAsignado("tecnico");
@@ -193,6 +193,23 @@ public class SolumecaBusinessLogicTest {
         m.setEstado("Orden de trabajo");
         m.setFechaAprobacion(LocalDate.now());
         assertEquals("Orden de trabajo", m.getEstado());
+    }
+
+    @Test
+    void testLimitesDeCaracteresNombreYDiagnostico() {
+        // Maquinaria nombre límite 20 caracteres
+        Maquinaria maq = new Maquinaria();
+        maq.setNombre("Retroexcavadora Orugas Pesada CAT420F2 Extra Larga");
+        assertNotNull(maq.getNombre());
+        assertTrue(maq.getNombre().length() <= 20, "El nombre de maquinaria debe tener máximo 20 caracteres");
+        assertEquals("Retroexcavadora Orug", maq.getNombre());
+
+        // Mantenimiento análisis/diagnóstico límite 50 caracteres
+        Mantenimiento man = new Mantenimiento();
+        man.setAnalisis("Se realizó un diagnóstico exhaustivo en taller encontrando fugas múltiples de refrigerante y aceite");
+        assertNotNull(man.getAnalisis());
+        assertTrue(man.getAnalisis().length() <= 50, "El diagnóstico debe tener máximo 50 caracteres");
+        assertEquals("Se realizó un diagnóstico exhaustivo en taller enc", man.getAnalisis());
     }
 }
 

@@ -198,14 +198,18 @@
         DESCRIPCIÓN DE LA INTERVENCIÓN TÉCNICA
       </h3>
       
-      <div class="invoice-desc-item">
-        <h4 style="color:#000000 !important;">1. Diagnóstico y Análisis Técnico:</h4>
-        <p style="color:#000000 !important;"
-           th:text="${mantenimiento.analisis != null ? mantenimiento.analisis : mantenimiento.descripcion}">Diagnóstico realizado.</p>
+      <div class="invoice-desc-item" th:if="${mantenimiento.descripcion != null && !mantenimiento.descripcion.isBlank()}">
+        <h4 style="color:#000000 !important;">1. Requerimiento Inicial / Problema Reportado:</h4>
+        <p style="color:#000000 !important;" th:text="${mantenimiento.descripcion}">Requerimiento reportado por el cliente.</p>
+      </div>
+
+      <div class="invoice-desc-item" th:if="${mantenimiento.analisis != null && !mantenimiento.analisis.isBlank()}">
+        <h4 style="color:#000000 !important;">2. Diagnóstico y Análisis Técnico:</h4>
+        <p style="color:#000000 !important;" th:text="${mantenimiento.analisis}">Diagnóstico técnico realizado en taller.</p>
       </div>
 
       <div class="invoice-desc-item">
-        <h4 style="color:#000000 !important;">2. Solución Aplicada / Procedimiento:</h4>
+        <h4 style="color:#000000 !important;">3. Solución Aplicada / Procedimiento:</h4>
         <p style="color:#000000 !important;"
            th:text="${mantenimiento.solucion != null ? mantenimiento.solucion : 'Trabajo técnico ejecutado conforme a especificaciones del fabricante.'}">Solución técnica ejecutada.</p>
       </div>

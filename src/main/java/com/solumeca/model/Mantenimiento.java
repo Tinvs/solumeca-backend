@@ -82,8 +82,21 @@ public class Mantenimiento {
     public void setArchivosEvidencia(String archivosEvidencia) { this.archivosEvidencia = archivosEvidencia; }
     public String getInformeArchivo() { return informeArchivo; }
     public void setInformeArchivo(String informeArchivo) { this.informeArchivo = informeArchivo; }
-    public String getAnalisis() { return analisis; }
-    public void setAnalisis(String analisis) { this.analisis = analisis; }
+    public String getAnalisis() {
+        if (analisis != null && analisis.length() > 50) {
+            return analisis.substring(0, 50);
+        }
+        return analisis;
+    }
+
+    public void setAnalisis(String analisis) {
+        if (analisis != null) {
+            String trimmed = analisis.trim();
+            this.analisis = trimmed.length() > 50 ? trimmed.substring(0, 50) : trimmed;
+        } else {
+            this.analisis = null;
+        }
+    }
     public String getSolucion() { return solucion; }
     public void setSolucion(String solucion) { this.solucion = solucion; }
     public Double getCostoEstimado() { return costoEstimado; }

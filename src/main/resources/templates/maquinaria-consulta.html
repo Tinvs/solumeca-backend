@@ -35,11 +35,11 @@
           </thead>
           <tbody>
             <tr th:each="m : ${maquinas}">
-              <td><strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${m.codigo != null ? m.codigo : 'MQ-' + m.id}">MQ-001</strong></td>
-              <td><strong th:text="${m.nombre}">Nombre</strong></td>
+              <td style="white-space:nowrap;"><strong style="font-family:var(--font-mono); color:var(--orange-1);" th:text="${m.codigo != null ? m.codigo : 'MQ-' + m.id}">MQ-001</strong></td>
+              <td style="max-width:220px; word-break:break-word; overflow-wrap:anywhere;"><strong th:text="${m.nombre != null && #strings.length(m.nombre) > 20 ? #strings.substring(m.nombre, 0, 20) : m.nombre}">Nombre</strong></td>
               <td th:text="${m.marca}">Marca</td>
               <td th:text="${m.modelo}">Modelo</td>
-              <td><span style="font-family:var(--font-mono); font-size:13px;" th:text="${m.numeroSerie}">N/S</span></td>
+              <td style="max-width:160px; word-break:break-word; overflow-wrap:anywhere;"><span style="font-family:var(--font-mono); font-size:13px;" th:text="${m.numeroSerie}">N/S</span></td>
               <td>
                 <span class="status-pill"
                       th:classappend="${m.estado == 'Operativa' ? 'status-pill--ok' : (m.estado == 'En mantenimiento' ? 'status-pill--warn' : 'status-pill--danger')}"

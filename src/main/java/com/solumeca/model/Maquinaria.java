@@ -31,7 +31,7 @@ public class Maquinaria {
 
     public Maquinaria(String codigo, String nombre, String marca, String modelo, String numeroSerie, String estado) {
         this.codigo = codigo;
-        this.nombre = nombre;
+        setNombre(nombre);
         this.marca = marca;
         this.modelo = modelo;
         this.numeroSerie = numeroSerie;
@@ -44,8 +44,21 @@ public class Maquinaria {
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        if (nombre != null && nombre.length() > 20) {
+            return nombre.substring(0, 20);
+        }
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        if (nombre != null) {
+            String trimmed = nombre.trim();
+            this.nombre = trimmed.length() > 20 ? trimmed.substring(0, 20) : trimmed;
+        } else {
+            this.nombre = null;
+        }
+    }
 
     public String getMarca() { return marca; }
     public void setMarca(String marca) { this.marca = marca; }

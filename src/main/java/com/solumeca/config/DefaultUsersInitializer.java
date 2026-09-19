@@ -70,17 +70,17 @@ public class DefaultUsersInitializer {
             seedMarcaIfMissing(marcaRepository, "NISSAN", "Japón", "Montacargas y equipos de manejo logístico", provMontacargas);
             seedMarcaIfMissing(marcaRepository, "LINDE", "Alemania", "Tecnología europea en equipos de manutención", provMontacargas);
 
-            // 4. 10 Maquinarias con códigos únicos (MQ-001 a MQ-010)
+            // 4. 10 Maquinarias con códigos únicos (MQ-001 a MQ-010) con nombres concisos <= 20 chars
             seedMaquinariaIfMissing(maquinariaRepository, "MQ-001", "Retroexcavadora 420F2", "CATERPILLAR", "420F2", "CAT420F2-0091", "Operativa");
             seedMaquinariaIfMissing(maquinariaRepository, "MQ-002", "Montacargas 8FGU25", "TOYOTA", "8FGU25", "TOY8FGU25-4421", "Operativa");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-003", "Excavadora Hidráulica PC200", "KOMATSU", "PC200-8", "KOMPC200-1120", "En mantenimiento");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-003", "Excavadora PC200-8", "KOMATSU", "PC200-8", "KOMPC200-1120", "En mantenimiento");
             seedMaquinariaIfMissing(maquinariaRepository, "MQ-004", "Minicargador S570", "BOBCAT", "S570", "BOBS570-8832", "Operativa");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-005", "Montacargas Combustión GLP", "YALE", "GLP050VX", "YALGLP050-9923", "Operativa");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-006", "Cargador Frontal WA320", "KOMATSU", "WA320-6", "KOMWA320-5501", "Fuera de servicio");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-007", "Montacargas Eléctrico 7500", "RAYMOND", "7500", "RAY7500-6612", "Operativa");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-008", "Minicargador de Orugas T770", "BOBCAT", "T770", "BOBT770-3344", "En mantenimiento");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-009", "Plataforma Articulada Z-45", "GENIE", "Z-45/25", "GENZ45-7789", "Operativa");
-            seedMaquinariaIfMissing(maquinariaRepository, "MQ-010", "Montacargas Diésel C30D", "CLARK", "C30D", "CLKC30D-2219", "Operativa");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-005", "Montacargas GLP050", "YALE", "GLP050VX", "YALGLP050-9923", "Operativa");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-006", "Cargador WA320-6", "KOMATSU", "WA320-6", "KOMWA320-5501", "Fuera de servicio");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-007", "Montacargas 7500", "RAYMOND", "7500", "RAY7500-6612", "Operativa");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-008", "Minicargador T770", "BOBCAT", "T770", "BOBT770-3344", "En mantenimiento");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-009", "Plataforma Z-45/25", "GENIE", "Z-45/25", "GENZ45-7789", "Operativa");
+            seedMaquinariaIfMissing(maquinariaRepository, "MQ-010", "Montacargas C30D", "CLARK", "C30D", "CLKC30D-2219", "Operativa");
 
             // 5. 10 Repuestos con código, stock, stock mínimo y precio
             seedRepuestoIfMissing(repuestoRepository, "REP-001", "Filtro de Aceite Hidráulico", "Filtro para línea de retorno de alta presión", "CATERPILLAR", provDiesel, 15, 5, 145000.0, "Bodega A - Estante 1");
@@ -97,7 +97,26 @@ public class DefaultUsersInitializer {
             // 6. Mantenimientos de prueba en diversos estados
             seedMantenimientosIfEmpty(mantenimientoRepository, maquinariaRepository);
             repararMantenimientosSinPrecio(mantenimientoRepository);
+            normalizarLongitudesExistentes(maquinariaRepository, mantenimientoRepository);
         };
+    }
+
+    private void normalizarLongitudesExistentes(MaquinariaRepository maqRepo, MantenimientoRepository manRepo) {
+        try {
+            for (Maquinaria m : maqRepo.findAll()) {
+                if (m.getNombre() != null && m.getNombre().length() > 20) {
+                    m.setNombre(m.getNombre().substring(0, 20));
+                    maqRepo.save(m);
+                }
+            }
+            for (Mantenimiento man : manRepo.findAll()) {
+                if (man.getAnalisis() != null && man.getAnalisis().length() > 50) {
+                    man.setAnalisis(man.getAnalisis().substring(0, 50));
+                    manRepo.save(man);
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     private void repararMantenimientosSinPrecio(MantenimientoRepository repo) {
@@ -109,7 +128,7 @@ public class DefaultUsersInitializer {
                 if ("Completado".equalsIgnoreCase(m.getEstado()) || "Orden de trabajo".equalsIgnoreCase(m.getEstado()) || "En proceso".equalsIgnoreCase(m.getEstado())) {
                     m.setEstado("Diagnosticado");
                     if (m.getAnalisis() == null || m.getAnalisis().isBlank()) {
-                        m.setAnalisis("Inspección técnica de taller finalizada. Pendiente de valoración económica por Gerencia.");
+                        m.setAnalisis("Inspección técnica finalizada. Pendiente cotización.");
                     }
                     if (m.getSolucion() == null || m.getSolucion().isBlank()) {
                         m.setSolucion("Mantenimiento mecánico y pruebas de funcionamiento.");
@@ -210,7 +229,7 @@ public class DefaultUsersInitializer {
         m2.setDescripcion("Fuga en mangueras de alta presión del mástil y ruido en el sistema de frenos.");
         m2.setEstado("Presolicitud analizada");
         m2.setFecha(LocalDate.now().minusDays(5));
-        m2.setAnalisis("Se inspeccionó el circuito hidráulico; se detectó fisura en manguera principal y desgaste del 80% en las zapatas de frenos delanteras.");
+        m2.setAnalisis("Fisura en manguera y desgaste en frenos frontales");
         m2.setSolucion("Reemplazo de juego de mangueras de 3/4\", cambio de zapatas de freno, purga de circuito y calibración de presión.");
         m2.setCostoEstimado(1450000.0);
         m2.setDiasEstimados(2);
@@ -225,7 +244,7 @@ public class DefaultUsersInitializer {
         m3.setDescripcion("Pérdida de fuerza en el brazo excavador y humo negro en aceleración.");
         m3.setEstado("Orden de trabajo");
         m3.setFecha(LocalDate.now().minusDays(8));
-        m3.setAnalisis("Filtro de combustible obstruido y pérdida de presión en bomba de inyección.");
+        m3.setAnalisis("Filtro obstruido y pérdida de presión en bomba.");
         m3.setSolucion("Mantenimiento y calibración a bomba de inyección diésel, sustitución de filtros y limpieza de inyectores.");
         m3.setCostoEstimado(3800000.0);
         m3.setValorTotal(3800000.0);

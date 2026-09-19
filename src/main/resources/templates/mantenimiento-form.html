@@ -30,8 +30,8 @@
         <div th:if="${esSolicitud}">
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
             <div class="form-row">
-              <label for="nombreEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Nombre del Equipo *</label>
-              <input type="text" id="nombreEquipo" name="nombreEquipo" placeholder="Ej: Retroexcavadora 420F2" required style="width:100%;">
+              <label for="nombreEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Nombre del Equipo * <span style="font-size:11px; opacity:0.75;">(máx. 20 caracteres)</span></label>
+              <input type="text" id="nombreEquipo" name="nombreEquipo" maxlength="20" placeholder="Ej: Retroexcavadora 420" required style="width:100%;">
             </div>
 
             <div class="form-row">
