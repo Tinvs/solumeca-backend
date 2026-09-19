@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plantilla Interactiva // Gestión de Mantenimientos | SOLUMECA S.A.S.</title>
+  <style>
+    :root {
+      --orange-1: #ff5d1c;
+      --orange-2: #ff8f1c;
+      --orange-glow: rgba(255, 93, 28, 0.4);
+      --dark-0: #121820;
+      --dark-1: #18222d;
+      --dark-2: #223040;
+      --dark-card: rgba(24, 34, 46, 0.92);
+      --steel-line: rgba(255, 255, 255, 0.14);
+      --steel-light: #94a3b8;
+      --steel-bright: #cbd5e1;
+      --white: #ffffff;
+      --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Consolas', 'Fira Code', monospace;
+      --font-display: 'Impact', 'Trebuchet MS', sans-serif;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.45);
+      --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--dark-0);
+      background-image: 
+        linear-gradient(135deg, rgba(18, 24, 32, 0.92) 0%, rgba(24, 34, 45, 0.88) 100%),
+        url('assets/images/hero-maquinaria.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       BARRA SUPERIOR: NARANJA Y NEGRO (ESTILO SOLUMECA)
+       ========================================================================== */
+    .top-bar {
+      background: linear-gradient(90deg, #090c10 0%, #121820 60%, #1a2430 100%);
+      border-bottom: 3px solid var(--orange-1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.65), 0 2px 10px var(--orange-glow);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-pill {
+      background: var(--orange-1);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .top-bar-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13.5px;
+    }
+
+    .user-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 6px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-pill strong {
+      color: var(--orange-2);
+    }
+
+    .role-selector {
+      background: #090c10;
+      color: #fff;
+      border: 1px solid var(--steel-line);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       CONTENEDOR PRINCIPAL: LAYOUT MASTER - DETAIL (2 COLUMNAS)
+       ========================================================================== */
+    .workspace-container {
+      max-width: 1540px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 24px 48px;
+      flex: 1;
+    }
+
+    .master-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 540px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1280px) {
+      .master-detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       COLUMNA IZQUIERDA: TABLA MASTER DE MANTENIMIENTOS
+       ========================================================================== */
+    .master-panel {
+      background: var(--dark-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--steel-line);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .plate-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--orange-1);
+      letter-spacing: 1.2px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plate-tag__bolt {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--orange-1);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--orange-1);
+    }
+
+    .master-heading h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .master-heading p {
+      font-size: 13.5px;
+      color: var(--steel-light);
+      margin-bottom: 20px;
+    }
+
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--steel-line);
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(15, 21, 29, 0.85);
+      border: 1px solid var(--steel-line);
+      border-radius: var(--radius);
+      color: #ffffff;
+      font-size: 13.5px;
+      padding: 10px 14px 10px 36px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .search-box input:focus {
+      border-color: var(--orange-1);
+      box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.6;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--steel-bright);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--orange-1);
+      border-color: var(--orange-1);
+      color: #000000;
+      font-weight: 800;
+    }
+
+    /* Tabla */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 21, 29, 0.6);
+    }
+
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+
+    .master-table th {
+      background: #e6dfd5;
+      color: #111827;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--orange-1);
+      white-space: nowrap;
+    }
+
+    .master-table td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #f1f5f9;
+      vertical-align: middle;
+      transition: background var(--transition);
+    }
+
+    .master-row {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .master-row:hover td {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .master-row.is-active td {
+      background: rgba(255, 93, 28, 0.14) !important;
+      border-bottom-color: rgba(255, 93, 28, 0.35);
+    }
+
+    .master-row.is-active td:first-child {
+      border-left: 4px solid var(--orange-1);
+    }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      text-transform: capitalize;
+    }
+
+    .status--completado {
+      background: #14532d;
+      color: #86efac;
+      border: 1px solid #22c55e;
+    }
+
+    .status--orden {
+      background: #431407;
+      color: #fdba74;
+      border: 1px solid #f97316;
+    }
+
+    .status--cotizada {
+      background: #713f12;
+      color: #fde047;
+      border: 1px solid #eab308;
+    }
+
+    .status--diagnosticado {
+      background: #082f49;
+      color: #7dd3fc;
+      border: 1px solid #0284c7;
+    }
+
+    .status--presolicitud {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #475569;
+    }
+
+    /* ==========================================================================
+       COLUMNA DERECHA: PANEL LATERAL DE DETALLE (DRAWER DINÁMICO)
+       ========================================================================== */
+    .detail-drawer {
+      background: linear-gradient(180deg, rgba(26, 36, 48, 0.96) 0%, rgba(18, 25, 34, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--orange-1);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: sticky;
+      top: 86px;
+      transition: all 0.3s ease;
+    }
+
+    .drawer-header {
+      border-bottom: 1px solid var(--steel-line);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .drawer-machine-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-top: 4px;
+    }
+
+    .drawer-code-tag {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--orange-2);
+      display: inline-block;
+    }
+
+    /* Distribución en 2 Columnas Dentro del Panel: Archivos a la Izquierda y Acciones a la Derecha */
+    .drawer-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .drawer-col-card {
+      background: rgba(12, 17, 24, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-col-header {
+      background: #e6dfd5;
+      color: #111827;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 7px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--orange-1);
+      text-align: center;
+    }
+
+    .docs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .actions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .drawer-section {
+      margin-bottom: 16px;
+      background: rgba(12, 17, 24, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .drawer-section-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--steel-bright);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drawer-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      font-size: 13px;
+    }
+
+    .drawer-info-item span {
+      display: block;
+      color: var(--steel-light);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .drawer-info-item strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Chips de Documentos */
+    .doc-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-decoration: none;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .doc-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+      border-color: var(--orange-1);
+    }
+
+    .doc-card__badge {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .doc-card__title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .doc-card__sub {
+      font-size: 10.5px;
+      color: var(--steel-light);
+    }
+
+    .doc-card--informe { border-left: 3px solid #ff8a3d; }
+    .doc-card--cotizacion { border-left: 3px solid #fbbf24; }
+    .doc-card--acta { border-left: 3px solid #4ade80; }
+    .doc-card--factura { border-left: 3px solid #38bdf8; }
+
+    /* Galería de evidencias */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .evidence-thumb {
+      aspect-ratio: 16/11;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .evidence-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+
+    .evidence-thumb:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Caja de Cotización y Precio */
+    .price-callout {
+      background: linear-gradient(135deg, rgba(255, 93, 28, 0.15) 0%, rgba(245, 183, 0, 0.08) 100%);
+      border: 1px solid rgba(255, 93, 28, 0.35);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .price-callout-amount {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--orange-2);
+    }
+
+    /* Botonera de acciones */
+    .actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .btn-act {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition);
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    .btn-act--primary {
+      background: var(--orange-1);
+      color: #000000;
+      box-shadow: 0 4px 14px rgba(255, 93, 28, 0.35);
+    }
+
+    .btn-act--primary:hover {
+      background: var(--orange-2);
+      transform: translateY(-1px);
+    }
+
+    .btn-act--dark {
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-act--dark:hover {
+      background: #1e293b;
+    }
+
+    .btn-act--danger {
+      background: rgba(239, 68, 68, 0.16);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-act--danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-act--secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .btn-act--yellow {
+      background: #facc15;
+      color: #000000;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
+    }
+
+    .btn-act--yellow:hover {
+      background: #fde047;
+      transform: translateY(-1px);
+    }
+
+    .btn-act--blue {
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-act--blue:hover {
+      background: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    /* Modal de Vista Previa de Imagen */
+    .img-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .img-modal.is-open { display: flex; }
+
+    .img-modal-content {
+      max-width: 720px;
+      width: 100%;
+      background: var(--dark-1);
+      border-radius: var(--radius);
+      border: 1px solid var(--steel-line);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    }
+
+    .img-modal-content img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .img-modal-bar {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notice-prototype {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       BARRA SUPERIOR CON SELECCIÓN DE ROL PARA PRUEBAS
+       ======================================================================== -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <span class="brand-pill">SOLUMECA S.A.S.</span>
+      <span class="top-bar-title">🛠️ Centro Operativo // Flujo de Mantenimiento</span>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="user-pill">
+        <span>Sesión activa:</span>
+        <strong id="labelUsuario">martin</strong>
+        <span style="opacity:0.4;">|</span>
+        <span id="labelRol" style="color:var(--steel-light); font-size:12px;">Gerente General</span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <label for="rolSimulado" style="font-size:12px; color:var(--steel-light);">Simular Vista:</label>
+        <select id="rolSimulado" class="role-selector" onchange="cambiarRolSimulado(this.value)">
+          <option value="ADMIN" selected>Gerente (Admin)</option>
+          <option value="TECNICO">Técnico de Taller</option>
+          <option value="CLIENTE">Cliente / Propietario</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONTENIDO PRINCIPAL: 2 COLUMNAS (TABLA + MENÚ LATERAL DESPLEGABLE)
+       ======================================================================== -->
+  <main class="workspace-container">
+
+    <div class="notice-prototype">
+      <span style="font-size:20px;">💡</span>
+      <div>
+        <strong>Plantilla interactiva en vivo:</strong> Haz clic sobre cualquier fila de la tabla a la izquierda. Verás cómo el panel lateral derecho se actualiza instantáneamente con su respectivo <strong>Informe</strong>, <strong>Cotización</strong>, <strong>Evidencias</strong>, <strong>Factura / Orden</strong> y <strong>Diagnóstico Técnico</strong>.
+      </div>
+    </div>
+
+    <div class="master-detail-grid">
+
+      <!-- ====================================================================
+           COLUMNA IZQUIERDA: GESTIÓN DE MANTENIMIENTO (TABLA)
+           ==================================================================== -->
+      <section class="master-panel">
+        <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // FLUJO DE ÓRDENES Y SERVICIOS</p>
+        <div class="master-heading">
+          <h1>Gestión de Mantenimientos</h1>
+          <p>Trazabilidad desde el diagnóstico técnico del taller y cotización de gerencia hasta la orden final.</p>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="controls-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="filtroTexto" placeholder="Buscar por código, máquina, solicitante, orden..." oninput="filtrarTabla()">
+          </div>
+
+          <div class="filter-tabs">
+            <button class="filter-btn active" onclick="filtrarPorEstado('TODOS', this)">Todos (5)</button>
+            <button class="filter-btn" onclick="filtrarPorEstado('Presolicitud', this)">Presolicitud (2)</button>
+            <button class="filter-btn" onclick="filtrarPorEstado('Diagnosticado', this)">Diagnosticada (1)</button>
+            <button class="filter-btn" onclick="filtrarPorEstado('Cotizada', this)">Cotizada (1)</button>
+            <button class="filter-btn" onclick="filtrarPorEstado('Completado', this)">Completado (1)</button>
+          </div>
+        </div>
+
+        <!-- Tabla Master -->
+        <div class="table-container">
+          <table class="master-table" id="tablaMaster">
+            <thead>
+              <tr>
+                <th>FECHA</th>
+                <th>MÁQUINA</th>
+                <th>TIPO</th>
+                <th>SOLICITANTE</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyMantenimientos">
+              <!-- Filas generadas dinámicamente con JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--steel-light);">
+          <span>Mostrando 5 solicitudes registradas</span>
+          <span style="font-family:var(--font-mono); color:var(--orange-2);">● Fila seleccionada reflejada a la derecha</span>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           COLUMNA DERECHA: PANEL LATERAL DESPLEGABLE (MENÚ DETALLE)
+           ==================================================================== -->
+      <aside class="detail-drawer" id="drawerDetalle">
+
+        <!-- Cabecera de la Máquina Seleccionada -->
+        <div class="drawer-header">
+          <div>
+            <span class="drawer-code-tag" id="detCodigo">MQ-012</span>
+            <h2 class="drawer-machine-title" id="detNombre">Caterpillar 420F2</h2>
+            <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="detSerie">S/N: CAT420F2-0091 · CAT</p>
+          </div>
+          <div style="text-align:right;">
+            <div id="detEstadoBadge"><span class="status-pill status--completado">✓ Completado</span></div>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="detOrdenNum">ORD-2026-006</span>
+          </div>
+        </div>
+
+        <!-- 1. BLOQUE DE 2 COLUMNAS: ARCHIVOS A LA IZQUIERDA Y ACCIONES A LA DERECHA (TAL CUAL LA IMAGEN) -->
+        <div class="drawer-split-grid">
+          <!-- Subcolumna Archivos -->
+          <div class="drawer-col-card">
+            <div class="drawer-col-header">
+              📁 ARCHIVOS
+            </div>
+            <div class="docs-list" id="detDocsContainer">
+              <!-- Tarjetas de documentos interactivos -->
+            </div>
+          </div>
+
+          <!-- Subcolumna Acciones y Factura (A la derecha como solicitó el usuario) -->
+          <div class="drawer-col-card">
+            <div class="drawer-col-header">
+              ⚡ ACCIONES Y FACTURA
+            </div>
+            <div class="actions-list" id="detBotoneraAcciones">
+              <!-- Botones contextuales según rol -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Diagnóstico Técnico y Procedimiento -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>🔍</span> DIAGNÓSTICO TÉCNICO EN TALLER
+          </div>
+          <p style="font-size:13.5px; color:#ffffff; line-height:1.45; margin-bottom:8px;" id="detAnalisis">
+            Fisura en manguera principal y desgaste en sellos frontales.
+          </p>
+          <div style="font-size:12.5px; color:var(--steel-light); background:rgba(0,0,0,0.3); padding:10px 12px; border-radius:6px;" id="detSolucionBox">
+            <strong style="color:var(--orange-2);">Procedimiento:</strong> <span id="detSolucion">Sustitución de manguera 3/4" y calibración de presión.</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:var(--steel-light);">
+            <span>Técnico: <strong style="color:#fff;" id="detTecnico">tecnico</strong></span>
+            <span>Tiempo: <strong style="color:#fff;" id="detDias">2 días hábiles</strong></span>
+          </div>
+        </div>
+
+        <!-- 3. Evidencias Fotográficas -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>📷</span> EVIDENCIAS FOTOGRÁFICAS
+          </div>
+          <div class="evidence-grid" id="detEvidenciasGrid">
+            <!-- Fotos -->
+          </div>
+        </div>
+
+        <!-- 4. Datos Generales de la Solicitud -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>📋</span> DATOS GENERALES
+          </div>
+          <div class="drawer-info-grid">
+            <div class="drawer-info-item">
+              <span>Solicitante:</span>
+              <strong id="detSolicitante">martin (Cliente)</strong>
+            </div>
+            <div class="drawer-info-item">
+              <span>Fecha Registro:</span>
+              <strong id="detFecha">2026-09-18</strong>
+            </div>
+            <div class="drawer-info-item">
+              <span>Tipo de Servicio:</span>
+              <strong id="detTipo">Correctivo</strong>
+            </div>
+            <div class="drawer-info-item">
+              <span>Falla Inicial:</span>
+              <strong id="detDescripcionBreve">Fuga hidráulica y ruido</strong>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Modal para ver fotos de evidencia ampliadas -->
+  <div class="img-modal" id="modalFoto" onclick="cerrarModalFoto()">
+    <div class="img-modal-content" onclick="event.stopPropagation()">
+      <div class="img-modal-bar">
+        <strong id="modalFotoTitulo" style="font-size:13.5px; color:#fff;">Evidencia Técnica de Taller</strong>
+        <button onclick="cerrarModalFoto()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+      <img id="modalFotoImg" src="" alt="Evidencia">
+    </div>
+  </div>
+
+  <!-- SCRIPT CON DATOS Y LÓGICA INTERACTIVA -->
+  <script>
+    // Datos fieles tomados de la base de datos y la pantalla del usuario
+    const mantenimientosData = [
+      {
+        id: 1,
+        fecha: "2026-09-18",
+        codigo: "MQ-012",
+        nombre: "Caterpillar 420F2",
+        marca: "CATERPILLAR",
+        serie: "CAT420F2-0091",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Completado",
+        numeroOrden: "ORD-2026-006",
+        descripcion: "El equipo presenta sobrecalentamiento constante y fuga en el circuito hidráulico con ruido metálico en bomba.",
+        analisis: "Fisura en manguera principal y desgaste en sellos.",
+        solucion: "Sustitución de manguera 3/4\" R2, recambio de sellos de cilindro, purga integral y prueba de carga.",
+        tecnico: "tecnico",
+        dias: 2,
+        precio: 1850000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: true,
+        facturaPdf: true,
+        evidencias: [
+          "assets/images/galeria-01.jpg",
+          "assets/images/galeria-02.jpg",
+          "assets/images/galeria-03.jpg"
+        ]
+      },
+      {
+        id: 2,
+        fecha: "2026-09-18",
+        codigo: "MQ-008",
+        nombre: "Minicargador S570",
+        marca: "BOBCAT",
+        serie: "BOBS570-8832",
+        tipo: "Solicitud cliente",
+        solicitante: "usuario",
+        estado: "Presolicitud",
+        numeroOrden: "Pendiente evaluación",
+        descripcion: "Ruido anormal en transmisión al girar a la derecha y pérdida leve de fuerza de empuje.",
+        analisis: "Pendiente de ingreso y desarme en taller técnico.",
+        solucion: "Pendiente de diagnóstico técnico.",
+        tecnico: "Por asignar",
+        dias: 0,
+        precio: null,
+        informePdf: false,
+        cotizacionPdf: false,
+        actaPdf: false,
+        facturaPdf: false,
+        evidencias: [
+          "assets/images/galeria-04.jpg"
+        ]
+      },
+      {
+        id: 3,
+        fecha: "2026-09-18",
+        codigo: "MQ-002",
+        nombre: "Montacargas 8FGU25",
+        marca: "TOYOTA",
+        serie: "TOY8FGU25-4421",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Diagnosticado",
+        numeroOrden: "En evaluación",
+        descripcion: "Falla en sistema de frenos y lentitud en pistón de elevación del mástil tríplex.",
+        analisis: "Desgaste del 85% en zapatas y sello de pistón fisurado.",
+        solucion: "Cambio de juego de zapatas delanteras, sustitución de sellos de elevación y líquido hidráulico.",
+        tecnico: "tecnico",
+        dias: 3,
+        precio: null,
+        informePdf: true,
+        cotizacionPdf: false,
+        actaPdf: false,
+        facturaPdf: false,
+        evidencias: [
+          "assets/images/galeria-02.jpg",
+          "assets/images/galeria-01.jpg"
+        ]
+      },
+      {
+        id: 4,
+        fecha: "2026-09-17",
+        codigo: "MQ-005",
+        nombre: "Montacargas GLP050",
+        marca: "YALE",
+        serie: "YALGLP050-9923",
+        tipo: "Correctivo",
+        solicitante: "empresa_logistica",
+        estado: "Cotizada",
+        numeroOrden: "COT-2026-004",
+        descripcion: "Filtro de combustible obstruido y pérdida de compresión en ralentí.",
+        analisis: "Obstrucción severa en regulador de gas GLP e inyectores.",
+        solucion: "Mantenimiento integral a regulador de gas, limpieza ultrasónica de inyectores y filtro nuevo.",
+        tecnico: "tecnico",
+        dias: 2,
+        precio: 1450000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: false,
+        facturaPdf: true,
+        evidencias: [
+          "assets/images/galeria-03.jpg"
+        ]
+      },
+      {
+        id: 5,
+        fecha: "2026-09-16",
+        codigo: "MQ-001",
+        nombre: "Retroexcavadora 420F2",
+        marca: "CATERPILLAR",
+        serie: "CAT420F2-0091",
+        tipo: "Correctivo",
+        solicitante: "martin",
+        estado: "Orden de trabajo",
+        numeroOrden: "ORD-2026-003",
+        descripcion: "Holgura en pasadores del brazo articulado trasero y fisura en acople rápido.",
+        analisis: "Desgaste de bujes por falta de engrase en faena portuaria.",
+        solucion: "Mecanizado de bujes reforzados, rectificado de pasadores y engrase de alta presión.",
+        tecnico: "tecnico",
+        dias: 4,
+        precio: 3200000,
+        informePdf: true,
+        cotizacionPdf: true,
+        actaPdf: false,
+        facturaPdf: true,
+        evidencias: [
+          "assets/images/galeria-01.jpg",
+          "assets/images/galeria-04.jpg"
+        ]
+      }
+    ];
+
+    let mantenimientoSeleccionado = mantenimientosData[0];
+    let rolActual = "ADMIN";
+    let filtroEstadoActivo = "TODOS";
+
+    function renderTabla() {
+      const tbody = document.getElementById('tbodyMantenimientos');
+      const textoFiltro = document.getElementById('filtroTexto').value.toLowerCase().trim();
+      tbody.innerHTML = '';
+
+      const filtrados = mantenimientosData.filter(m => {
+        const coincideEstado = (filtroEstadoActivo === 'TODOS') || 
+                               (filtroEstadoActivo === 'Completado' && m.estado === 'Completado') ||
+                               (filtroEstadoActivo === 'Presolicitud' && m.estado === 'Presolicitud') ||
+                               (filtroEstadoActivo === 'Diagnosticado' && m.estado === 'Diagnosticado') ||
+                               (filtroEstadoActivo === 'Cotizada' && (m.estado === 'Cotizada' || m.estado === 'Presolicitud analizada'));
+        
+        const textoFila = `${m.codigo} ${m.nombre} ${m.solicitante} ${m.tipo} ${m.estado} ${m.numeroOrden}`.toLowerCase();
+        const coincideTexto = !textoFiltro || textoFila.includes(textoFiltro);
+
+        return coincideEstado && coincideTexto;
+      });
+
+      if (filtrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--steel-light);">No se encontraron mantenimientos con los criterios seleccionados.</td></tr>`;
+        return;
+      }
+
+      filtrados.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.className = `master-row ${m.id === mantenimientoSeleccionado.id ? 'is-active' : ''}`;
+        tr.onclick = () => seleccionarMantenimiento(m.id);
+
+        let badgeHtml = '';
+        if (m.estado === 'Completado') badgeHtml = `<span class="status-pill status--completado">✓ Completado</span>`;
+        else if (m.estado === 'Orden de trabajo') badgeHtml = `<span class="status-pill status--orden">En Orden (${m.numeroOrden})</span>`;
+        else if (m.estado === 'Cotizada') badgeHtml = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
+        else if (m.estado === 'Diagnosticado') badgeHtml = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+        else badgeHtml = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
+
+        tr.innerHTML = `
+          <td style="white-space:nowrap; font-family:var(--font-mono); font-size:12.5px;">${m.fecha}</td>
+          <td>
+            <strong style="color:var(--orange-1); font-family:var(--font-mono); font-size:12.5px;">[${m.codigo}]</strong>
+            <br>
+            <span style="font-size:13px; font-weight:600;">${m.nombre}</span>
+            <small style="display:block; color:var(--steel-light); font-size:11px;">${m.marca}</small>
+          </td>
+          <td><span style="font-size:12px; background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px;">${m.tipo}</span></td>
+          <td style="font-weight:600;">${m.solicitante}</td>
+          <td>${badgeHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function seleccionarMantenimiento(id) {
+      const encontrado = mantenimientosData.find(m => m.id === id);
+      if (!encontrado) return;
+      mantenimientoSeleccionado = encontrado;
+      renderTabla();
+      renderDrawer();
+    }
+
+    function renderDrawer() {
+      const m = mantenimientoSeleccionado;
+      document.getElementById('detCodigo').textContent = m.codigo;
+      document.getElementById('detNombre').textContent = m.nombre;
+      document.getElementById('detSerie').textContent = `S/N: ${m.serie} · ${m.marca}`;
+      document.getElementById('detOrdenNum').textContent = m.numeroOrden;
+
+      // Estado badge
+      const detEstadoBadge = document.getElementById('detEstadoBadge');
+      if (m.estado === 'Completado') detEstadoBadge.innerHTML = `<span class="status-pill status--completado">✓ Completado</span>`;
+      else if (m.estado === 'Orden de trabajo') detEstadoBadge.innerHTML = `<span class="status-pill status--orden">En Orden</span>`;
+      else if (m.estado === 'Cotizada') detEstadoBadge.innerHTML = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
+      else if (m.estado === 'Diagnosticado') detEstadoBadge.innerHTML = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+      else detEstadoBadge.innerHTML = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
+
+      // Documentos (Tarjetas táctiles)
+      const docsContainer = document.getElementById('detDocsContainer');
+      docsContainer.innerHTML = '';
+
+      if (m.informePdf) {
+        docsContainer.innerHTML += `
+          <div class="doc-card doc-card--informe" onclick="abrirDoc('Informe Técnico')">
+            <span class="doc-card__badge">📥</span>
+            <span class="doc-card__title">Informe Técnico</span>
+            <span class="doc-card__sub">PDF generado en taller</span>
+          </div>`;
+      }
+      if (m.cotizacionPdf) {
+        docsContainer.innerHTML += `
+          <div class="doc-card doc-card--cotizacion" onclick="abrirDoc('Cotización Formal')">
+            <span class="doc-card__badge">📄</span>
+            <span class="doc-card__title">Cotización Oficial</span>
+            <span class="doc-card__sub">Valor comercial Gerencia</span>
+          </div>`;
+      }
+      if (m.actaPdf) {
+        docsContainer.innerHTML += `
+          <div class="doc-card doc-card--acta" onclick="abrirDoc('Acta de Entrega')">
+            <span class="doc-card__badge">📋</span>
+            <span class="doc-card__title">Acta de Entrega</span>
+            <span class="doc-card__sub">Firma de conformidad</span>
+          </div>`;
+      }
+      if (m.facturaPdf) {
+        docsContainer.innerHTML += `
+          <div class="doc-card doc-card--factura" onclick="abrirDoc('Factura / Orden')">
+            <span class="doc-card__badge">🧾</span>
+            <span class="doc-card__title">Factura / Orden</span>
+            <span class="doc-card__sub">Comprobante de servicio</span>
+          </div>`;
+      }
+      if (!m.informePdf && !m.cotizacionPdf && !m.actaPdf && !m.facturaPdf) {
+        docsContainer.innerHTML = `<div style="padding:10px; color:var(--steel-light); font-size:11px; text-align:center; background:rgba(0,0,0,0.25); border-radius:4px;">Sin documentos emitidos aún.</div>`;
+      }
+
+      // Diagnóstico
+      document.getElementById('detAnalisis').textContent = m.analisis;
+      document.getElementById('detSolucion').textContent = m.solucion;
+      document.getElementById('detTecnico').textContent = m.tecnico;
+      document.getElementById('detDias').textContent = m.dias > 0 ? `${m.dias} días hábiles` : 'Por determinar';
+
+
+      // Evidencias
+      const gridEv = document.getElementById('detEvidenciasGrid');
+      gridEv.innerHTML = '';
+      if (m.evidencias && m.evidencias.length > 0) {
+        m.evidencias.forEach((src, idx) => {
+          gridEv.innerHTML += `
+            <div class="evidence-thumb" onclick="verFoto('${src}', 'Evidencia #${idx + 1} - ${m.nombre}')">
+              <img src="${src}" alt="Evidencia">
+            </div>`;
+        });
+      } else {
+        gridEv.innerHTML = `<p style="grid-column:span 3; font-size:12px; color:var(--steel-light);">Sin evidencias fotográficas.</p>`;
+      }
+
+      // Datos generales
+      document.getElementById('detSolicitante').textContent = `${m.solicitante}`;
+      document.getElementById('detFecha').textContent = m.fecha;
+      document.getElementById('detTipo').textContent = m.tipo;
+      document.getElementById('detDescripcionBreve').textContent = m.descripcion;
+
+      // Botonera según Rol
+      const botonera = document.getElementById('detBotoneraAcciones');
+      botonera.innerHTML = '';
+
+      if (rolActual === 'ADMIN') {
+        // Gerente
+        if (m.estado === 'Presolicitud') {
+          botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="alert('Abriendo diagnóstico técnico')">🔍 Diagnóstico Técnico</button>`;
+        }
+        if (m.estado === 'Diagnosticado' || (!m.precio && m.estado !== 'Presolicitud')) {
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Abriendo pantalla de cotización comercial para Gerencia')">💰 Cotizar / Facturar</button>`;
+        }
+        if (m.facturaPdf) {
+          botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura / Comprobante')">🧾 Factura / Orden</button>`;
+        }
+        botonera.innerHTML += `<button class="btn-act btn-act--secondary" onclick="alert('Abriendo edición de datos de la orden')">✏️ Editar orden</button>`;
+      } else if (rolActual === 'TECNICO') {
+        // Técnico
+        if (m.estado === 'Presolicitud') {
+          botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="alert('Abriendo formulario de diagnóstico técnico de taller')">🔍 Diagnóstico Técnico</button>`;
+        }
+        if (m.estado === 'Orden de trabajo') {
+          botonera.innerHTML += `<button class="btn-act btn-act--blue" onclick="alert('Equipo actualmente en proceso de reparación en taller')">🔧 En taller técnico</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Marcando trabajo finalizado y emitiendo acta de entrega')">✓ Finalizar Mantenimiento</button>`;
+        }
+        if (m.facturaPdf) {
+          botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Orden de Servicio')">🧾 Factura / Orden</button>`;
+        }
+      } else if (rolActual === 'CLIENTE') {
+        // Cliente
+        if (m.estado === 'Cotizada') {
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('¡Cotización aprobada con éxito! La orden de trabajo fue iniciada.')">✓ Aprobar Cotización</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--danger" onclick="alert('Abriendo ventana para indicar el motivo de desacuerdo')">⚠️ No Aprobar (Indicar Motivo)</button>`;
+        }
+        if (m.facturaPdf) {
+          botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura Oficial')">🧾 Ver Mi Factura / Acta</button>`;
+        }
+      }
+    }
+
+    function cambiarRolSimulado(nuevoRol) {
+      rolActual = nuevoRol;
+      const labelRol = document.getElementById('labelRol');
+      const labelUser = document.getElementById('labelUsuario');
+      if (nuevoRol === 'ADMIN') {
+        labelUser.textContent = 'martin';
+        labelRol.textContent = 'Gerente General';
+      } else if (nuevoRol === 'TECNICO') {
+        labelUser.textContent = 'tecnico';
+        labelRol.textContent = 'Técnico Especialista';
+      } else {
+        labelUser.textContent = 'cliente';
+        labelRol.textContent = 'Cliente Propietario';
+      }
+      renderDrawer();
+    }
+
+    function filtrarPorEstado(estado, btn) {
+      filtroEstadoActivo = estado;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTabla();
+    }
+
+    function filtrarTabla() {
+      renderTabla();
+    }
+
+    function abrirDoc(tipo) {
+      alert(`Abriendo vista oficial de: ${tipo}\n\nMáquina: [${mantenimientoSeleccionado.codigo}] ${mantenimientoSeleccionado.nombre}\nOrden: ${mantenimientoSeleccionado.numeroOrden}`);
+    }
+
+    function verFoto(src, titulo) {
+      document.getElementById('modalFotoImg').src = src;
+      document.getElementById('modalFotoTitulo').textContent = titulo;
+      document.getElementById('modalFoto').classList.add('is-open');
+    }
+
+    function cerrarModalFoto() {
+      document.getElementById('modalFoto').classList.remove('is-open');
+    }
+
+    // Inicializar
+    renderTabla();
+    renderDrawer();
+  </script>
+</body>
+</html>
