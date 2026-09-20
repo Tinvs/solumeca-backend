@@ -729,22 +729,11 @@
     <div class="top-bar-right">
       <div class="user-pill">
         <span>Sesión activa:</span>
-        <strong id="labelUsuario" th:text="${#authentication != null ? #authentication.name : 'martin'}">martin</strong>
-        <span style="opacity:0.4;">|</span>
-        <span id="labelRol" style="color:var(--steel-light); font-size:12px;" th:text="${esAdmin ? 'Gerente General' : (esTecnico ? 'Técnico de Taller' : 'Cliente Propietario')}">Gerente General</span>
-      </div>
-
-      <div style="display:flex; align-items:center; gap:8px;">
-        <label for="rolSimulado" style="font-size:12px; color:var(--steel-light);">Simular Vista:</label>
-        <select id="rolSimulado" class="role-selector" onchange="cambiarRolSimulado(this.value)">
-          <option value="ADMIN" th:selected="${esAdmin}">Gerente (Admin)</option>
-          <option value="TECNICO" th:selected="${esTecnico}">Técnico de Taller</option>
-          <option value="CLIENTE" th:selected="${esCliente}">Cliente / Propietario</option>
-        </select>
+        <strong style="color:var(--orange-2);" th:text="${esAdmin ? 'Gerente General' : (esTecnico ? 'Técnico de Taller' : 'Cliente')}">Gerente General</strong>
       </div>
 
       <a href="/dashboard" style="color:#cbd5e1; text-decoration:none; font-size:12.5px; margin-left:8px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">
-        ← Volver
+        ← Volver al Panel
       </a>
     </div>
   </header>
@@ -910,7 +899,7 @@
             </div>
             <div class="drawer-info-item">
               <span>Falla Inicial:</span>
-              <strong id="detDescripcionBreve">Fuga hidráulica y ruido</strong>
+              <strong id="detDescripcionBreve" style="display:inline-block; max-width:210px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:bottom;">Fuga hidráulica y ruido</strong>
             </div>
           </div>
         </div>
@@ -1025,7 +1014,7 @@
         solicitante: "martin",
         estado: "Completado",
         numeroOrden: "ORD-2026-006",
-        descripcion: "El equipo presenta sobrecalentamiento constante y fuga en el circuito hidráulico con ruido metálico en bomba.",
+        descripcion: "Sobrecalentamiento y fuga en circuito hidráulico",
         analisis: "Fisura en manguera principal y desgaste en sellos.",
         solucion: "Sustitución de manguera 3/4\" R2, recambio de sellos de cilindro, purga integral y prueba de carga.",
         tecnico: "tecnico",
@@ -1053,7 +1042,7 @@
         solicitante: "usuario",
         estado: "Presolicitud",
         numeroOrden: "Pendiente evaluación",
-        descripcion: "Ruido anormal en transmisión al girar a la derecha y pérdida leve de fuerza de empuje.",
+        descripcion: "Ruido anormal en transmisión al girar a la derecha",
         analisis: "Pendiente de ingreso y desarme en taller técnico.",
         solucion: "Pendiente de diagnóstico técnico.",
         tecnico: "Por asignar",
@@ -1079,7 +1068,7 @@
         solicitante: "martin",
         estado: "Diagnosticado",
         numeroOrden: "En evaluación",
-        descripcion: "Falla en sistema de frenos y lentitud en pistón de elevación del mástil tríplex.",
+        descripcion: "Falla en sistema de frenos y lentitud en mástil tríplex",
         analisis: "Desgaste del 85% en zapatas y sello de pistón fisurado.",
         solucion: "Cambio de juego de zapatas delanteras, sustitución de sellos de elevación y líquido hidráulico.",
         tecnico: "tecnico",
@@ -1106,7 +1095,7 @@
         solicitante: "empresa_logistica",
         estado: "Cotizada",
         numeroOrden: "COT-2026-004",
-        descripcion: "Filtro de combustible obstruido y pérdida de compresión en ralentí.",
+        descripcion: "Filtro obstruido y pérdida de compresión en ralentí",
         analisis: "Obstrucción severa en regulador de gas GLP e inyectores.",
         solucion: "Mantenimiento integral a regulador de gas, limpieza ultrasónica de inyectores y filtro nuevo.",
         tecnico: "tecnico",
@@ -1132,7 +1121,7 @@
         solicitante: "martin",
         estado: "Orden de trabajo",
         numeroOrden: "ORD-2026-003",
-        descripcion: "Holgura en pasadores del brazo articulado trasero y fisura en acople rápido.",
+        descripcion: "Holgura en pasadores del brazo articulado trasero",
         analisis: "Desgaste de bujes por falta de engrase en faena portuaria.",
         solucion: "Mecanizado de bujes reforzados, rectificado de pasadores y engrase de alta presión.",
         tecnico: "tecnico",
@@ -1318,8 +1307,15 @@
       // Datos generales
       document.getElementById('detSolicitante').textContent = `${m.solicitante}`;
       document.getElementById('detFecha').textContent = m.fecha;
-      document.getElementById('detTipo').textContent = m.tipo;
-      document.getElementById('detDescripcionBreve').textContent = m.descripcion;
+      // Resumen conciso de falla inicial (evita párrafos gigantes)
+      let resumenFalla = 'Revisión en taller';
+      if (m.descripcion && m.descripcion.trim().length > 0) {
+        let limpio = m.descripcion.replace(/\r?\n|\r/g, ' ').trim();
+        resumenFalla = limpio.length > 40 ? limpio.substring(0, 40) + '...' : limpio;
+      }
+      const elDesc = document.getElementById('detDescripcionBreve');
+      elDesc.textContent = resumenFalla;
+      elDesc.title = m.descripcion || '';
 
       // Botonera según Rol
       const botonera = document.getElementById('detBotoneraAcciones');
@@ -1355,23 +1351,6 @@
         botonera.innerHTML += `<a href="/mantenimientos/${m.id}/factura" class="btn-act btn-act--dark">🧾 Factura / Orden</a>`;
         botonera.innerHTML += `<a href="/mantenimientos/${m.id}/editar" class="btn-act btn-act--secondary">✏️ Editar orden</a>`;
       }
-    }
-
-    function cambiarRolSimulado(nuevoRol) {
-      rolActual = nuevoRol;
-      const labelRol = document.getElementById('labelRol');
-      const labelUser = document.getElementById('labelUsuario');
-      if (nuevoRol === 'ADMIN') {
-        labelUser.textContent = 'gerente';
-        labelRol.textContent = 'Gerente General';
-      } else if (nuevoRol === 'TECNICO') {
-        labelUser.textContent = 'tecnico';
-        labelRol.textContent = 'Técnico Especialista';
-      } else {
-        labelUser.textContent = 'usuario';
-        labelRol.textContent = 'Cliente Propietario';
-      }
-      renderDrawer();
     }
 
     function filtrarPorEstado(estado, btn) {
