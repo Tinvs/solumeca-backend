@@ -20,9 +20,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -34,10 +34,13 @@ public class MantenimientoControllerMvcTest {
     @Mock
     private MantenimientoRepository mantenimientoRepository;
     @Mock
+    @SuppressWarnings("unused")
     private MaquinariaRepository maquinariaRepository;
     @Mock
+    @SuppressWarnings("unused")
     private MarcaRepository marcaRepository;
     @Mock
+    @SuppressWarnings("unused")
     private ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
     @InjectMocks

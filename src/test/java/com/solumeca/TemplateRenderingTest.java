@@ -1,10 +1,8 @@
 package com.solumeca;
 
 import com.solumeca.model.Mantenimiento;
-import com.solumeca.model.Maquinaria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -16,7 +14,11 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import org.thymeleaf.context.IContext;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
