@@ -39,12 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const errorParam = queryParams.get('error');
   if (loginError && errorParam) {
+    const errorTextEl = document.getElementById('loginErrorText') || loginError;
     if (errorParam === 'not_registered') {
-      loginError.textContent = 'Este usuario o correo no está registrado en el sistema.';
+      errorTextEl.textContent = 'Este usuario o correo no está registrado en el sistema.';
     } else if (errorParam === 'bad_credentials') {
-      loginError.textContent = 'Contraseña incorrecta. Verifica tus credenciales e intenta de nuevo.';
+      errorTextEl.textContent = 'Contraseña incorrecta. Verifica tus credenciales e intenta de nuevo.';
     } else {
-      loginError.textContent = 'Usuario o contraseña incorrectos.';
+      errorTextEl.textContent = 'Usuario o contraseña incorrectos.';
     }
     loginError.classList.add('is-active');
   }

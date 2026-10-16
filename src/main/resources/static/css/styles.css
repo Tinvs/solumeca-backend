@@ -921,22 +921,55 @@ h1, h2, h3 {
 
 .brands__list {
   display: flex;
-  gap: 60px;
+  gap: 22px;
   width: max-content;
   animation: scrollBrands 26s linear infinite;
 }
 
-.brands__list span {
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  height: 92px;
+  padding: 12px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  transition: transform var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.brand-logo img {
+  max-height: 44px;
+  max-width: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform var(--transition), filter var(--transition);
+}
+
+.brand-logo span {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
   transition: color var(--transition);
 }
 
-.brands__list span:hover { color: var(--safety-yellow); }
+.brand-logo:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 197, 78, 0.6);
+  background: rgba(255, 197, 78, 0.06);
+}
+
+.brand-logo:hover img {
+  transform: scale(1.08);
+}
+
+.brand-logo:hover span { color: var(--safety-yellow); }
 
 @keyframes scrollBrands {
   from { transform: translateX(0); }
@@ -1012,23 +1045,81 @@ h1, h2, h3 {
 /* =============================================================
    Proyectos / Clientes
    ============================================================= */
-.clients__grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 50px;
+.clients__track-wrapper {
+  overflow: hidden;
+  position: relative;
+  margin: 28px 0 46px;
+  padding: 8px 0;
 }
 
-.client-chip {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  color: var(--steel);
+.clients__track-wrapper::before,
+.clients__track-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.clients__track-wrapper::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--white), transparent);
+}
+
+.clients__track-wrapper::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--white), transparent);
+}
+
+.clients__track-infinite {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: scrollClients 28s linear infinite;
+}
+
+.clients__track-infinite:hover {
+  animation-play-state: paused;
+}
+
+.client-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 195px;
+  height: 86px;
+  padding: 12px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background: var(--white);
-  border: 1px solid var(--steel-line);
-  padding: 10px 16px;
-  border-radius: 2px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.client-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--orange-1);
+  box-shadow: 0 10px 22px rgba(255, 93, 28, 0.12);
+}
+
+.client-logo {
+  max-height: 44px;
+  max-width: 165px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform var(--transition);
+}
+
+.client-card:hover .client-logo {
+  transform: scale(1.05);
+}
+
+@keyframes scrollClients {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .projects__grid {
@@ -1603,36 +1694,68 @@ h1, h2, h3 {
 
 .login-form { display: grid; gap: 18px; }
 
-.login-form label {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.login-form label,
+.login-field-label {
+  font-family: var(--font-body);
+  font-size: 13.5px;
   font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.9);
-  margin-bottom: 6px;
-  display: block;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
-.login-form input {
+.label-icon {
+  color: #4b5563;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-leading-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+}
+
+.login-form input,
+.input-with-icon input {
   width: 100%;
   font-family: var(--font-body);
-  font-size: 14.5px;
-  padding: 13px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--steel-line);
-  background: var(--concrete);
-  color: var(--ink);
-  transition: border-color var(--transition), background var(--transition);
+  font-size: 14px;
+  padding: 12px 14px 12px 42px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f1f3f5;
+  color: #0f172a;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
 }
 
-.login-form input::placeholder { color: var(--steel-light); }
+.login-form input::placeholder,
+.input-with-icon input::placeholder { color: #94a3b8; }
 
-.login-form input:focus {
+.login-form input:focus,
+.input-with-icon input:focus {
   outline: none;
   border-color: var(--orange-1);
-  background: var(--white);
-  box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.12);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 93, 28, 0.15);
 }
 
 /* Envoltura para campos de contraseña con botón de ojito */
@@ -1645,7 +1768,7 @@ h1, h2, h3 {
 
 .password-input-wrapper input {
   width: 100%;
-  padding-right: 48px !important;
+  padding-right: 44px !important;
 }
 
 .btn-toggle-password {
@@ -1683,41 +1806,87 @@ h1, h2, h3 {
   stroke: currentColor;
 }
 
-.login-btn { margin-top: 8px; width: 100%; }
-
-.login-error {
-  font-size: 13px;
-  color: #d43d1a;
-  background: rgba(255, 93, 28, 0.08);
-  border: 1px solid rgba(255, 93, 28, 0.25);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  display: none;
+.login-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff5d1c, #ff7a1c);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 93, 28, 0.35);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.login-error.is-active { display: block; }
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 93, 28, 0.45);
+}
+
+.login-error {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #c2410c;
+  background: #fff4ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 6px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-error.is-active { display: flex; }
+
+.error-badge-icon {
+  color: #ea580c;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
 
 .login-success {
-  font-size: 13px;
+  font-size: 13.5px;
   color: #247044;
   background: rgba(36, 112, 68, 0.08);
   border: 1px solid rgba(36, 112, 68, 0.25);
-  border-radius: var(--radius);
-  padding: 10px 14px;
+  border-radius: 8px;
+  padding: 12px 14px;
   display: none;
 }
 
 .login-success.is-active { display: block; }
 
 .login-footer {
-  margin-top: 26px;
+  margin-top: 22px;
   text-align: center;
-  font-size: 13px;
-  color: var(--steel-light);
+  font-size: 13.5px;
+  color: #64748b;
 }
 
-.login-footer a { color: var(--orange-1); font-weight: 600; }
+.login-footer a { color: var(--orange-1); font-weight: 700; text-decoration: none; }
 .login-footer a:hover { text-decoration: underline; }
+
+.login-footer--back {
+  margin-top: 12px;
+}
+
+.login-footer--back a {
+  color: var(--orange-1);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
 
 @media (max-width: 560px) {
   .login-card:has(.role-picker) { padding: 32px 22px; }

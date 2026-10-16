@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Hyster Forklifts -->
+  <g transform="translate(10, 8)">
+    <rect x="0" y="2" width="28" height="28" rx="4" fill="#FFC72C"/>
+    <text x="6" y="24" font-family="'Arial Black', sans-serif" font-weight="900" font-size="22" fill="#000000">H</text>
+  </g>
+  <text x="48" y="32" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="24" letter-spacing="2" fill="#FFC72C">HYSTER</text>
+</svg>
+

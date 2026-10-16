@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- KOMATSU Bold Wordmark with signature styling -->
+  <g transform="translate(10, 10)">
+    <text x="0" y="24" font-family="'Impact', 'Arial Black', sans-serif" font-weight="900" font-size="28" letter-spacing="2.5" fill="#005BAB">KOMATSU</text>
+    <polygon points="108,8 114,8 111,14" fill="#FFFFFF"/>
+  </g>
+</svg>
+

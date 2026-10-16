@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Kalmar K Emblem -->
+  <g transform="translate(10, 8)">
+    <rect x="0" y="0" width="8" height="34" fill="#00529C"/>
+    <polygon points="12,18 28,0 36,0 18,20" fill="#E30613"/>
+    <polygon points="14,20 36,34 26,34 8,24" fill="#00529C"/>
+  </g>
+  <!-- KALMAR Text -->
+  <text x="56" y="32" font-family="'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="24" letter-spacing="2" fill="#FFFFFF">KALMAR</text>
+</svg>
+

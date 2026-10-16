@@ -246,13 +246,13 @@ public class MantenimientoController {
     }
 
     // =========================================================================
-    // 1. DIAGNÓSTICO TÉCNICO EN TALLER
+    // 1. DIAGNÓSTICO TÉCNICO (EXCLUSIVO DEL TÉCNICO)
     // El técnico revisa la máquina, registra la causa raíz, solución propuesta,
     // tiempo estimado y fotos de inspección. NO establece precios ni factura.
     // =========================================================================
     @GetMapping("/{id}/diagnosticar")
     public String formularioDiagnostico(@PathVariable Long id, Authentication authentication, Model model) {
-        if (!esOperativo(authentication) && !esClienteRol(authentication)) {
+        if (!esOperativo(authentication)) {
             return "redirect:/mantenimientos";
         }
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
@@ -263,7 +263,6 @@ public class MantenimientoController {
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
         model.addAttribute("username", authentication != null ? authentication.getName() : "tecnico");
-        model.addAttribute("esCliente", esClienteRol(authentication));
         return "mantenimiento-diagnosticar";
     }
 
@@ -640,7 +639,7 @@ public class MantenimientoController {
 
     private boolean esOperativo(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirOperativo(Authentication authentication) {
@@ -651,19 +650,19 @@ public class MantenimientoController {
 
     private boolean esTecnico(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TECNICO"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirTecnico(Authentication authentication) {
-        if (!esTecnico(authentication) && !esAdmin(authentication)) {
+        if (!esTecnico(authentication)) {
             throw new org.springframework.security.access.AccessDeniedException(
-                    "Acceso restringido: El diagnóstico técnico debe ser realizado por el personal técnico o gerencial.");
+                    "Acceso restringido: El diagnóstico técnico debe ser realizado por el personal técnico.");
         }
     }
 
     private boolean esAdmin(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|ENCARGADO)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
     }
 
     private void exigirAdmin(Authentication authentication) {

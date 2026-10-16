@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Doosan 3 stripes emblem -->
+  <g transform="translate(10, 11)">
+    <polygon points="0,26 6,0 12,0 6,26" fill="#002D62"/>
+    <polygon points="10,26 16,0 22,0 16,26" fill="#0066B2"/>
+    <polygon points="20,26 26,0 32,0 26,26" fill="#0099D8"/>
+  </g>
+  <!-- DOOSAN Text -->
+  <text x="50" y="31" font-family="'Arial Black', sans-serif" font-weight="900" font-size="22" letter-spacing="1.5" fill="#FFFFFF">DOOSAN</text>
+</svg>
+

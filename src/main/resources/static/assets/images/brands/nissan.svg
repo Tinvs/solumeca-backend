@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Nissan Emblem -->
+  <g transform="translate(10, 8)">
+    <circle cx="17" cy="17" r="15" stroke="#C0C0C8" stroke-width="3.5" fill="none"/>
+    <rect x="0" y="11" width="34" height="12" rx="2" fill="#C0C0C8"/>
+    <rect x="2" y="13" width="30" height="8" fill="#141416"/>
+  </g>
+  <!-- NISSAN Text -->
+  <text x="56" y="32" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="22" letter-spacing="4" fill="#FFFFFF">NISSAN</text>
+</svg>
+

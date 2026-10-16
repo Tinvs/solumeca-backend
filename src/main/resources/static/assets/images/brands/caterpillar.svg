@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Caterpillar CAT Logo -->
+  <g transform="translate(14, 8)">
+    <text x="0" y="27" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="28" letter-spacing="1" fill="#FFFFFF">CAT</text>
+    <polygon points="12,27 38,27 25,12" fill="#FFCD00"/>
+  </g>
+  <text x="75" y="30" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="12" letter-spacing="2" fill="#FFCD00">CATERPILLAR</text>
+</svg>
+

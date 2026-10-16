@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Yale Emblem -->
+  <g transform="translate(10, 8)">
+    <polygon points="0,34 34,34 34,0 0,0" fill="#FFCC00"/>
+    <text x="7" y="26" font-family="'Arial Black', sans-serif" font-weight="900" font-size="28" fill="#000000">Y</text>
+  </g>
+  <!-- YALE Text -->
+  <text x="56" y="34" font-family="'Arial Black', sans-serif" font-weight="900" font-size="28" letter-spacing="2" fill="#FFCC00">Yale</text>
+</svg>
+

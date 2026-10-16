@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 50" fill="none">
+  <!-- Bobcat Logo Icon -->
+  <g transform="translate(6, 6)">
+    <rect width="36" height="36" rx="6" fill="#E31B23"/>
+    <!-- Bobcat Cat Face Silhouette -->
+    <path d="M7 26 L12 11 L16 16 L20 16 L24 11 L29 26 L24 24 L20 28 L16 28 L12 24 Z" fill="#FFFFFF"/>
+    <circle cx="14" cy="20" r="1.8" fill="#E31B23"/>
+    <circle cx="22" cy="20" r="1.8" fill="#E31B23"/>
+    <polygon points="18,23 16,25 20,25" fill="#E31B23"/>
+  </g>
+  <!-- Bobcat Text -->
+  <text x="50" y="32" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="24" letter-spacing="1" fill="#FFFFFF">Bobcat</text>
+</svg>
+
