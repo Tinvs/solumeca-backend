@@ -1734,17 +1734,20 @@ h1, h2, h3 {
   height: 18px;
 }
 
-.login-form input,
-.input-with-icon input {
+.login-form input {
   width: 100%;
   font-family: var(--font-body);
   font-size: 14px;
-  padding: 12px 14px 12px 42px;
+  padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   background: #f1f3f5;
   color: #0f172a;
   transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.input-with-icon input {
+  padding-left: 42px !important;
 }
 
 .login-form input::placeholder,

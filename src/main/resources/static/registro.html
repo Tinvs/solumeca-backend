@@ -36,19 +36,26 @@
         <h1 class="login-title">Crea tu cuenta</h1>
         <p class="login-subtitle">Regístrate para solicitar servicios y consultar el avance de tus mantenimientos.</p>
 
-        <p class="login-error" id="registerError" hidden></p>
+        <div class="login-error" id="registerError" role="alert" style="display:none;">
+          <svg class="error-badge-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span id="registerErrorText"></span>
+        </div>
 
         <form action="/registro" method="POST" class="login-form">
           <div class="form-row">
-            <label for="nombre">Nombre de usuario</label>
+            <label for="nombre" class="login-field-label">Nombre de usuario</label>
             <input type="text" id="nombre" name="nombre" placeholder="El nombre con el que ingresarás" minlength="3" maxlength="50" autocomplete="username" required>
           </div>
           <div class="form-row">
-            <label for="correo">Correo electrónico</label>
+            <label for="correo" class="login-field-label">Correo electrónico</label>
             <input type="email" id="correo" name="correo" placeholder="tu@correo.com" autocomplete="email" required>
           </div>
           <div class="form-row">
-            <label for="password">Contraseña</label>
+            <label for="password" class="login-field-label">Contraseña</label>
             <div class="password-input-wrapper">
               <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
               <button type="button" class="btn-toggle-password" aria-label="Ver contraseña" title="Ver contraseña">
@@ -67,6 +74,9 @@
         </form>
 
         <p class="login-footer">¿Ya tienes una cuenta? <a href="/login.html">Inicia sesión</a></p>
+        <p class="login-footer login-footer--back">
+          <a href="index.html">&#8592; Volver al sitio</a>
+        </p>
       </div>
     </section>
   </main>
@@ -82,9 +92,10 @@
     };
     const error = new URLSearchParams(window.location.search).get('error');
     const errorBox = document.getElementById('registerError');
-    if (error && messages[error]) {
-      errorBox.textContent = messages[error];
-      errorBox.hidden = false;
+    const errorText = document.getElementById('registerErrorText');
+    if (error && messages[error] && errorBox && errorText) {
+      errorText.textContent = messages[error];
+      errorBox.style.display = 'flex';
       errorBox.classList.add('is-active');
     }
   </script>
