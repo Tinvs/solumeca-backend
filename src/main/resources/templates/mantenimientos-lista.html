@@ -447,10 +447,6 @@
                       <strong style="color:#f87171;">Obs:</strong> <span th:text="${#strings.length(m.motivoRechazo) > 35 ? #strings.substring(m.motivoRechazo,0,35)+'...' : m.motivoRechazo}"></span>
                     </div>
                   </td>
-                    <div th:if="${m.motivoRechazo != null && esAdmin}" style="margin-top:4px; font-size:11px; color:#fca5a5; line-height:1.2; max-width:140px; word-break:break-word;">
-                      <strong style="color:#f87171;">Obs:</strong> <span th:text="${#strings.length(m.motivoRechazo) > 35 ? #strings.substring(m.motivoRechazo,0,35)+'...' : m.motivoRechazo}"></span>
-                    </div>
-                  </td>
 
                   <!-- ==========================================================
                        TEMPLATES OCULTOS PROYECTADOS AL PANEL DERECHO AL SELECCIONAR
