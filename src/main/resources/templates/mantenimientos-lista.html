@@ -594,6 +594,14 @@
                       <span>Técnico: <strong style="color:#fff;" th:text="${m.tecnicoAsignado != null ? m.tecnicoAsignado : 'tecnico'}">tecnico</strong></span>
                       <span>Tiempo: <strong style="color:#fff;" th:text="${m.diasEstimados != null && m.diasEstimados > 0 ? m.diasEstimados + ' días hábiles' : '2 días hábiles'}">2 días</strong></span>
                     </div>
+                    <div style="margin-top:8px;">
+                      <button type="button" class="btn"
+                              style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); color:#f1f5f9; padding:5px 10px; font-size:11px; font-weight:600; border-radius:4px; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;"
+                              th:attr="data-parrafo=${'Diagnóstico Técnico: ' + (m.analisis != null ? m.analisis : 'Fisura en manguera principal y desgaste en sellos frontales.') + '&#10;&#10;Procedimiento / Solución: ' + (m.solucion != null ? m.solucion : 'Sustitución de manguera 3/4 R2 y calibración hidráulica.')}, data-titulo=${'Diagnóstico de Taller // ' + (m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).nombre : 'Equipo')}"
+                              onclick="abrirModalParrafo(this.getAttribute('data-titulo'), this.getAttribute('data-parrafo'), 'EVALUACIÓN TÉCNICA EN TALLER')">
+                        🔍 Ver Diagnóstico Completo (Modal)
+                      </button>
+                    </div>
                   </td>
 
                   <!-- Evidencias Fotográficas -->
@@ -636,6 +644,14 @@
                       <div>
                         <span style="display:block; color:var(--steel-light); font-size:10.5px; text-transform:uppercase;">Falla Inicial:</span>
                         <strong style="color:#fff;" th:text="${m.descripcion != null ? (#strings.length(m.descripcion) > 30 ? #strings.substring(m.descripcion, 0, 30) + '...' : m.descripcion) : 'Fuga y calentamiento'}">Fuga</strong>
+                      </div>
+                      <div style="grid-column: 1 / -1; margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.15);">
+                        <button type="button" class="btn"
+                                style="background:rgba(255,93,28,0.15); border:1px solid var(--orange-1); color:#ff8a3d; padding:6px 12px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:6px;"
+                                th:attr="data-parrafo=${m.descripcion != null ? m.descripcion : 'Fuga y calentamiento en sistema hidráulico.'}, data-titulo=${'Falla Inicial // ' + (m.maquinariaId != null && maquinasMap != null && maquinasMap.containsKey(m.maquinariaId) ? maquinasMap.get(m.maquinariaId).nombre : 'Equipo')}"
+                                onclick="abrirModalParrafo(this.getAttribute('data-titulo'), this.getAttribute('data-parrafo'), 'DESCRIPCIÓN Y PÁRRAFO DEL MANTENIMIENTO')">
+                          📄 Ver Párrafo Completo (Modal)
+                        </button>
                       </div>
                     </div>
                   </td>
@@ -765,6 +781,29 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL PARA EL PÁRRAFO DEL MANTENIMIENTO (LECTURA COMPLETA) -->
+  <div id="modalParrafo" class="modal-backdrop-custom" style="display:none;">
+    <div class="modal-card-custom" style="border:1px solid var(--orange-1); max-width:620px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+        <div>
+          <span style="font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--orange-2); text-transform:uppercase; letter-spacing:1px; display:block;" id="modalParrafoEtiqueta">DETALLE COMPLETO // SOLICITUD</span>
+          <h3 style="font-family:var(--font-display); font-size:18px; color:#ffffff; margin:4px 0 0; display:flex; align-items:center; gap:8px;">
+            <span>📝</span> <span id="modalParrafoTitulo">Párrafo del Mantenimiento</span>
+          </h3>
+        </div>
+        <button type="button" onclick="cerrarModalParrafo()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+      <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:18px; margin-bottom:18px; max-height:55vh; overflow-y:auto;">
+        <p id="modalParrafoTexto" style="font-size:14px; color:#f1f5f9; line-height:1.65; margin:0; word-break:break-word; white-space:pre-wrap;"></p>
+      </div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" onclick="cerrarModalParrafo()" class="btn btn--primary" style="padding:9px 20px; font-size:13px; font-weight:700;">
+          Cerrar Ventana
+        </button>
+      </div>
     </div>
   </div>
 
@@ -902,9 +941,30 @@
       if (modal) modal.style.display = 'none';
     }
 
+    // Modal para el párrafo del mantenimiento
+    function abrirModalParrafo(titulo, parrafo, etiqueta) {
+      const modal = document.getElementById('modalParrafo');
+      const t = document.getElementById('modalParrafoTitulo');
+      const p = document.getElementById('modalParrafoTexto');
+      const e = document.getElementById('modalParrafoEtiqueta');
+      if (modal && t && p) {
+        t.textContent = titulo || 'Detalle del Mantenimiento';
+        p.textContent = parrafo || 'Sin observaciones adicionales registradas.';
+        if (e && etiqueta) e.textContent = etiqueta;
+        modal.style.display = 'flex';
+      }
+    }
+
+    function cerrarModalParrafo() {
+      const modal = document.getElementById('modalParrafo');
+      if (modal) modal.style.display = 'none';
+    }
+
     window.addEventListener('click', function(e) {
-      const modal = document.getElementById('modalRechazo');
-      if (e.target === modal) cerrarModalRechazar();
+      const modalRechazo = document.getElementById('modalRechazo');
+      if (e.target === modalRechazo) cerrarModalRechazar();
+      const modalParrafo = document.getElementById('modalParrafo');
+      if (e.target === modalParrafo) cerrarModalParrafo();
     });
 
     // Seleccionar automáticamente la primera fila al cargar la página

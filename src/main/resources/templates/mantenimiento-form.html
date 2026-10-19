@@ -140,8 +140,15 @@
             </div>
 
             <div class="form-row">
-              <label for="tecnicoAsignado" style="display:block; margin-bottom:6px; font-weight:600;">Técnico asignado</label>
-              <input type="text" id="tecnicoAsignado" name="tecnicoAsignado" th:value="${mantenimiento.tecnicoAsignado}" placeholder="Usuario del técnico" style="width:100%;">
+              <label for="tecnicoAsignado" style="display:block; margin-bottom:6px; font-weight:600;">Asignar trabajo al operador / técnico</label>
+              <select id="tecnicoAsignado" name="tecnicoAsignado"
+                      style="width:100%; padding:12px 14px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); color:var(--ink); font-family:var(--font-body); font-size:14.5px;">
+                <option value="">-- Sin asignar / Seleccionar operador --</option>
+                <option th:each="tec : ${tecnicos}" th:value="${tec.username}"
+                        th:text="${tec.username + ' (Operador Técnico)'}"
+                        th:selected="${mantenimiento.tecnicoAsignado == tec.username}">tecnico</option>
+                <option th:if="${tecnicos == null || #lists.isEmpty(tecnicos)}" value="tecnico" selected>tecnico (Operador Técnico)</option>
+              </select>
             </div>
           </div>
 

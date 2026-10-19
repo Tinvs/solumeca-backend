@@ -71,15 +71,21 @@ public class MantenimientoController {
         java.util.List<Mantenimiento> lista;
         if (cliente) {
             String username = (authentication != null && authentication.getName() != null) ? authentication.getName() : "usuario";
-            lista = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
-                    .filter(m -> username.equalsIgnoreCase(m.getSolicitante())
-                              || "usuario".equalsIgnoreCase(m.getSolicitante())
-                              || "cliente".equalsIgnoreCase(m.getSolicitante())
-                              || "martin".equalsIgnoreCase(m.getSolicitante())
-                              || "carlos.mora".equalsIgnoreCase(m.getSolicitante()))
+            java.util.List<Mantenimiento> propios = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
+                    .filter(m -> username.equalsIgnoreCase(m.getSolicitante()))
                     .collect(Collectors.toList());
-            if (lista.size() < 2) {
-                lista = mantenimientoRepository.findAllByOrderByFechaDesc();
+            if (!propios.isEmpty()) {
+                lista = propios;
+            } else {
+                lista = mantenimientoRepository.findAllByOrderByFechaDesc().stream()
+                        .filter(m -> "usuario".equalsIgnoreCase(m.getSolicitante())
+                                  || "cliente".equalsIgnoreCase(m.getSolicitante())
+                                  || "martin".equalsIgnoreCase(m.getSolicitante())
+                                  || "carlos.mora".equalsIgnoreCase(m.getSolicitante()))
+                        .collect(Collectors.toList());
+                if (lista.isEmpty()) {
+                    lista = mantenimientoRepository.findAllByOrderByFechaDesc();
+                }
             }
         } else {
             lista = mantenimientoRepository.findAllByOrderByFechaDesc();
@@ -748,6 +754,7 @@ public class MantenimientoController {
         model.addAttribute("maquinas", maquinariaRepository.findAll());
         model.addAttribute("marcasDisponibles", marcaRepository.findAllByOrderByNombreAsc());
         model.addAttribute("clientes", usuarioRepository.findByRol("CLIENTE"));
+        model.addAttribute("tecnicos", usuarioRepository.findByRol("TECNICO"));
         model.addAttribute("esSolicitud", esSolicitud);
     }
 }
