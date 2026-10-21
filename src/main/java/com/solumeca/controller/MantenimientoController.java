@@ -1,4 +1,4 @@
-package com.solumeca.controller;
+﻿package com.solumeca.controller;
 
 import com.solumeca.model.Mantenimiento;
 import com.solumeca.model.Maquinaria;
@@ -62,8 +62,9 @@ public class MantenimientoController {
 
     private void cargarDatosVistaMantenimientos(Authentication authentication, Model model, boolean esRutaCliente) {
         boolean cliente = esRutaCliente || esClienteRol(authentication);
-        boolean admin = !cliente && esAdmin(authentication);
-        boolean tecnico = !cliente && esTecnico(authentication);
+        boolean supervisor = !cliente && authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPERVISOR"));
+        boolean admin = !cliente && authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean tecnico = !cliente && authentication != null && authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_TECNICO"));
         boolean operativo = !cliente && esOperativo(authentication);
 
         java.util.List<com.solumeca.model.Maquinaria> todasMaquinas = maquinariaRepository.findAll();
@@ -100,6 +101,7 @@ public class MantenimientoController {
         model.addAttribute("esAdmin", admin);
         model.addAttribute("esTecnico", tecnico);
         model.addAttribute("esOperativo", operativo);
+        model.addAttribute("esSupervisor", supervisor);
     }
 
     @GetMapping

@@ -4,12 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crear cuenta | SOLUMECA S.A.S.</title>
-  <meta name="description" content="Crea tu cuenta de cliente en SOLUMECA S.A.S. para solicitar servicios y consultar tus mantenimientos.">
+  <meta name="description" content="Crea tu cuenta de cliente o empresa en SOLUMECA S.A.S. para solicitar servicios y consultar tus mantenimientos.">
   <link rel="icon" type="image/png" href="assets/images/icono.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .tipo-cuenta-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .tipo-cuenta-option {
+      cursor: pointer;
+      border: 1px solid var(--steel-line);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      text-align: center;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .tipo-cuenta-option input[type="radio"] {
+      display: none;
+    }
+    .tipo-cuenta-option span {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+    .tipo-cuenta-option small {
+      display: block;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .tipo-cuenta-option.is-active {
+      background: rgba(255, 93, 28, 0.16);
+      border-color: var(--orange-1);
+    }
+    .tipo-cuenta-option.is-active span {
+      color: var(--orange-1);
+    }
+    .tipo-cuenta-option.is-active small {
+      color: #f1f5f9;
+    }
+    .empresa-fields {
+      display: none;
+      padding-top: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    .empresa-fields.is-visible {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <header class="navbar is-scrolled" id="navbar">
@@ -34,7 +87,7 @@
       <div class="login-card">
         <p class="plate-tag"><span class="plate-tag__bolt"></span>SOLUMECA S.A.S. // NUEVA CUENTA</p>
         <h1 class="login-title">Crea tu cuenta</h1>
-        <p class="login-subtitle">Regístrate para solicitar servicios y consultar el avance de tus mantenimientos.</p>
+        <p class="login-subtitle">Regístrate como persona o empresa para solicitar servicios y dar seguimiento a tus mantenimientos.</p>
 
         <div class="login-error" id="registerError" role="alert" style="display:none;">
           <svg class="error-badge-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -46,14 +99,47 @@
         </div>
 
         <form action="/registro" method="POST" class="login-form">
-          <div class="form-row">
-            <label for="nombre" class="login-field-label">Nombre de usuario</label>
-            <input type="text" id="nombre" name="nombre" placeholder="El nombre con el que ingresarás" minlength="3" maxlength="50" autocomplete="username" required>
+          <!-- SELECTOR DE TIPO DE CLIENTE: PERSONA NATURAL O EMPRESA -->
+          <div class="tipo-cuenta-selector">
+            <label class="tipo-cuenta-option is-active" id="optPersona" onclick="seleccionarTipo('PERSONA')">
+              <input type="radio" name="tipoCliente" value="PERSONA" checked>
+              <span>Persona Natural</span>
+              <small>Propietario / Particular</small>
+            </label>
+            <label class="tipo-cuenta-option" id="optEmpresa" onclick="seleccionarTipo('EMPRESA')">
+              <input type="radio" name="tipoCliente" value="EMPRESA">
+              <span>Empresa / Jurídica</span>
+              <small>Razón Social y NIT</small>
+            </label>
           </div>
+
+          <!-- CAMPOS EXCLUSIVOS SI ES EMPRESA -->
+          <div class="empresa-fields" id="bloqueEmpresa">
+            <div class="form-row">
+              <label for="nombreEmpresa" class="login-field-label">Razón Social o Nombre de la Empresa</label>
+              <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Inducol S.A.S. o Transportes del Norte" maxlength="150">
+            </div>
+            <div class="form-row">
+              <label for="nit" class="login-field-label">NIT o Registro Tributario</label>
+              <input type="text" id="nit" name="nit" placeholder="Ej: 900.123.456-7" maxlength="50">
+            </div>
+            <div class="form-row">
+              <label for="telefono" class="login-field-label">Teléfono o Celular Corporativo</label>
+              <input type="tel" id="telefono" name="telefono" placeholder="Ej: 300 246 4311" maxlength="50">
+            </div>
+          </div>
+
+          <!-- CAMPOS GENERALES DE ACCESO -->
+          <div class="form-row">
+            <label for="nombre" class="login-field-label" id="lblUsuario">Nombre de usuario</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre con el que iniciarás sesión" minlength="3" maxlength="50" autocomplete="username" required>
+          </div>
+
           <div class="form-row">
             <label for="correo" class="login-field-label">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" placeholder="tu@correo.com" autocomplete="email" required>
+            <input type="email" id="correo" name="correo" placeholder="correo@empresa.com" autocomplete="email" required>
           </div>
+
           <div class="form-row">
             <label for="password" class="login-field-label">Contraseña</label>
             <div class="password-input-wrapper">
@@ -70,6 +156,7 @@
               </button>
             </div>
           </div>
+
           <button type="submit" class="btn btn--primary login-btn">Crear cuenta <span aria-hidden="true">&#8594;</span></button>
         </form>
 
@@ -83,6 +170,33 @@
 
   <script src="js/script.js"></script>
   <script>
+    function seleccionarTipo(tipo) {
+      const optPersona = document.getElementById('optPersona');
+      const optEmpresa = document.getElementById('optEmpresa');
+      const bloqueEmpresa = document.getElementById('bloqueEmpresa');
+      const lblUsuario = document.getElementById('lblUsuario');
+      const inputEmpresa = document.getElementById('nombreEmpresa');
+      const inputNit = document.getElementById('nit');
+
+      if (tipo === 'EMPRESA') {
+        optEmpresa.classList.add('is-active');
+        optPersona.classList.remove('is-active');
+        bloqueEmpresa.classList.add('is-visible');
+        optEmpresa.querySelector('input').checked = true;
+        lblUsuario.textContent = 'Usuario de acceso corporativo';
+        if (inputEmpresa) inputEmpresa.setAttribute('required', 'true');
+        if (inputNit) inputNit.setAttribute('required', 'true');
+      } else {
+        optPersona.classList.add('is-active');
+        optEmpresa.classList.remove('is-active');
+        bloqueEmpresa.classList.remove('is-visible');
+        optPersona.querySelector('input').checked = true;
+        lblUsuario.textContent = 'Nombre de usuario';
+        if (inputEmpresa) inputEmpresa.removeAttribute('required');
+        if (inputNit) inputNit.removeAttribute('required');
+      }
+    }
+
     const messages = {
       nombre: 'El nombre debe tener entre 3 y 50 caracteres.',
       correo: 'Ingresa un correo electrónico válido.',

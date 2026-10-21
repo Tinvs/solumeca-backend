@@ -6,7 +6,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(150) UNIQUE,
     password VARCHAR(255) NOT NULL,
-    rol VARCHAR(20) NOT NULL
+    rol VARCHAR(20) NOT NULL,
+    tipo_cliente VARCHAR(20) DEFAULT 'PERSONA',
+    nombre_empresa VARCHAR(150),
+    nit VARCHAR(50),
+    telefono VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS proveedores (

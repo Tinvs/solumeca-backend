@@ -98,11 +98,11 @@
     </div>
 
     <div class="diag-notice" th:if="${esCliente}">
-      <span style="font-size:18px;">🔍</span>
+      <span class="plate-tag__bolt" style="margin-right:8px;"></span>
       <span><strong>Diagnóstico Técnico en Taller:</strong> Este es el análisis de inspección y procedimiento técnico emitido por el equipo especializado para su maquinaria.</span>
     </div>
     <div class="diag-notice" th:if="${!esCliente}">
-      <span style="font-size:18px;">ℹ️</span>
+      <span class="plate-tag__bolt" style="margin-right:8px;"></span>
       <span><strong>Rol Técnico:</strong> Registre el análisis y procedimiento técnico. La Gerencia evaluará este diagnóstico para fijar el costo y emitir la factura/cotización.</span>
     </div>
 
@@ -146,7 +146,7 @@
       </div>
 
       <button th:if="${!esCliente}" type="submit" class="btn btn--primary" style="width:100%; padding:14px; font-size:15px; font-weight:700; margin-top:10px;">
-        🔧 Guardar Diagnóstico Técnico
+        Guardar Diagnóstico Técnico
       </button>
     </form>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Gerente | SOLUMECA S.A.S.</title>
+  <title>Panel Administrativo | SOLUMECA S.A.S.</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body class="dashboard-page">
@@ -14,17 +14,17 @@
       <div class="brand-accent-box">SOLUMECA</div>
       <div class="welcome-text-group">
         <div class="welcome-plate-tag">
-          <span class="bolt"></span>SOLUMECA S.A.S. // PORTAL DE CONTROL
+          <span class="bolt"></span>SOLUMECA S.A.S. // CONTROL GERENCIAL
         </div>
         <div class="welcome-title">
-          Bienvenido, <span class="user-highlight" th:text="${username}">admin</span>
-          <span class="role-badge">GERENTE</span>
+          Bienvenido, <span class="user-highlight" th:text="${username}">gerente</span>
+          <span class="role-badge">ADMINISTRADOR</span>
         </div>
       </div>
     </div>
 
     <div class="top-welcome-right">
-      <a href="/index.html" class="btn-top-web">🌐 Web Principal</a>
+      <a href="/index.html" class="btn-top-web">Sitio Web Principal</a>
       <form th:action="@{/logout}" method="POST" style="margin:0;">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <button type="submit" class="btn-logout-top">Cerrar sesión</button>
@@ -42,31 +42,30 @@
           <span class="plate-tag__bolt"></span>SISTEMA OPERATIVO INTEGRADO // SOLUMECA
         </div>
         <h1 class="panel-title">PANEL DE OPCIONES</h1>
-        <p class="panel-subtitle">Encargado de administrar la información general del sistema, maquinaria, presupuestos y proveedores.</p>
+        <p class="panel-subtitle">Acceso total a la administración técnica, cotizaciones, gestión de maquinaria y módulos operativos.</p>
 
         <ul class="dashboard-menu">
-          <li><a href="/admin/maquinaria/nueva"><span class="menu-icon">01</span><span class="menu-copy"><strong>Registrar maquinaria</strong><small>Incorpora un nuevo equipo al sistema con su código</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/admin/maquinaria"><span class="menu-icon">02</span><span class="menu-copy"><strong>Modificar maquinaria</strong><small>Actualiza los datos de los equipos</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/admin/maquinaria"><span class="menu-icon">03</span><span class="menu-copy"><strong>Consultar maquinaria</strong><small>Visualiza el inventario completo de flota</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/mantenimientos"><span class="menu-icon">04</span><span class="menu-copy"><strong>Revisar operaciones</strong><small>Consulta órdenes, presolicitudes y diagnósticos de taller</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/mantenimientos"><span class="menu-icon">05</span><span class="menu-copy"><strong>Información operativa y facturas</strong><small>Genera cotizaciones sobre diagnósticos y emite facturas</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/mantenimientos"><span class="menu-icon">06</span><span class="menu-copy"><strong>Consultar reportes</strong><small>Obtén una visión general del sistema y costos</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/repuestos"><span class="menu-icon">07</span><span class="menu-copy"><strong>Stock e inventario de repuestos</strong><small>Control de existencias y alertas de stock bajo</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/admin/marcas"><span class="menu-icon">08</span><span class="menu-copy"><strong>Catálogo de marcas</strong><small>Marcas multimarca y proveedores vinculados</small></span><span class="menu-arrow">&#8594;</span></a></li>
-          <li><a href="/admin/proveedores"><span class="menu-icon">09</span><span class="menu-copy"><strong>Directorio de proveedores</strong><small>Empresas suministradoras, contactos y NIT</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/maquinaria"><span class="menu-icon">01</span><span class="menu-copy"><strong>Gestión de Maquinaria</strong><small>Catálogo de equipos pesados, montacargas y series</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos"><span class="menu-icon">02</span><span class="menu-copy"><strong>Gestión de Mantenimientos</strong><small>Presolicitudes, diagnóstico en taller, cotización y facturación</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/marcas"><span class="menu-icon">03</span><span class="menu-copy"><strong>Catálogo de Marcas</strong><small>Marcas de maquinaria y atención multimarca</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/proveedores"><span class="menu-icon">04</span><span class="menu-copy"><strong>Gestión de Proveedores</strong><small>Proveedores de repuestos, lubricantes y suministros</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/repuestos"><span class="menu-icon">05</span><span class="menu-copy"><strong>Inventario de Repuestos</strong><small>Control de stock, precios comerciales y alertas mínimas</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/maquinaria/nueva"><span class="menu-icon">06</span><span class="menu-copy"><strong>Registrar Maquinaria</strong><small>Incorpora un nuevo equipo al parque automotor</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/mantenimientos/nuevo"><span class="menu-icon">07</span><span class="menu-copy"><strong>Nueva Orden de Trabajo</strong><small>Crea una orden interna para diagnóstico técnico</small></span><span class="menu-arrow">&#8594;</span></a></li>
+          <li><a href="/admin/proveedores/nuevo"><span class="menu-icon">08</span><span class="menu-copy"><strong>Nuevo Proveedor</strong><small>Registra un nuevo contacto de suministros</small></span><span class="menu-arrow">&#8594;</span></a></li>
         </ul>
       </div>
 
       <div style="margin-top:20px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.12); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <span style="font-size:12px; color:#cbd5e1;">SOLUMECA S.A.S. // Plataforma de Gestión Industrial</span>
-        <a href="/mantenimientos" style="color:var(--orange-2); font-size:13px; font-weight:600; text-decoration:none;">Ver Mantenimientos Activos →</a>
+        <span style="font-size:12px; color:#cbd5e1;">SOLUMECA S.A.S. // Control Operativo y Facturación</span>
+        <a href="/mantenimientos" style="color:var(--orange-2); font-size:13px; font-weight:600; text-decoration:none;">Gestión de Mantenimientos &#8594;</a>
       </div>
     </section>
 
     <!-- COLUMNA DERECHA: BANNER INSTITUCIONAL -->
     <aside class="side-banner-card">
       <div class="banner-image-container">
-        <img src="/assets/images/proyecto-riverport.jpg" alt="SOLUMECA Maquinaria Pesada">
+        <img src="/assets/images/proyecto-riverport.jpg" alt="SOLUMECA Maquinaria">
         <div class="banner-image-overlay"></div>
         <div class="banner-image-tag">SOLUMECA S.A.S. // RESPALDO INDUSTRIAL</div>
       </div>
@@ -78,21 +77,21 @@
 
           <div class="banner-features">
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">🔧</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[01]</span>
               <div class="banner-feat-text">
                 <strong>Diagnóstico Multimarca</strong>
                 <small>Inspección técnica física y escaneo en taller especializado.</small>
               </div>
             </div>
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">💰</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[02]</span>
               <div class="banner-feat-text">
                 <strong>Cotización y Facturación Directa</strong>
                 <small>Presupuestos claros aprobados por el cliente antes de iniciar labores.</small>
               </div>
             </div>
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">🛡️</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[03]</span>
               <div class="banner-feat-text">
                 <strong>Trazabilidad y Calidad</strong>
                 <small>Registro de evidencias fotográficas, repuestos y control de tiempos.</small>
@@ -103,7 +102,7 @@
 
         <div>
           <a href="https://wa.me/573002464311?text=Hola%20SOLUMECA,%20tengo%20una%20consulta%20operativa" target="_blank" class="banner-btn-wa">
-            💬 Asistencia Inmediata por WhatsApp
+            Asistencia Corporativa por WhatsApp
           </a>
 
           <div class="banner-footer-info">

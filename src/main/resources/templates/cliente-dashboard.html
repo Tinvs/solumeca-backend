@@ -24,7 +24,7 @@
     </div>
 
     <div class="top-welcome-right">
-      <a href="/index.html" class="btn-top-web">🌐 Web Principal</a>
+      <a href="/index.html" class="btn-top-web">Web Principal</a>
       <form th:action="@{/logout}" method="POST" style="margin:0;">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <button type="submit" class="btn-logout-top">Cerrar sesión</button>
@@ -73,21 +73,21 @@
 
           <div class="banner-features">
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">📋</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[01]</span>
               <div class="banner-feat-text">
                 <strong>Usted Tiene el Control</strong>
                 <small>Ningún trabajo inicia sin su aprobación formal de la cotización.</small>
               </div>
             </div>
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">🔍</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[02]</span>
               <div class="banner-feat-text">
                 <strong>Diagnóstico con Evidencias</strong>
                 <small>Visualice fotos del estado real de su máquina y piezas reemplazadas.</small>
               </div>
             </div>
             <div class="banner-feat-item">
-              <span class="banner-feat-icon">📄</span>
+              <span class="banner-feat-icon" style="color:var(--orange-1); font-weight:900; font-family:var(--font-mono); font-size:13px;">[03]</span>
               <div class="banner-feat-text">
                 <strong>Facturación y Garantía</strong>
                 <small>Comprobantes oficiales para fines contables y garantía de repuestos.</small>
@@ -98,7 +98,7 @@
 
         <div>
           <a href="https://wa.me/573002464311?text=Hola%20SOLUMECA,%20tengo%20una%20consulta%20sobre%20mi%20servicio" target="_blank" class="banner-btn-wa">
-            💬 Asistencia Directa por WhatsApp
+            Asistencia Directa por WhatsApp
           </a>
 
           <div class="banner-footer-info">

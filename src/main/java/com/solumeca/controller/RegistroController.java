@@ -31,7 +31,11 @@ public class RegistroController {
     @PostMapping("/registro")
     public String registrar(@RequestParam String nombre,
                             @RequestParam String correo,
-                            @RequestParam String password) {
+                            @RequestParam String password,
+                            @RequestParam(name = "tipoCliente", required = false, defaultValue = "PERSONA") String tipoCliente,
+                            @RequestParam(name = "nombreEmpresa", required = false) String nombreEmpresa,
+                            @RequestParam(name = "nit", required = false) String nit,
+                            @RequestParam(name = "telefono", required = false) String telefono) {
         String username = nombre.trim();
         String email = correo.trim().toLowerCase(Locale.ROOT);
 
@@ -56,6 +60,18 @@ public class RegistroController {
         usuario.setEmail(email);
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setRol("CLIENTE");
+
+        boolean esEmpresa = "EMPRESA".equalsIgnoreCase(tipoCliente);
+        usuario.setTipoCliente(esEmpresa ? "EMPRESA" : "PERSONA");
+        if (esEmpresa) {
+            usuario.setNombreEmpresa(nombreEmpresa != null && !nombreEmpresa.isBlank() ? nombreEmpresa.trim() : username);
+            usuario.setNit(nit != null && !nit.isBlank() ? nit.trim() : null);
+        } else {
+            usuario.setNombreEmpresa(null);
+            usuario.setNit(null);
+        }
+        usuario.setTelefono(telefono != null && !telefono.isBlank() ? telefono.trim() : null);
+
         usuarioRepository.save(usuario);
 
         return "redirect:/login.html?registered=true";

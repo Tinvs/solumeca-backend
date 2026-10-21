@@ -60,6 +60,7 @@ public class TemplateRenderingTest {
         vars.put("esOperativo", true);
         vars.put("esTecnico", true);
         vars.put("esAdmin", true);
+        vars.put("esSupervisor", false);
         vars.put("esCliente", false);
 
         String html = templateEngine.process("mantenimientos-lista", createContext(vars));
@@ -86,6 +87,7 @@ public class TemplateRenderingTest {
         vars.put("esOperativo", true);
         vars.put("esTecnico", true);
         vars.put("esAdmin", true);
+        vars.put("esSupervisor", false);
         vars.put("esCliente", true);
 
         String html = templateEngine.process("mantenimientos-lista", createContext(vars));

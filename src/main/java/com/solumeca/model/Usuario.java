@@ -22,6 +22,18 @@ public class Usuario {
     @Column(nullable = false)
     private String rol; // "ADMIN" o "USER"
 
+    @Column(name = "tipo_cliente")
+    private String tipoCliente = "PERSONA"; // "PERSONA" o "EMPRESA"
+
+    @Column(name = "nombre_empresa")
+    private String nombreEmpresa;
+
+    @Column(name = "nit")
+    private String nit;
+
+    @Column(name = "telefono")
+    private String telefono;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,4 +48,16 @@ public class Usuario {
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+
+    public String getTipoCliente() { return tipoCliente; }
+    public void setTipoCliente(String tipoCliente) { this.tipoCliente = tipoCliente; }
+
+    public String getNombreEmpresa() { return nombreEmpresa; }
+    public void setNombreEmpresa(String nombreEmpresa) { this.nombreEmpresa = nombreEmpresa; }
+
+    public String getNit() { return nit; }
+    public void setNit(String nit) { this.nit = nit; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 }

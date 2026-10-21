@@ -721,7 +721,7 @@
   <header class="top-bar">
     <div class="top-bar-left">
       <span class="brand-pill">SOLUMECA S.A.S.</span>
-      <span class="top-bar-title">🛠️ Centro Operativo // Flujo de Mantenimiento</span>
+      <span class="top-bar-title">Centro Operativo // Flujo de Mantenimiento</span>
     </div>
 
     <div class="top-bar-right">
@@ -742,7 +742,7 @@
   <main class="workspace-container">
 
     <div class="notice-prototype">
-      <span style="font-size:20px;">💡</span>
+      <span style="font-size:20px;"></span>
       <div>
         <strong>Plantilla interactiva en vivo:</strong> Haz clic sobre cualquier fila de la tabla a la izquierda. Verás cómo el panel lateral derecho se actualiza instantáneamente con su respectivo <strong>Informe</strong>, <strong>Cotización</strong>, <strong>Evidencias</strong>, <strong>Factura / Orden</strong> y <strong>Diagnóstico Técnico</strong>.
       </div>
@@ -763,7 +763,7 @@
         <!-- Filtros y Búsqueda -->
         <div class="controls-bar">
           <div class="search-box">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"></span>
             <input type="text" id="filtroTexto" placeholder="Buscar por código, máquina, solicitante, orden..." oninput="filtrarTabla()">
           </div>
 
@@ -813,7 +813,7 @@
             <p style="font-size:12px; color:var(--steel-light); margin-top:2px;" id="detSerie">S/N: CAT420F2-0091 · CAT</p>
           </div>
           <div style="text-align:right;">
-            <div id="detEstadoBadge"><span class="status-pill status--completado">✓ Completado</span></div>
+            <div id="detEstadoBadge"><span class="status-pill status--completado">Completado</span></div>
             <span style="font-family:var(--font-mono); font-size:11px; color:var(--steel-bright); display:block; margin-top:6px;" id="detOrdenNum">ORD-2026-006</span>
           </div>
         </div>
@@ -823,7 +823,7 @@
           <!-- Subcolumna Archivos -->
           <div class="drawer-col-card">
             <div class="drawer-col-header">
-              📁 ARCHIVOS
+               ARCHIVOS
             </div>
             <div class="docs-list" id="detDocsContainer">
               <!-- Tarjetas de documentos interactivos -->
@@ -833,7 +833,7 @@
           <!-- Subcolumna Acciones y Factura (A la derecha como solicitó el usuario) -->
           <div class="drawer-col-card">
             <div class="drawer-col-header">
-              ⚡ ACCIONES Y FACTURA
+               ACCIONES Y FACTURA
             </div>
             <div class="actions-list" id="detBotoneraAcciones">
               <!-- Botones contextuales según rol -->
@@ -844,7 +844,7 @@
         <!-- 2. Diagnóstico Técnico y Procedimiento -->
         <div class="drawer-section">
           <div class="drawer-section-title">
-            <span>🔍</span> DIAGNÓSTICO TÉCNICO EN TALLER
+            <span></span> DIAGNÓSTICO TÉCNICO EN TALLER
           </div>
           <p style="font-size:13.5px; color:#ffffff; line-height:1.45; margin-bottom:8px;" id="detAnalisis">
             Fisura en manguera principal y desgaste en sellos frontales.
@@ -862,7 +862,7 @@
         <!-- 3. Evidencias Fotográficas -->
         <div class="drawer-section">
           <div class="drawer-section-title">
-            <span>📷</span> EVIDENCIAS FOTOGRÁFICAS
+            <span></span> EVIDENCIAS FOTOGRÁFICAS
           </div>
           <div class="evidence-grid" id="detEvidenciasGrid">
             <!-- Fotos -->
@@ -872,7 +872,7 @@
         <!-- 4. Datos Generales de la Solicitud -->
         <div class="drawer-section">
           <div class="drawer-section-title">
-            <span>📋</span> DATOS GENERALES
+            <span></span> DATOS GENERALES
           </div>
           <div class="drawer-info-grid">
             <div class="drawer-info-item">
@@ -1077,10 +1077,10 @@
         tr.onclick = () => seleccionarMantenimiento(m.id);
 
         let badgeHtml = '';
-        if (m.estado === 'Completado') badgeHtml = `<span class="status-pill status--completado">✓ Completado</span>`;
+        if (m.estado === 'Completado') badgeHtml = `<span class="status-pill status--completado">Completado</span>`;
         else if (m.estado === 'Orden de trabajo') badgeHtml = `<span class="status-pill status--orden">En Orden (${m.numeroOrden})</span>`;
-        else if (m.estado === 'Cotizada') badgeHtml = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
-        else if (m.estado === 'Diagnosticado') badgeHtml = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+        else if (m.estado === 'Cotizada') badgeHtml = `<span class="status-pill status--cotizada"> Cotizada</span>`;
+        else if (m.estado === 'Diagnosticado') badgeHtml = `<span class="status-pill status--diagnosticado"> Diagnosticada</span>`;
         else badgeHtml = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
 
         tr.innerHTML = `
@@ -1116,10 +1116,10 @@
 
       // Estado badge
       const detEstadoBadge = document.getElementById('detEstadoBadge');
-      if (m.estado === 'Completado') detEstadoBadge.innerHTML = `<span class="status-pill status--completado">✓ Completado</span>`;
+      if (m.estado === 'Completado') detEstadoBadge.innerHTML = `<span class="status-pill status--completado">Completado</span>`;
       else if (m.estado === 'Orden de trabajo') detEstadoBadge.innerHTML = `<span class="status-pill status--orden">En Orden</span>`;
-      else if (m.estado === 'Cotizada') detEstadoBadge.innerHTML = `<span class="status-pill status--cotizada">💰 Cotizada</span>`;
-      else if (m.estado === 'Diagnosticado') detEstadoBadge.innerHTML = `<span class="status-pill status--diagnosticado">🔧 Diagnosticada</span>`;
+      else if (m.estado === 'Cotizada') detEstadoBadge.innerHTML = `<span class="status-pill status--cotizada"> Cotizada</span>`;
+      else if (m.estado === 'Diagnosticado') detEstadoBadge.innerHTML = `<span class="status-pill status--diagnosticado"> Diagnosticada</span>`;
       else detEstadoBadge.innerHTML = `<span class="status-pill status--presolicitud">Presolicitud</span>`;
 
       // Documentos (Tarjetas táctiles)
@@ -1129,7 +1129,7 @@
       if (m.informePdf) {
         docsContainer.innerHTML += `
           <div class="doc-card doc-card--informe" onclick="abrirDoc('Informe Técnico')">
-            <span class="doc-card__badge">📥</span>
+            <span class="doc-card__badge"></span>
             <span class="doc-card__title">Informe Técnico</span>
             <span class="doc-card__sub">PDF generado en taller</span>
           </div>`;
@@ -1137,7 +1137,7 @@
       if (m.cotizacionPdf) {
         docsContainer.innerHTML += `
           <div class="doc-card doc-card--cotizacion" onclick="abrirDoc('Cotización Formal')">
-            <span class="doc-card__badge">📄</span>
+            <span class="doc-card__badge"></span>
             <span class="doc-card__title">Cotización Oficial</span>
             <span class="doc-card__sub">Valor comercial Gerencia</span>
           </div>`;
@@ -1145,7 +1145,7 @@
       if (m.actaPdf) {
         docsContainer.innerHTML += `
           <div class="doc-card doc-card--acta" onclick="abrirDoc('Acta de Entrega')">
-            <span class="doc-card__badge">📋</span>
+            <span class="doc-card__badge"></span>
             <span class="doc-card__title">Acta de Entrega</span>
             <span class="doc-card__sub">Firma de conformidad</span>
           </div>`;
@@ -1153,7 +1153,7 @@
       if (m.facturaPdf) {
         docsContainer.innerHTML += `
           <div class="doc-card doc-card--factura" onclick="abrirDoc('Factura / Orden')">
-            <span class="doc-card__badge">🧾</span>
+            <span class="doc-card__badge"></span>
             <span class="doc-card__title">Factura / Orden</span>
             <span class="doc-card__sub">Comprobante de servicio</span>
           </div>`;
@@ -1203,29 +1203,29 @@
 
       if (rolActual === 'CLIENTE') {
         // ROL CLIENTE: ÚNICAMENTE LOS 3 BOTONES PEDIDOS POR EL USUARIO
-        botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="abrirDoc('Diagnóstico Técnico')">🔍 Diagnóstico Técnico</button>`;
-        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura de la orden')">🧾 Factura de la orden</button>`;
-        botonera.innerHTML += `<a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento%20[${m.codigo}]" target="_blank" class="btn-act" style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">💬 Cotizar por WhatsApp</a>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="abrirDoc('Diagnóstico Técnico')"> Diagnóstico Técnico</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura de la orden')"> Factura de la orden</button>`;
+        botonera.innerHTML += `<a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento%20[${m.codigo}]" target="_blank" class="btn-act" style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"> Cotizar por WhatsApp</a>`;
       } else if (rolActual === 'ADMIN') {
         // ROL GERENTE / ADMIN (SIN 'Ver Cotización Aplicada')
         if (m.estado === 'Presolicitud' || m.estado === 'Diagnosticado' || !m.precio || m.precio <= 0) {
-          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Abriendo pantalla de cotización comercial para Gerencia')">💰 Cotizar / Facturar</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Abriendo pantalla de cotización comercial para Gerencia')"> Cotizar / Facturar</button>`;
         } else if (m.estado === 'Rechazada') {
-          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Re-evaluando o recotizando mantenimiento')">💰 Re-evaluar / Recotizar</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Re-evaluando o recotizando mantenimiento')"> Re-evaluar / Recotizar</button>`;
         } else if (m.estado === 'Cotizada') {
-          botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="alert('Ajustando cotización existente')">✏️ Ajustar Cotización</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="alert('Ajustando cotización existente')">️ Ajustar Cotización</button>`;
         }
-        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura / Orden')">🧾 Factura / Orden</button>`;
-        botonera.innerHTML += `<button class="btn-act btn-act--secondary" onclick="alert('Abriendo edición de datos de la orden')">✏️ Editar orden</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura / Orden')"> Factura / Orden</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--secondary" onclick="alert('Abriendo edición de datos de la orden')">️ Editar orden</button>`;
       } else if (rolActual === 'TECNICO') {
         // ROL TÉCNICO
-        botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="alert('Abriendo formulario de diagnóstico técnico de taller')">🔍 Diagnóstico Técnico</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="alert('Abriendo formulario de diagnóstico técnico de taller')"> Diagnóstico Técnico</button>`;
         if (m.estado === 'Orden de trabajo' || m.estado === 'En proceso') {
-          botonera.innerHTML += `<button class="btn-act btn-act--blue" onclick="alert('Equipo en proceso de reparación en taller técnico')">🔧 En taller técnico</button>`;
-          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Marcando trabajo finalizado y emitiendo acta de entrega')">✓ Finalizar Mantenimiento</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--blue" onclick="alert('Equipo en proceso de reparación en taller técnico')"> En taller técnico</button>`;
+          botonera.innerHTML += `<button class="btn-act btn-act--primary" onclick="alert('Marcando trabajo finalizado y emitiendo acta de entrega')">Finalizar Mantenimiento</button>`;
         }
-        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura / Orden')">🧾 Factura / Orden</button>`;
-        botonera.innerHTML += `<button class="btn-act btn-act--secondary" onclick="alert('Abriendo edición de datos de la orden')">✏️ Editar orden</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura / Orden')"> Factura / Orden</button>`;
+        botonera.innerHTML += `<button class="btn-act btn-act--secondary" onclick="alert('Abriendo edición de datos de la orden')">️ Editar orden</button>`;
       }
     }
 
