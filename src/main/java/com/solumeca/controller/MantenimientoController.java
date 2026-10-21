@@ -1,4 +1,4 @@
-﻿package com.solumeca.controller;
+package com.solumeca.controller;
 
 import com.solumeca.model.Mantenimiento;
 import com.solumeca.model.Maquinaria;
