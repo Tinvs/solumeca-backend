@@ -54,27 +54,25 @@ public class MantenimientoControllerMvcTest {
     }
 
     @Test
-    void testDiagnosticarConRolAdminExitoso() throws Exception {
-        // Gerente con ROLE_ADMIN diagnosticando o testeando el diagnóstico
+    void testDiagnosticarConRolAdminRechazadoSoloTecnicoPuedeDiagnosticar() throws Exception {
+        // Gerente con ROLE_ADMIN no puede diagnosticar, la potestad es exclusiva del técnico
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 "gerente", "gerente123", List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
         Mantenimiento m = new Mantenimiento();
         m.setId(8L);
         m.setEstado("Presolicitud");
-        when(mantenimientoRepository.findById(8L)).thenReturn(Optional.of(m));
-        when(mantenimientoRepository.save(any(Mantenimiento.class))).thenAnswer(inv -> inv.getArgument(0));
 
         mockMvc.perform(multipart("/mantenimientos/8/diagnosticar")
-                        .param("analisis", "Revisión técnica por Gerencia/Taller")
-                        .param("solucion", "Ajuste general y reemplazo de retenes")
+                        .param("analisis", "Intento de diagnóstico por Gerencia")
+                        .param("solucion", "Ajuste general")
                         .param("diasEstimados", "3")
                         .principal(auth))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/mantenimientos"));
 
-        assertEquals("Diagnosticado", m.getEstado());
-        assertEquals("Revisión técnica por Gerencia/Taller", m.getAnalisis());
+        // Se mantiene en Presolicitud porque Gerencia no tiene potestad técnica
+        assertEquals("Presolicitud", m.getEstado());
     }
 
     @Test

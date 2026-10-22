@@ -260,16 +260,28 @@ public class MantenimientoController {
     // =========================================================================
     @GetMapping("/{id}/diagnosticar")
     public String formularioDiagnostico(@PathVariable Long id, Authentication authentication, Model model) {
-        if (!esOperativo(authentication)) {
+        boolean isTecnico = esTecnico(authentication);
+        boolean isAdmin = esAdmin(authentication);
+        boolean isSupervisor = esSupervisor(authentication);
+        boolean isCliente = esClienteRol(authentication);
+
+        if (!isTecnico && !isAdmin && !isSupervisor && !isCliente) {
             return "redirect:/mantenimientos";
         }
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id).orElse(null);
         if (mantenimiento == null) {
             return "redirect:/mantenimientos";
         }
-        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        com.solumeca.model.Maquinaria maquina = null;
+        if (mantenimiento.getMaquinariaId() != null) {
+            maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        }
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
+        model.addAttribute("esTecnico", isTecnico);
+        model.addAttribute("esAdmin", isAdmin);
+        model.addAttribute("esSupervisor", isSupervisor);
+        model.addAttribute("esCliente", isCliente);
         model.addAttribute("username", authentication != null ? authentication.getName() : "tecnico");
         return "mantenimiento-diagnosticar";
     }
@@ -283,7 +295,8 @@ public class MantenimientoController {
                                      @RequestParam(name = "evidencias", required = false) MultipartFile[] evidencias,
                                      @RequestParam(name = "informe", required = false) MultipartFile informe,
                                      Authentication authentication) {
-        if (!esOperativo(authentication)) {
+        // Exclusivo del Técnico: Gerente o Supervisor no pueden emitir diagnóstico
+        if (!esTecnico(authentication)) {
             return "redirect:/mantenimientos";
         }
         try {
@@ -302,7 +315,6 @@ public class MantenimientoController {
             guardarArchivos(mantenimiento, evidencias, informe);
             mantenimientoRepository.save(mantenimiento);
         } catch (Exception ex) {
-            // Protección contra cualquier fallo inesperado, redirigiendo de forma segura
             return "redirect:/mantenimientos";
         }
         return "redirect:/mantenimientos";
@@ -322,7 +334,10 @@ public class MantenimientoController {
         if (mantenimiento == null) {
             return "redirect:/mantenimientos";
         }
-        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        com.solumeca.model.Maquinaria maquina = null;
+        if (mantenimiento.getMaquinariaId() != null) {
+            maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        }
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
         model.addAttribute("username", authentication != null ? authentication.getName() : "admin");
@@ -520,7 +535,10 @@ public class MantenimientoController {
             return "redirect:/mantenimientos";
         }
 
-        com.solumeca.model.Maquinaria maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        com.solumeca.model.Maquinaria maquina = null;
+        if (mantenimiento.getMaquinariaId() != null) {
+            maquina = maquinariaRepository.findById(mantenimiento.getMaquinariaId()).orElse(null);
+        }
         model.addAttribute("mantenimiento", mantenimiento);
         model.addAttribute("maquina", maquina);
         return "mantenimiento-factura";
@@ -530,7 +548,7 @@ public class MantenimientoController {
     public String editar(@PathVariable Long id, Authentication authentication, Model model) {
         Mantenimiento mantenimiento = mantenimientoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Mantenimiento no encontrado"));
-        exigirOperativo(authentication);
+        exigirAdmin(authentication);
         prepararFormulario(model, mantenimiento, false);
         model.addAttribute("esEdicion", true);
         return "mantenimiento-form";
@@ -647,7 +665,7 @@ public class MantenimientoController {
 
     private boolean esOperativo(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO)"));
     }
 
     private void exigirOperativo(Authentication authentication) {
@@ -658,7 +676,7 @@ public class MantenimientoController {
 
     private boolean esTecnico(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_TECNICO"));
     }
 
     private void exigirTecnico(Authentication authentication) {
@@ -670,7 +688,12 @@ public class MantenimientoController {
 
     private boolean esAdmin(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().matches("ROLE_(ADMIN|SUPERVISOR|TECNICO|ENCARGADO|CLIENTE)"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private boolean esSupervisor(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_SUPERVISOR"));
     }
 
     private void exigirAdmin(Authentication authentication) {

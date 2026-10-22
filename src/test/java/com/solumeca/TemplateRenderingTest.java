@@ -94,4 +94,24 @@ public class TemplateRenderingTest {
         assertNotNull(html);
         assertTrue(html.contains("ORD-2026-006"));
     }
+
+    @Test
+    void testRenderMantenimientoDiagnosticar() {
+        Mantenimiento m = new Mantenimiento();
+        m.setId(1L);
+        m.setMaquinariaId(1L);
+        m.setSolicitante("carlos.mora");
+        m.setTipo("Correctivo");
+        m.setDescripcion("Falla en el sistema hidráulico");
+        m.setEstado("Presolicitud");
+        m.setFecha(LocalDate.now());
+
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("mantenimiento", m);
+        vars.put("maquina", null);
+        vars.put("username", "tecnico");
+
+        String html = templateEngine.process("mantenimiento-diagnosticar", createContext(vars));
+        assertNotNull(html);
+    }
 }

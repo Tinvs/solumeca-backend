@@ -1205,7 +1205,7 @@
         // ROL CLIENTE: ÚNICAMENTE LOS 3 BOTONES PEDIDOS POR EL USUARIO
         botonera.innerHTML += `<button class="btn-act btn-act--yellow" onclick="abrirDoc('Diagnóstico Técnico')"> Diagnóstico Técnico</button>`;
         botonera.innerHTML += `<button class="btn-act btn-act--dark" onclick="abrirDoc('Factura de la orden')"> Factura de la orden</button>`;
-        botonera.innerHTML += `<a href="https://wa.me/573105658601?text=Hola%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento%20[${m.codigo}]" target="_blank" class="btn-act" style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"> Cotizar por WhatsApp</a>`;
+        botonera.innerHTML += `<a href="https://wa.me/573002464311?text=Hola%20Ingeniero%20Solumeca,%20deseo%20consultar%20sobre%20mi%20mantenimiento%20[${m.codigo}]" target="_blank" class="btn-act" style="background:#16a34a; color:#ffffff; font-weight:700; border:1px solid #22c55e; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"> Cotizar por WhatsApp</a>`;
       } else if (rolActual === 'ADMIN') {
         // ROL GERENTE / ADMIN (SIN 'Ver Cotización Aplicada')
         if (m.estado === 'Presolicitud' || m.estado === 'Diagnosticado' || !m.precio || m.precio <= 0) {
