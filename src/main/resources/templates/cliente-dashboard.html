@@ -17,8 +17,8 @@
           <span class="bolt"></span>SOLUMECA S.A.S. // PORTAL DEL CLIENTE
         </div>
         <div class="welcome-title">
-          Bienvenido, <span class="user-highlight" th:text="${username}">cliente</span>
-          <span class="role-badge">CLIENTE</span>
+          Bienvenido, <span class="user-highlight" th:text="${nombreEmpresa != null ? nombreEmpresa : username}">cliente</span>
+          <span class="role-badge" th:text="${tipoCliente == 'EMPRESA' ? 'EMPRESA' : 'CLIENTE'}">CLIENTE</span>
         </div>
       </div>
     </div>
