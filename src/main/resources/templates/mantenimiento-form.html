@@ -30,8 +30,12 @@
         <div th:if="${esSolicitud}">
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
             <div class="form-row">
-              <label for="nombreEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Nombre del Equipo * <span style="font-size:11px; opacity:0.75;">(máx. 20 caracteres)</span></label>
-              <input type="text" id="nombreEquipo" name="nombreEquipo" maxlength="20" placeholder="Ej: Retroexcavadora 420" required style="width:100%;">
+              <label for="nombreEquipo" style="display:block; margin-bottom:6px; font-weight:600;">
+                Nombre del Equipo * <span style="font-size:11.5px; opacity:0.85; color:var(--orange-2); font-weight:700;">(máx. 20 caracteres)</span>
+              </label>
+              <input type="text" id="nombreEquipo" name="nombreEquipo" maxlength="20" placeholder="Ej: Retroexcavadora 420" required style="width:100%;"
+                     oninput="document.getElementById('cntNombre').textContent = this.value.length">
+              <div style="text-align:right; font-size:11px; color:#cbd5e1; margin-top:2px;"><span id="cntNombre">0</span> / 20 caracteres</div>
             </div>
 
             <div class="form-row">
@@ -50,21 +54,25 @@
                 <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="RAYMOND">RAYMOND</option>
                 <option value="Otra">Otra marca...</option>
               </select>
-              <input type="text" id="marcaPersonalizada" name="marcaPersonalizada"
-                     placeholder="Escriba el nombre de la marca" style="display:none; margin-top:8px; width:100%;"
+              <input type="text" id="marcaPersonalizada" name="marcaPersonalizada" maxlength="25"
+                     placeholder="Escriba el nombre de la marca (máx. 25 caracteres)" style="display:none; margin-top:8px; width:100%;"
                      aria-label="Otra marca">
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:12px;">
             <div class="form-row">
-              <label for="modeloEquipo" style="display:block; margin-bottom:6px; font-weight:600;">Modelo</label>
-              <input type="text" id="modeloEquipo" name="modeloEquipo" placeholder="Ej: 420F2" style="width:100%;">
+              <label for="modeloEquipo" style="display:block; margin-bottom:6px; font-weight:600;">
+                Modelo <span style="font-size:11.5px; opacity:0.85; color:var(--orange-2); font-weight:700;">(máx. 25 caracteres)</span>
+              </label>
+              <input type="text" id="modeloEquipo" name="modeloEquipo" maxlength="25" placeholder="Ej: 420F2" style="width:100%;">
             </div>
 
             <div class="form-row">
-              <label for="numeroSerie" style="display:block; margin-bottom:6px; font-weight:600;">Número de serie</label>
-              <input type="text" id="numeroSerie" name="numeroSerie" placeholder="Ej: CAT420F2-0091 (opcional)" style="width:100%;">
+              <label for="numeroSerie" style="display:block; margin-bottom:6px; font-weight:600;">
+                Número de serie <span style="font-size:11.5px; opacity:0.85; color:var(--orange-2); font-weight:700;">(máx. 25 caracteres)</span>
+              </label>
+              <input type="text" id="numeroSerie" name="numeroSerie" maxlength="25" placeholder="Ej: CAT420F2-0091 (opcional)" style="width:100%;">
             </div>
           </div>
         </div>
@@ -103,10 +111,16 @@
              DESCRIPCIÓN DE LA FALLA O TRABAJO
              ========================================== -->
         <div class="form-row" style="margin-top:14px;">
-          <label for="descripcion" style="display:block; margin-bottom:6px; font-weight:600;">Descripción de la falla o requerimiento *</label>
-          <textarea id="descripcion" name="descripcion" rows="4" required style="width:100%;"
+          <label for="descripcion" style="display:block; margin-bottom:6px; font-weight:600;">
+            Descripción de la falla o requerimiento * <span style="font-size:11.5px; opacity:0.85; color:var(--orange-2); font-weight:700;">(máx. 200 caracteres)</span>
+          </label>
+          <textarea id="descripcion" name="descripcion" rows="4" maxlength="200" required style="width:100%;"
                     th:text="${mantenimiento.descripcion}"
-                    placeholder="Describe la falla, ruidos extraños, fugas u observaciones para el diagnóstico técnico..."></textarea>
+                    placeholder="Describe la falla, ruidos extraños, fugas u observaciones para el diagnóstico técnico..."
+                    oninput="document.getElementById('cntDesc').textContent = this.value.length"></textarea>
+          <div style="text-align:right; font-size:11px; color:#cbd5e1; margin-top:2px;">
+            <span id="cntDesc" th:text="${mantenimiento.descripcion != null ? #strings.length(mantenimiento.descripcion) : 0}">0</span> / 200 caracteres
+          </div>
         </div>
 
         <!-- ==========================================

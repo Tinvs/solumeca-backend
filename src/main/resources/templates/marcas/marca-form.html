@@ -18,8 +18,8 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
         <div class="form-row">
-          <label for="nombre">Nombre de la Marca *</label>
-          <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: CATERPILLAR, KOMATSU, TOYOTA" required style="text-transform:uppercase;">
+          <label for="nombre">Nombre de la Marca * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 25 caracteres)</span></label>
+          <input type="text" id="nombre" th:field="*{nombre}" maxlength="25" placeholder="Ej: CATERPILLAR, KOMATSU, TOYOTA" required style="text-transform:uppercase;">
         </div>
 
         <div class="form-row">
@@ -37,13 +37,13 @@
         </div>
 
         <div class="form-row">
-          <label for="paisOrigen">País de Origen</label>
-          <input type="text" id="paisOrigen" th:field="*{paisOrigen}" placeholder="Ej: Estados Unidos, Japón, Alemania">
+          <label for="paisOrigen">País de Origen <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 30 caracteres)</span></label>
+          <input type="text" id="paisOrigen" th:field="*{paisOrigen}" maxlength="30" placeholder="Ej: Estados Unidos, Japón, Alemania">
         </div>
 
         <div class="form-row">
-          <label for="descripcion">Descripción / Tipo de Maquinaria</label>
-          <textarea id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Ej: Especialista en montacargas de combustión interna y eléctricos"
+          <label for="descripcion">Descripción / Tipo de Maquinaria <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 150 caracteres)</span></label>
+          <textarea id="descripcion" th:field="*{descripcion}" rows="3" maxlength="150" placeholder="Ej: Especialista en montacargas de combustión interna y eléctricos (máx. 150 caracteres)"
                     style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
         </div>
 

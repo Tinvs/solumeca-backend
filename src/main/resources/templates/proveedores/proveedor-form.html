@@ -18,45 +18,45 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
         <div class="form-row">
-          <label for="nombre">Razón Social / Nombre Comercial *</label>
-          <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Distribuidora Diésel del Caribe S.A.S." required>
+          <label for="nombre">Razón Social / Nombre Comercial * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 40 caracteres)</span></label>
+          <input type="text" id="nombre" th:field="*{nombre}" maxlength="40" placeholder="Ej: Distribuidora Diésel del Caribe S.A.S." required>
         </div>
 
         <div class="form-row">
-          <label for="nit">NIT / Identificación Tributaria *</label>
-          <input type="text" id="nit" th:field="*{nit}" placeholder="Ej: 901.284.716-1" required>
+          <label for="nit">NIT / Identificación Tributaria * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 20 caracteres)</span></label>
+          <input type="text" id="nit" th:field="*{nit}" maxlength="20" placeholder="Ej: 901.284.716-1" required>
         </div>
 
         <div class="form-row">
-          <label for="contacto">Persona de Contacto</label>
-          <input type="text" id="contacto" th:field="*{contacto}" placeholder="Ej: Ing. Carlos Méndez">
+          <label for="contacto">Persona de Contacto <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 35 caracteres)</span></label>
+          <input type="text" id="contacto" th:field="*{contacto}" maxlength="35" placeholder="Ej: Ing. Carlos Méndez">
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
           <div class="form-row">
-            <label for="telefono">Teléfono / WhatsApp</label>
-            <input type="text" id="telefono" th:field="*{telefono}" placeholder="Ej: +57 310 354 4394">
+            <label for="telefono">Teléfono / WhatsApp <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 20 caracteres)</span></label>
+            <input type="text" id="telefono" th:field="*{telefono}" maxlength="20" placeholder="Ej: +57 310 354 4394">
           </div>
           <div class="form-row">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" th:field="*{email}" placeholder="Ej: ventas@proveedor.com">
+            <label for="email">Correo Electrónico <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 50 caracteres)</span></label>
+            <input type="email" id="email" th:field="*{email}" maxlength="50" placeholder="Ej: ventas@proveedor.com">
           </div>
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
           <div class="form-row">
-            <label for="ciudad">Ciudad</label>
-            <input type="text" id="ciudad" th:field="*{ciudad}" placeholder="Ej: Barranquilla">
+            <label for="ciudad">Ciudad <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 30 caracteres)</span></label>
+            <input type="text" id="ciudad" th:field="*{ciudad}" maxlength="30" placeholder="Ej: Barranquilla">
           </div>
           <div class="form-row">
-            <label for="categoria">Categoría de Insumos</label>
-            <input type="text" id="categoria" th:field="*{categoria}" placeholder="Ej: Repuestos, Lubricantes, Maquinaria">
+            <label for="categoria">Categoría de Insumos <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 35 caracteres)</span></label>
+            <input type="text" id="categoria" th:field="*{categoria}" maxlength="35" placeholder="Ej: Repuestos, Lubricantes, Maquinaria">
           </div>
         </div>
 
         <div class="form-row">
-          <label for="direccion">Dirección Física</label>
-          <input type="text" id="direccion" th:field="*{direccion}" placeholder="Ej: Calle 30 # 40-15">
+          <label for="direccion">Dirección Física <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 50 caracteres)</span></label>
+          <input type="text" id="direccion" th:field="*{direccion}" maxlength="50" placeholder="Ej: Calle 30 # 40-15">
         </div>
 
         <button type="submit" class="btn btn--primary login-btn" th:text="${esNuevo} ? 'Registrar proveedor' : 'Guardar cambios'">Guardar</button>

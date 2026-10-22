@@ -30,19 +30,31 @@ public class Maquinaria {
     public Maquinaria() {}
 
     public Maquinaria(String codigo, String nombre, String marca, String modelo, String numeroSerie, String estado) {
-        this.codigo = codigo;
+        setCodigo(codigo);
         setNombre(nombre);
-        this.marca = marca;
-        this.modelo = modelo;
-        this.numeroSerie = numeroSerie;
+        setMarca(marca);
+        setModelo(modelo);
+        setNumeroSerie(numeroSerie);
         this.estado = estado;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
+    public String getCodigo() {
+        if (codigo != null && codigo.length() > 20) {
+            return codigo.substring(0, 20);
+        }
+        return codigo;
+    }
+    public void setCodigo(String codigo) {
+        if (codigo != null) {
+            String trimmed = codigo.trim();
+            this.codigo = trimmed.length() > 20 ? trimmed.substring(0, 20) : trimmed;
+        } else {
+            this.codigo = null;
+        }
+    }
 
     public String getNombre() {
         if (nombre != null && nombre.length() > 20) {
@@ -60,14 +72,50 @@ public class Maquinaria {
         }
     }
 
-    public String getMarca() { return marca; }
-    public void setMarca(String marca) { this.marca = marca; }
+    public String getMarca() {
+        if (marca != null && marca.length() > 25) {
+            return marca.substring(0, 25);
+        }
+        return marca;
+    }
+    public void setMarca(String marca) {
+        if (marca != null) {
+            String trimmed = marca.trim();
+            this.marca = trimmed.length() > 25 ? trimmed.substring(0, 25) : trimmed;
+        } else {
+            this.marca = null;
+        }
+    }
 
-    public String getModelo() { return modelo; }
-    public void setModelo(String modelo) { this.modelo = modelo; }
+    public String getModelo() {
+        if (modelo != null && modelo.length() > 25) {
+            return modelo.substring(0, 25);
+        }
+        return modelo;
+    }
+    public void setModelo(String modelo) {
+        if (modelo != null) {
+            String trimmed = modelo.trim();
+            this.modelo = trimmed.length() > 25 ? trimmed.substring(0, 25) : trimmed;
+        } else {
+            this.modelo = null;
+        }
+    }
 
-    public String getNumeroSerie() { return numeroSerie; }
-    public void setNumeroSerie(String numeroSerie) { this.numeroSerie = numeroSerie; }
+    public String getNumeroSerie() {
+        if (numeroSerie != null && numeroSerie.length() > 25) {
+            return numeroSerie.substring(0, 25);
+        }
+        return numeroSerie;
+    }
+    public void setNumeroSerie(String numeroSerie) {
+        if (numeroSerie != null) {
+            String trimmed = numeroSerie.trim();
+            this.numeroSerie = trimmed.length() > 25 ? trimmed.substring(0, 25) : trimmed;
+        } else {
+            this.numeroSerie = null;
+        }
+    }
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }

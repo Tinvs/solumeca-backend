@@ -37,41 +37,124 @@ public class Proveedor {
     public Proveedor() {}
 
     public Proveedor(String nombre, String nit, String contacto, String telefono, String email, String direccion, String ciudad, String categoria) {
-        this.nombre = nombre;
-        this.nit = nit;
-        this.contacto = contacto;
-        this.telefono = telefono;
+        setNombre(nombre);
+        setNit(nit);
+        setContacto(contacto);
+        setTelefono(telefono);
         this.email = email;
-        this.direccion = direccion;
-        this.ciudad = ciudad;
-        this.categoria = categoria;
+        setDireccion(direccion);
+        setCiudad(ciudad);
+        setCategoria(categoria);
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        if (nombre != null && nombre.length() > 40) {
+            return nombre.substring(0, 40);
+        }
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        if (nombre != null) {
+            String trimmed = nombre.trim();
+            this.nombre = trimmed.length() > 40 ? trimmed.substring(0, 40) : trimmed;
+        } else {
+            this.nombre = null;
+        }
+    }
 
-    public String getNit() { return nit; }
-    public void setNit(String nit) { this.nit = nit; }
+    public String getNit() {
+        if (nit != null && nit.length() > 20) {
+            return nit.substring(0, 20);
+        }
+        return nit;
+    }
+    public void setNit(String nit) {
+        if (nit != null) {
+            String trimmed = nit.trim();
+            this.nit = trimmed.length() > 20 ? trimmed.substring(0, 20) : trimmed;
+        } else {
+            this.nit = null;
+        }
+    }
 
-    public String getContacto() { return contacto; }
-    public void setContacto(String contacto) { this.contacto = contacto; }
+    public String getContacto() {
+        if (contacto != null && contacto.length() > 35) {
+            return contacto.substring(0, 35);
+        }
+        return contacto;
+    }
+    public void setContacto(String contacto) {
+        if (contacto != null) {
+            String trimmed = contacto.trim();
+            this.contacto = trimmed.length() > 35 ? trimmed.substring(0, 35) : trimmed;
+        } else {
+            this.contacto = null;
+        }
+    }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getTelefono() {
+        if (telefono != null && telefono.length() > 20) {
+            return telefono.substring(0, 20);
+        }
+        return telefono;
+    }
+    public void setTelefono(String telefono) {
+        if (telefono != null) {
+            String trimmed = telefono.trim();
+            this.telefono = trimmed.length() > 20 ? trimmed.substring(0, 20) : trimmed;
+        } else {
+            this.telefono = null;
+        }
+    }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public String getDireccion() {
+        if (direccion != null && direccion.length() > 50) {
+            return direccion.substring(0, 50);
+        }
+        return direccion;
+    }
+    public void setDireccion(String direccion) {
+        if (direccion != null) {
+            String trimmed = direccion.trim();
+            this.direccion = trimmed.length() > 50 ? trimmed.substring(0, 50) : trimmed;
+        } else {
+            this.direccion = null;
+        }
+    }
 
-    public String getCiudad() { return ciudad; }
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public String getCiudad() {
+        if (ciudad != null && ciudad.length() > 30) {
+            return ciudad.substring(0, 30);
+        }
+        return ciudad;
+    }
+    public void setCiudad(String ciudad) {
+        if (ciudad != null) {
+            String trimmed = ciudad.trim();
+            this.ciudad = trimmed.length() > 30 ? trimmed.substring(0, 30) : trimmed;
+        } else {
+            this.ciudad = null;
+        }
+    }
 
-    public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public String getCategoria() {
+        if (categoria != null && categoria.length() > 35) {
+            return categoria.substring(0, 35);
+        }
+        return categoria;
+    }
+    public void setCategoria(String categoria) {
+        if (categoria != null) {
+            String trimmed = categoria.trim();
+            this.categoria = trimmed.length() > 35 ? trimmed.substring(0, 35) : trimmed;
+        } else {
+            this.categoria = null;
+        }
+    }
 }
-

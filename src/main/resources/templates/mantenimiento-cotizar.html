@@ -23,6 +23,8 @@
       border-radius: var(--radius);
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.14);
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
     .card-section--tech {
       border-left: 4px solid #38bdf8;
@@ -148,7 +150,7 @@
       <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:16px;">
         <div class="form-field">
           <label for="costoEstimado" style="color:var(--orange-2); font-weight:700;">1. Presupuesto Total / Costo de Factura ($ COP) *</label>
-          <input type="number" step="1000" id="costoEstimado" name="costoEstimado" placeholder="Ej: 1500000"
+          <input type="number" step="1000" min="0" max="9999999999" id="costoEstimado" name="costoEstimado" placeholder="Ej: 1500000"
                  th:value="${mantenimiento.costoEstimado != null ? mantenimiento.costoEstimado : ''}" required
                  style="font-size:17px; font-family:var(--font-mono); font-weight:700; color:#ffedd5;">
           <small style="color:#94a3b8; font-size:12px; margin-top:4px; display:block;">Valor total que se le facturará al cliente tras su aprobación.</small>
@@ -156,7 +158,7 @@
 
         <div class="form-field">
           <label for="diasEstimados">2. Tiempo de Entrega (Días) *</label>
-          <input type="number" min="1" id="diasEstimados" name="diasEstimados"
+          <input type="number" min="1" max="365" id="diasEstimados" name="diasEstimados"
                  th:value="${mantenimiento.diasEstimados != null ? mantenimiento.diasEstimados : 2}" required>
           <small style="color:#94a3b8; font-size:12px; margin-top:4px; display:block;">Plazo pactado para la entrega de la máquina.</small>
         </div>
@@ -178,4 +180,3 @@
   </div>
 </body>
 </html>
-

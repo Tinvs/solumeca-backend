@@ -210,7 +210,25 @@ public class SolumecaBusinessLogicTest {
         assertNotNull(man.getAnalisis());
         assertTrue(man.getAnalisis().length() <= 50, "El diagnóstico debe tener máximo 50 caracteres");
         assertEquals("Se realizó un diagnóstico exhaustivo en taller enc", man.getAnalisis());
+
+        // Mantenimiento descripción límite 250 caracteres
+        String descLarga = "A".repeat(300);
+        man.setDescripcion(descLarga);
+        assertEquals(250, man.getDescripcion().length(), "La descripción debe recortarse a 250 caracteres");
+
+        // Mantenimiento solución límite 200 caracteres
+        String solucionLarga = "B".repeat(250);
+        man.setSolucion(solucionLarga);
+        assertEquals(200, man.getSolucion().length(), "La solución técnica debe recortarse a 200 caracteres");
+
+        // Mantenimiento motivo de rechazo límite 200 caracteres
+        String motivoLargo = "C".repeat(250);
+        man.setMotivoRechazo(motivoLargo);
+        assertEquals(200, man.getMotivoRechazo().length(), "El motivo de rechazo debe recortarse a 200 caracteres");
+
+        // Usuario nombre empresa límite 35 caracteres
+        Usuario user = new Usuario();
+        user.setNombreEmpresa("Distribuidora y Soluciones de Maquinaria Pesada del Caribe S.A.S.");
+        assertTrue(user.getNombreEmpresa().length() <= 35, "El nombre de empresa debe tener máximo 35 caracteres");
     }
 }
-
-

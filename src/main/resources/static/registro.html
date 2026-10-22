@@ -116,30 +116,38 @@
           <!-- CAMPOS EXCLUSIVOS SI ES EMPRESA -->
           <div class="empresa-fields" id="bloqueEmpresa">
             <div class="form-row">
-              <label for="nombreEmpresa" class="login-field-label">Nombre de la empresa</label>
-              <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Inducol S.A.S. o Transportes del Norte" maxlength="150">
+              <label for="nombreEmpresa" class="login-field-label">
+                Nombre de la empresa <span style="font-size:11.5px; opacity:0.8; font-weight:normal; color:var(--orange-1);">(máx. 35 caracteres)</span>
+              </label>
+              <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Inducol S.A.S. o Transportes del Norte" maxlength="35">
             </div>
             <div class="form-row">
-              <label for="telefono" class="login-field-label">Número de teléfono / Celular</label>
-              <input type="tel" id="telefono" name="telefono" placeholder="Ej: 300 246 4311" maxlength="50">
+              <label for="telefono" class="login-field-label">
+                Número de teléfono / Celular <span style="font-size:11.5px; opacity:0.8; font-weight:normal; color:var(--orange-1);">(máx. 20 caracteres)</span>
+              </label>
+              <input type="tel" id="telefono" name="telefono" placeholder="Ej: 300 246 4311" maxlength="20">
             </div>
           </div>
 
           <!-- CAMPOS GENERALES DE ACCESO -->
           <div class="form-row">
-            <label for="nombre" class="login-field-label" id="lblUsuario">Nombre de usuario</label>
-            <input type="text" id="nombre" name="nombre" placeholder="Nombre con el que iniciarás sesión" minlength="3" maxlength="50" autocomplete="username" required>
+            <label for="nombre" class="login-field-label" id="lblUsuario">
+              Nombre de usuario <span style="font-size:11.5px; opacity:0.8; font-weight:normal; color:var(--orange-1);">(3 a 25 caracteres)</span>
+            </label>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre con el que iniciarás sesión" minlength="3" maxlength="25" autocomplete="username" required>
           </div>
 
           <div class="form-row">
             <label for="correo" class="login-field-label">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" placeholder="correo@empresa.com" autocomplete="email" required>
+            <input type="email" id="correo" name="correo" placeholder="correo@empresa.com" maxlength="50" autocomplete="email" required>
           </div>
 
           <div class="form-row">
-            <label for="password" class="login-field-label">Contraseña</label>
+            <label for="password" class="login-field-label">
+              Contraseña <span style="font-size:11.5px; opacity:0.8; font-weight:normal; color:var(--orange-1);">(8 a 30 caracteres)</span>
+            </label>
             <div class="password-input-wrapper">
-              <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
+              <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" maxlength="30" autocomplete="new-password" required>
               <button type="button" class="btn-toggle-password" aria-label="Ver contraseña" title="Ver contraseña">
                 <svg class="eye-show" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>

@@ -41,15 +41,15 @@ public class Repuesto {
     public Repuesto() {}
 
     public Repuesto(String codigo, String nombre, String descripcion, String marca, Proveedor proveedor, Integer cantidadStock, Integer stockMinimo, Double precioUnitario, String ubicacion) {
-        this.codigo = codigo;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+        setCodigo(codigo);
+        setNombre(nombre);
+        setDescripcion(descripcion);
         this.marca = marca;
         this.proveedor = proveedor;
         this.cantidadStock = cantidadStock;
         this.stockMinimo = stockMinimo;
         this.precioUnitario = precioUnitario;
-        this.ubicacion = ubicacion;
+        setUbicacion(ubicacion);
     }
 
     public boolean isStockBajo() {
@@ -59,14 +59,50 @@ public class Repuesto {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
+    public String getCodigo() {
+        if (codigo != null && codigo.length() > 20) {
+            return codigo.substring(0, 20);
+        }
+        return codigo;
+    }
+    public void setCodigo(String codigo) {
+        if (codigo != null) {
+            String trimmed = codigo.trim();
+            this.codigo = trimmed.length() > 20 ? trimmed.substring(0, 20) : trimmed;
+        } else {
+            this.codigo = null;
+        }
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        if (nombre != null && nombre.length() > 35) {
+            return nombre.substring(0, 35);
+        }
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        if (nombre != null) {
+            String trimmed = nombre.trim();
+            this.nombre = trimmed.length() > 35 ? trimmed.substring(0, 35) : trimmed;
+        } else {
+            this.nombre = null;
+        }
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getDescripcion() {
+        if (descripcion != null && descripcion.length() > 150) {
+            return descripcion.substring(0, 150);
+        }
+        return descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        if (descripcion != null) {
+            String trimmed = descripcion.trim();
+            this.descripcion = trimmed.length() > 150 ? trimmed.substring(0, 150) : trimmed;
+        } else {
+            this.descripcion = null;
+        }
+    }
 
     public String getMarca() { return marca; }
     public void setMarca(String marca) { this.marca = marca; }
@@ -83,7 +119,18 @@ public class Repuesto {
     public Double getPrecioUnitario() { return precioUnitario; }
     public void setPrecioUnitario(Double precioUnitario) { this.precioUnitario = precioUnitario; }
 
-    public String getUbicacion() { return ubicacion; }
-    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+    public String getUbicacion() {
+        if (ubicacion != null && ubicacion.length() > 30) {
+            return ubicacion.substring(0, 30);
+        }
+        return ubicacion;
+    }
+    public void setUbicacion(String ubicacion) {
+        if (ubicacion != null) {
+            String trimmed = ubicacion.trim();
+            this.ubicacion = trimmed.length() > 30 ? trimmed.substring(0, 30) : trimmed;
+        } else {
+            this.ubicacion = null;
+        }
+    }
 }
-

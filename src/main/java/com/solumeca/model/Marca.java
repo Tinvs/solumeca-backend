@@ -26,25 +26,60 @@ public class Marca {
     public Marca() {}
 
     public Marca(String nombre, String paisOrigen, String descripcion, Proveedor proveedor) {
-        this.nombre = nombre;
-        this.paisOrigen = paisOrigen;
-        this.descripcion = descripcion;
+        setNombre(nombre);
+        setPaisOrigen(paisOrigen);
+        setDescripcion(descripcion);
         this.proveedor = proveedor;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() {
+        if (nombre != null && nombre.length() > 25) {
+            return nombre.substring(0, 25);
+        }
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        if (nombre != null) {
+            String trimmed = nombre.trim();
+            this.nombre = trimmed.length() > 25 ? trimmed.substring(0, 25) : trimmed;
+        } else {
+            this.nombre = null;
+        }
+    }
 
-    public String getPaisOrigen() { return paisOrigen; }
-    public void setPaisOrigen(String paisOrigen) { this.paisOrigen = paisOrigen; }
+    public String getPaisOrigen() {
+        if (paisOrigen != null && paisOrigen.length() > 30) {
+            return paisOrigen.substring(0, 30);
+        }
+        return paisOrigen;
+    }
+    public void setPaisOrigen(String paisOrigen) {
+        if (paisOrigen != null) {
+            String trimmed = paisOrigen.trim();
+            this.paisOrigen = trimmed.length() > 30 ? trimmed.substring(0, 30) : trimmed;
+        } else {
+            this.paisOrigen = null;
+        }
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getDescripcion() {
+        if (descripcion != null && descripcion.length() > 150) {
+            return descripcion.substring(0, 150);
+        }
+        return descripcion;
+    }
+    public void setDescripcion(String descripcion) {
+        if (descripcion != null) {
+            String trimmed = descripcion.trim();
+            this.descripcion = trimmed.length() > 150 ? trimmed.substring(0, 150) : trimmed;
+        } else {
+            this.descripcion = null;
+        }
+    }
 
     public Proveedor getProveedor() { return proveedor; }
     public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
 }
-

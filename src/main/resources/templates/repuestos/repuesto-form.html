@@ -19,12 +19,12 @@
 
         <div style="display:grid; grid-template-columns: 1fr 2fr; gap:16px;">
           <div class="form-row">
-            <label for="codigo">Código Único *</label>
-            <input type="text" id="codigo" th:field="*{codigo}" placeholder="Ej: REP-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
+            <label for="codigo">Código Único * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 20 caracteres)</span></label>
+            <input type="text" id="codigo" th:field="*{codigo}" maxlength="20" placeholder="Ej: REP-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
           </div>
           <div class="form-row">
-            <label for="nombre">Nombre del Repuesto *</label>
-            <input type="text" id="nombre" th:field="*{nombre}" placeholder="Ej: Filtro de Aceite Hidráulico" required>
+            <label for="nombre">Nombre del Repuesto * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 35 caracteres)</span></label>
+            <input type="text" id="nombre" th:field="*{nombre}" maxlength="35" placeholder="Ej: Filtro de Aceite Hidráulico" required>
           </div>
         </div>
 
@@ -67,13 +67,13 @@
         </div>
 
         <div class="form-row">
-          <label for="ubicacion">Ubicación en Bodega / Taller</label>
-          <input type="text" id="ubicacion" th:field="*{ubicacion}" placeholder="Ej: Bodega A - Estante 2 - Nivel 1">
+          <label for="ubicacion">Ubicación en Bodega / Taller <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 30 caracteres)</span></label>
+          <input type="text" id="ubicacion" th:field="*{ubicacion}" maxlength="30" placeholder="Ej: Bodega A - Estante 2 - Nivel 1">
         </div>
 
         <div class="form-row">
-          <label for="descripcion">Descripción Técnica y Especificaciones</label>
-          <textarea id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Detalles de compatibilidad, dimensiones o referencia OEM"
+          <label for="descripcion">Descripción Técnica y Especificaciones <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 150 caracteres)</span></label>
+          <textarea id="descripcion" th:field="*{descripcion}" rows="3" maxlength="150" placeholder="Detalles de compatibilidad, dimensiones o referencia OEM (máx. 150 caracteres)"
                     style="width:100%; padding:12px; border-radius:var(--radius); border:1px solid var(--steel-line); background:var(--concrete); font-family:var(--font-body); font-size:14px;"></textarea>
         </div>
 

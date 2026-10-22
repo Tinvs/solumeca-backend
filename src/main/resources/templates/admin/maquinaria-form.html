@@ -19,11 +19,11 @@
 
         <div style="display:grid; grid-template-columns: 1fr 2fr; gap:16px;">
           <div class="form-row">
-            <label for="codigo">Código Máquina *</label>
-            <input type="text" id="codigo" th:field="*{codigo}" placeholder="Ej: MQ-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
+            <label for="codigo">Código Máquina * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 20 caracteres)</span></label>
+            <input type="text" id="codigo" th:field="*{codigo}" maxlength="20" placeholder="Ej: MQ-011" required style="font-family:var(--font-mono); text-transform:uppercase;">
           </div>
           <div class="form-row">
-            <label for="nombre">Nombre del Equipo * <span style="font-size:11px; opacity:0.75;">(máx. 20 caracteres)</span></label>
+            <label for="nombre">Nombre del Equipo * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 20 caracteres)</span></label>
             <input type="text" id="nombre" th:field="*{nombre}" maxlength="20" placeholder="Ej: Retroexcavadora 420" required>
           </div>
         </div>
@@ -44,19 +44,19 @@
             <option th:if="${marcasDisponibles == null || #lists.isEmpty(marcasDisponibles)}" value="CLARK">CLARK</option>
             <option value="Otra">Otra marca...</option>
           </select>
-          <input type="text" id="marcaPersonalizada" name="marcaPersonalizada"
-                 placeholder="Escriba el nombre de la marca" style="display:none; margin-top:10px;"
+          <input type="text" id="marcaPersonalizada" name="marcaPersonalizada" maxlength="25"
+                 placeholder="Escriba el nombre de la marca (máx. 25 caracteres)" style="display:none; margin-top:10px;"
                  aria-label="Otra marca">
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
           <div class="form-row">
-            <label for="modelo">Modelo</label>
-            <input type="text" id="modelo" th:field="*{modelo}" placeholder="Ej: 420F2">
+            <label for="modelo">Modelo <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 25 caracteres)</span></label>
+            <input type="text" id="modelo" th:field="*{modelo}" maxlength="25" placeholder="Ej: 420F2">
           </div>
           <div class="form-row">
-            <label for="numeroSerie">Número de serie *</label>
-            <input type="text" id="numeroSerie" th:field="*{numeroSerie}" placeholder="Ej: CAT420F2-0091" required>
+            <label for="numeroSerie">Número de serie * <span style="font-size:11px; opacity:0.8; color:var(--orange-1);">(máx. 25 caracteres)</span></label>
+            <input type="text" id="numeroSerie" th:field="*{numeroSerie}" maxlength="25" placeholder="Ej: CAT420F2-0091" required>
           </div>
         </div>
 
