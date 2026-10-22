@@ -109,23 +109,15 @@
             <label class="tipo-cuenta-option" id="optEmpresa" onclick="seleccionarTipo('EMPRESA')">
               <input type="radio" name="tipoCliente" value="EMPRESA">
               <span>Empresa / Jurídica</span>
-              <small>Razón Social y NIT</small>
+              <small>Persona Jurídica</small>
             </label>
           </div>
 
-          <!-- CAMPOS EXCLUSIVOS SI ES EMPRESA -->
+          <!-- CAMPO EXCLUSIVO SI ES EMPRESA -->
           <div class="empresa-fields" id="bloqueEmpresa">
             <div class="form-row">
-              <label for="nombreEmpresa" class="login-field-label">Razón Social o Nombre de la Empresa</label>
+              <label for="nombreEmpresa" class="login-field-label">Nombre de la empresa</label>
               <input type="text" id="nombreEmpresa" name="nombreEmpresa" placeholder="Ej: Inducol S.A.S. o Transportes del Norte" maxlength="150">
-            </div>
-            <div class="form-row">
-              <label for="nit" class="login-field-label">NIT o Registro Tributario</label>
-              <input type="text" id="nit" name="nit" placeholder="Ej: 900.123.456-7" maxlength="50">
-            </div>
-            <div class="form-row">
-              <label for="telefono" class="login-field-label">Teléfono o Celular Corporativo</label>
-              <input type="tel" id="telefono" name="telefono" placeholder="Ej: 300 246 4311" maxlength="50">
             </div>
           </div>
 
@@ -176,7 +168,6 @@
       const bloqueEmpresa = document.getElementById('bloqueEmpresa');
       const lblUsuario = document.getElementById('lblUsuario');
       const inputEmpresa = document.getElementById('nombreEmpresa');
-      const inputNit = document.getElementById('nit');
 
       if (tipo === 'EMPRESA') {
         optEmpresa.classList.add('is-active');
@@ -185,7 +176,6 @@
         optEmpresa.querySelector('input').checked = true;
         lblUsuario.textContent = 'Usuario de acceso corporativo';
         if (inputEmpresa) inputEmpresa.setAttribute('required', 'true');
-        if (inputNit) inputNit.setAttribute('required', 'true');
       } else {
         optPersona.classList.add('is-active');
         optEmpresa.classList.remove('is-active');
@@ -193,7 +183,6 @@
         optPersona.querySelector('input').checked = true;
         lblUsuario.textContent = 'Nombre de usuario';
         if (inputEmpresa) inputEmpresa.removeAttribute('required');
-        if (inputNit) inputNit.removeAttribute('required');
       }
     }
 
